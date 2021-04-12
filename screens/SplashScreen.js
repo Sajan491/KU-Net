@@ -14,18 +14,22 @@ useEffect(() => {
                 value === null ? "Auth" : "DrawerNavigation"
             ),
         )
-    }, 3000)
+    }, 2000)
 }, [])
    
 
     return (
         <View>
-           <ActivityIndicator 
-           animating={animating}
-           color="#FFF"
-           size="large"
-           />
-        </View>
+            <View>
+                <ActivityIndicator 
+                animating={animating}
+                color="#FFF"
+                size="large"
+                />
+            </View>
+            <Text> Loading ... </Text>
+     </View>
+       
     )
 }
 

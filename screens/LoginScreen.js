@@ -3,14 +3,23 @@ import { View, Text, Button, StyleSheet } from 'react-native';
 
 const LoginScreen = ({navigation}) => {
 
-    const pressHandler = () => {
+    const pressHandlerRegister = () => {
         navigation.navigate("RegisterScreen")
     }
+
+    const pressHandlerHome = () => {
+        navigation.navigate("DrawerNavigator")
+    }
+
     return (
         <View style ={styles.container}>
             <Text>Login Screen | KU Net</Text>
-            <Text> Don't have an account? </Text>
-            <Button title="Register" onPress={pressHandler}/>
+            <Text > Don't have an account? </Text>
+            <View style={{margin: 40}}> 
+            <Button title="Login" onPress={pressHandlerHome} />
+            </View>
+           
+            <Button title="Register" onPress={pressHandlerRegister}/>
         </View>
     )
 }

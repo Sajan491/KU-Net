@@ -11,13 +11,9 @@ const AboutScreenStack = ({navigation}) => {
         initialRouteName="AboutScreen"
         screenOptions={{
           headerStyle: {
-            backgroundColor: '#307ecc', //Set Header color
+            backgroundColor: '#307ecc',
           },
-          headerTintColor: '#fff', //Set Header text color
-          headerTitleStyle: {
-            fontWeight: 'bold', //Set Header text style
-          },
-        }}>
+          headerLeft: () => null,        }}>
         <Stack.Screen
           name="AboutScreen"
           component={AboutScreen}
