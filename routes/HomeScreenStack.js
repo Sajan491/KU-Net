@@ -12,13 +12,7 @@ const HomeScreenStack = ({navigation}) => {
           component={HomeScreen}
           options={{
             title: 'Home', //Set Header Title
-            headerStyle: {
-              backgroundColor: '#307ecc', //Set Header color
-            },
-            headerTintColor: '#fff', //Set Header text color
-            headerTitleStyle: {
-              fontWeight: 'bold', //Set Header text style
-            },
+            headerLeft: () => null,
           }}
         />
       </Stack.Navigator>

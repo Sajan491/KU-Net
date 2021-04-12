@@ -11,12 +11,12 @@ const Drawer = createDrawerNavigator();
         >
         <Drawer.Screen
           name="HomeScreenStack"
-          options={{drawerLabel: 'Home Screen'}}
+          options={{drawerLabel: 'Home'}}
           component={HomeScreenStack}
         />
         <Drawer.Screen
           name="AboutScreenStack"
-          options={{drawerLabel: 'About Screen'}}
+          options={{drawerLabel: 'About'}}
           component={AboutScreenStack}
         />
       </Drawer.Navigator>
