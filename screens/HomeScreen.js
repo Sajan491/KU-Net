@@ -2,6 +2,7 @@ import React from 'react'
 import { FlatList, StyleSheet, Text, View } from 'react-native'
 import Card from '../components/Card';
 import colors from "../config/colors";
+import Screen from '../components/Screen'
 
 const posts=[
     {   
@@ -27,21 +28,21 @@ const posts=[
 
 const HomeScreen = ({navigation}) => {
     return (
-        <View style={styles.screen}>
-            <FlatList 
-                data={posts}
-                keyExtractor={(item)=>item.id.toString()}
-                renderItem={({item})=>(
-                    <Card
-                        title={item.title}
-                        subTitle={item.subTitle}
-                        image={item.image}
-                        onPress={()=>navigation.navigate('PostDetails', item)}
-                    />
-                )}
+            <View style={styles.screen}>
+                <FlatList 
+                    data={posts}
+                    keyExtractor={(item)=>item.id.toString()}
+                    renderItem={({item})=>(
+                        <Card
+                            title={item.title}
+                            subTitle={item.subTitle}
+                            image={item.image}
+                            onPress={()=>navigation.navigate('PostDetails', item)}
+                        />
+                    )}
 
-            />
-        </View>
+                />
+            </View>
     )
 }
 
