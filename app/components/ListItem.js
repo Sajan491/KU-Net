@@ -34,12 +34,13 @@ const styles = StyleSheet.create({
         paddingLeft:20,
         flexDirection:'row',
         padding:12,
-        backgroundColor:colors.white
+        backgroundColor:colors.white,
     },
     image:{
         width:70,
         height:70,
         borderRadius:35,
+        
     },
     textContainer:{
         flex:1,
