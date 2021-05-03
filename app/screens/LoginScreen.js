@@ -8,7 +8,7 @@ const LoginScreen = ({navigation}) => {
     }
 
     const pressHandlerHome = () => {
-        navigation.navigate("Home")
+        navigation.navigate("After")
     }
 
     return (

@@ -15,6 +15,7 @@ const FeedNavigator=()=>(
             options={({})=>({
                 headerTintColor:'tomato', 
                 headerStyle:{height:50},
+                headerLeft:null,
                 headerRight: ({navigation})=><ChatButton onPress={()=>console.log('helo')}/>
             })}
         />
