@@ -11,22 +11,22 @@ import LoginScreen from "./screens/LoginScreen";
 import SplashScreen from "./screens/SplashScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 
-// import * as firebase from "firebase";
-// var firebaseConfig = {
-//   apiKey: "AIzaSyCWdmIAjwE9HzKWQha8obHsfozDS4ZdxkM",
-//   authDomain: "ku-net-b0cf0.firebaseapp.com",
-//   projectId: "ku-net-b0cf0",
-//   storageBucket: "ku-net-b0cf0.appspot.com",
-//   messagingSenderId: "993085530228",
-//   appId: "1:993085530228:web:521a21de7054ee3545f121"  
-// };
-// // Initialize Firebase
-// firebase.initializeApp(firebaseConfig);
+import firebase from "firebase";
+var firebaseConfig = {
+  apiKey: "AIzaSyCWdmIAjwE9HzKWQha8obHsfozDS4ZdxkM",
+  authDomain: "ku-net-b0cf0.firebaseapp.com",
+  projectId: "ku-net-b0cf0",
+  storageBucket: "ku-net-b0cf0.appspot.com",
+  messagingSenderId: "993085530228",
+  appId: "1:993085530228:web:521a21de7054ee3545f121"  
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 
 const Stack = createStackNavigator()
 
+//Stack Navigator for the Login and Register Screen
 const Auth = () => {
-  //Stack Navigator for the Login and Register Screen
   return(
     <Stack.Navigator initialRouteName="LoginScreen">
       <Stack.Screen 
@@ -55,7 +55,7 @@ const Auth = () => {
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName ="SplashScreen">
+      <Stack.Navigator initialRouteName ="Auth">
         <Stack.Screen 
           name = "SplashScreen"
           component = {SplashScreen}
