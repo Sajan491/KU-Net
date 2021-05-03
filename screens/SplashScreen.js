@@ -1,30 +1,18 @@
-import React, {useState, useEffect} from 'react';
-import {ActivityIndicator, Image, View, Text, Button } from 'react-native';
 
+import React from 'react'
+import { Button, StyleSheet, Text, View } from 'react-native'
 const SplashScreen = ({navigation}) => {
-//ActivityIndicator Animation
-const [animating, setAnimating] = useState(true);
-
-useEffect(() => {
-    setTimeout(() => {
-        setAnimating(false);
-    }, 1000)
-}, [])
-   
-
     return (
         <View>
-            <View>
-                <ActivityIndicator 
-                animating={animating}
-                color="#FFF"
-                size="large"
-                />
-            </View>
-            <Text> Loading ... </Text>
-     </View>
-       
+            <Text>Splashhhhhhhh</Text>
+            <Button title='Login' onPress={()=>navigation.navigate('Login')} />
+            <Button title='Register' onPress={()=>navigation.navigate('Register')} />
+        </View>
     )
 }
 
 export default SplashScreen
+
+const styles = StyleSheet.create({
+    
+})

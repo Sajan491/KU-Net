@@ -21,11 +21,11 @@ const LoginScreen = ({navigation}) => {
     
 
     const pressHandlerRegister = () => {
-        navigation.navigate("RegisterScreen")
+        navigation.navigate("Register")
     }
     
     const pressHandlerHome = () => {
-        navigation.navigate("DrawerNavigator")
+        navigation.navigate("After")
     }
 
     return (
