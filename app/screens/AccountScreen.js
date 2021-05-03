@@ -56,6 +56,7 @@ const AccountScreen = ({navigation}) => {
                     IconComponent={
                         <MyIcon name='logout' backgroundColor='#ffe66d'/>
                     }
+                    onPress={()=>navigation.navigate('Before')}
                 />
             </View>
         </Screen>
