@@ -18,6 +18,16 @@ const LoginScreen = ({navigation}) => {
             console.log(err.toString())
         }
     }
+
+    const registerUser = (email, password) => {
+        try{
+            firebase.auth().createUserWithEmailAndPassword(email, password)
+        }
+
+        catch(err) {
+            console.log(err.toString())
+        }
+    }
     
 
     const pressHandlerRegister = () => {
