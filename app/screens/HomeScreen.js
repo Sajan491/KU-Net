@@ -8,20 +8,21 @@ const posts=[
         id:1,
         title:"Hiring a full stack ReactJs developer!",
         subTitle:"subtitle1",
-        image:require("../assets/reactjs.png")
-    },
-    {
-        id:2,
-        title:"Curtains for sale",
-        subTitle:"subtitle2",
-        image:require("../assets/curtains.png")
+        image:require("../assets/react.png")
     },
     {
         id:3,
         title:"A glimpse of the Django Workshop",
         subTitle:"subtitle3",
         image:require("../assets/django.jpg")
+    },
+    {
+        id:2,
+        title:"Curtains for sale",
+        subTitle:"subtitle2",
+        image:require("../assets/curtains.png")
     }
+    
 ]
 
 const HomeScreen = ({navigation}) => {
@@ -49,7 +50,7 @@ export default HomeScreen
 const styles = StyleSheet.create({
     screen:{
         backgroundColor:colors.light,
-        padding:5,
+        padding:9,
         flex:1,
         
     }
