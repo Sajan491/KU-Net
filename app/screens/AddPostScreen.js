@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
+
 const AddPostScreen = () => {
     return (
         <View>
@@ -11,4 +12,5 @@ const AddPostScreen = () => {
 
 export default AddPostScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+})
