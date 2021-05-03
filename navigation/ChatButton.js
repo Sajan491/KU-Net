@@ -1,7 +1,5 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import colors from '../config/colors'
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Ionicons } from '@expo/vector-icons'; 
 const ChatButton = ({onPress}) => {
     return (

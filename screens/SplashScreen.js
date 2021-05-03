@@ -1,7 +1,6 @@
 
 import React from 'react'
 import { Button, StyleSheet, Text, View } from 'react-native'
-import navigationTheme from '../navigation/navigationTheme'
 const SplashScreen = ({navigation}) => {
     return (
         <View>

@@ -3,7 +3,6 @@ import React from "react"
 import PostDetailScreen from "../screens/PostDetailScreen";
 import HomeScreen from "../screens/HomeScreen";
 import ChatButton from "./ChatButton";
-import MessagesScreen from "../screens/MessagesScreen";
 
 const Stack = createStackNavigator();
 
