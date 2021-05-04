@@ -5,7 +5,7 @@ import navigationTheme from './navigation/navigationTheme';
 import {NavigationContainer} from "@react-navigation/native"
 import Screen from "./components/Screen";
 import { createStackNavigator } from "@react-navigation/stack";
-
+import {AuthProvider} from "./context/AuthProvider"
 const Stack = createStackNavigator();
 
 const MainNavigator=()=>(
@@ -19,6 +19,7 @@ export default function App() {
 
   
   return(
+    <AuthProvider>
     <Screen>
       
       <NavigationContainer theme={navigationTheme}>
@@ -27,6 +28,7 @@ export default function App() {
         
       </NavigationContainer>
     </Screen> 
+    </AuthProvider>
     )
   
 }
