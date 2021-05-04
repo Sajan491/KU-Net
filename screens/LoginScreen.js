@@ -21,11 +21,11 @@ const LoginScreen = ({navigation}) => {
     
 
     const pressHandlerRegister = () => {
-        navigation.navigate("RegisterScreen")
+        navigation.navigate("Register")
     }
     
     const pressHandlerHome = () => {
-        navigation.navigate("DrawerNavigator")
+        navigation.navigate("After")
     }
 
     return (
@@ -41,7 +41,7 @@ const LoginScreen = ({navigation}) => {
                         <Input secureTextEntry={true} autoCapitalize="none" autoCorrect={false} onChangeText={(password) => setPassword(password)}/>
                     </Item>
                     <View style={styles.LoginBtn}>
-                        <Button title="Login" onPress={()=>loginUser(email, password)}  />    
+                        <Button title="Login" onPress={pressHandlerHome}  />    
                     </View>
                 </Form>
             <View style= {styles.Register}>
