@@ -6,6 +6,7 @@ import {AuthContext} from "../context/AuthProvider";
 import Loading from "../components/Loading";
 import AppNavigator from './AppNavigator';
 import AuthNavigator from './AuthNavigator';
+import firebase from "firebase";
 
 const Routes = () => {
     const {user, setUser} = useContext(AuthContext);
@@ -19,7 +20,7 @@ const Routes = () => {
     }
 
     useEffect(() => {
-        const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+        const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChanged);
         return subscriber; //to unsub on unmount
     }, [])
 

@@ -5,7 +5,7 @@ import Screen from "../components/Screen";
 import ListItem from '../components/ListItem';
 import ItemSeperator from '../components/ItemSeperator';
 import MyIcon from "../components/MyIcon";
-import AuthContext from "../context/AuthProvider"
+import {AuthContext} from "../context/AuthProvider"
 
 
 const menuItems = [

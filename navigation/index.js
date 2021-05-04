@@ -1,11 +1,11 @@
 import React from 'react'
 import { AuthProvider } from '../context/AuthProvider';
-import { Routes } from './Routess';
+import  Routess from './Routess';
 
 const Providers = () => {
     return(
         <AuthProvider>
-            <Routes />
+            <Routess />
         </AuthProvider>
     )
 }
