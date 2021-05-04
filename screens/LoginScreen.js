@@ -5,10 +5,10 @@ import {AuthContext} from "../context/AuthProvider";
 import {Container, Input, Form, Item, Label} from "native-base"
 
 const LoginScreen = ({navigation}) => {
-    const {signIn} = useContext(AuthContext)
+    const {signIn, error} = useContext(AuthContext)
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+  
     const pressHandlerRegister = () => {
         navigation.navigate("Register")
     }
@@ -34,6 +34,9 @@ const LoginScreen = ({navigation}) => {
                         <Label> Password</Label>
                         <Input secureTextEntry={true} autoCapitalize="none" autoCorrect={false} value={password} onChangeText={(password) => setPassword(password)}/>
                     </Item>
+                    {
+                        error ? <Text style={styles.errorMessage}> {error} </Text> : null
+                    }
                     <View style={styles.loginBtn}>
                         <Button title="Login" onPress={() => signIn(email, password)}  />    
                     </View>
@@ -64,6 +67,10 @@ const styles = StyleSheet.create({
     navBtnText: {
         fontSize: 20,
         color: "#6646ee"
+    },
+    errorMessage: {
+        color: "red",
+        marginTop: 10,
     }
 })
 export default LoginScreen

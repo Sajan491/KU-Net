@@ -15,16 +15,19 @@ firebase.initializeApp(firebaseConfig);
 export const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [error, setError] = useState("");
     return (
       <AuthContext.Provider
         value={{
           user,
           setUser,
+          error,
           signIn: async (email, password) => {
             try {
               await firebase.auth().signInWithEmailAndPassword(email, password);
             } catch (e) {
               console.log(e);
+              setError(e.message)
             }
           },
           signUp: async (email, password) => {
@@ -32,6 +35,7 @@ export const AuthProvider = ({ children }) => {
               await firebase.auth().createUserWithEmailAndPassword(email, password);
             } catch (e) {
               console.log(e);
+              setError(e.message)
             }
           },
           signOut: async () => {
@@ -39,6 +43,7 @@ export const AuthProvider = ({ children }) => {
               await firebase.auth().signOut();
             } catch (e) {
               console.error(e);
+              setError(e.message)
             }
           }
         }}
