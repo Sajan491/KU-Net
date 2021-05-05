@@ -1,37 +1,39 @@
-import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import React, {useState, useContext} from 'react';
+import { View, Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import {AuthContext} from "../context/AuthProvider";
 
-import {Container, Content, Header, Input, Form, Item, Label} from "native-base"
+import {Container, Input, Form, Item, Label} from "native-base"
 
-const RegisterScreen = ({navigation}) => {
+const LoginScreen = ({navigation}) => {
+    const {signUp, error} = useContext(AuthContext)
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-    const pressHandler = () => {
-        navigation.goBack();
-    }
     return (
         <>
-        <Container style={styles.container}>
-            <Form>
-                <Item floatingLabel>
-                    <Label> Name</Label>
-                    <Input autoCapitalize="none" autoCorrect={false} />
-                </Item>
-                <Item floatingLabel>
-                    <Label> Email</Label>
-                    <Input autoCapitalize="none" autoCorrect={false} />
-                </Item>
-                <Item floatingLabel>
-                    <Label> Password</Label>
-                    <Input secureTextEntry={true} autoCapitalize="none" autoCorrect={false} />
-                </Item>
-        <View style={styles.RegisterBtn}>
-
-            <Button title="Register" onPress = {pressHandler}  />
-        </View>
-            </Form>
-        </Container>
-        
-    </>
+            <Container style={styles.container}>
+                <Form>
+                    <Item floatingLabel>
+                        <Label> Email</Label>
+                        <Input 
+                            autoCapitalize="none" 
+                            autoCorrect={false} 
+                            keyBoardType = "email-address"
+                            value={email} 
+                            onChangeText={(email) => setEmail(email)}/>
+                    </Item>
+                    <Item floatingLabel>
+                        <Label> Password</Label>
+                        <Input secureTextEntry={true} autoCapitalize="none" autoCorrect={false} value={password} onChangeText={(password) => setPassword(password)}/>
+                    </Item>
+                    <Text style={styles.errorMessage}> {error} </Text>
+                    <View style={styles.signUp}>
+                        <Button title="Sign Up" onPress={() => signUp(email, password)}  />    
+                    </View>
+                </Form>
+            </Container>
+            
+        </>
     )
 }
 
@@ -39,11 +41,22 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
-        justifyContent: "center"
+        justifyContent: "center",
+        alignItems: "center"
     },
-    RegisterBtn: {
-        marginTop: 50
+    signUp: {
+        marginTop: 10
     },
+    navBtn: {
+        marginTop: 15
+    },
+    navBtnText: {
+        fontSize: 20,
+        color: "#6646ee"
+    },
+    errorMessage: {
+        color: "red",
+        marginTop: 10,
+    }
 })
-
-export default RegisterScreen
+export default LoginScreen

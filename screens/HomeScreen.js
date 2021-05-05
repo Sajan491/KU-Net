@@ -1,8 +1,9 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import { FlatList, StyleSheet, Text, View } from 'react-native'
 import Card from '../components/Card';
 import colors from "../config/colors";
 import Screen from '../components/Screen'
+import {AuthContext} from "../context/AuthProvider";
 
 const posts=[
     {   
@@ -27,8 +28,10 @@ const posts=[
 ]
 
 const HomeScreen = ({navigation}) => {
+    const {user} = useContext(AuthContext)
     return (
             <View style={styles.screen}>
+                <Text style={styles.text}> Welcome, {user.email}</Text>
                 <FlatList 
                     data={posts}
                     keyExtractor={(item)=>item.id.toString()}
@@ -54,5 +57,8 @@ const styles = StyleSheet.create({
         padding:9,
         flex:1,
         
+    },
+    text: {
+        textAlign: 'center'
     }
 })
