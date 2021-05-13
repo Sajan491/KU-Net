@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer:{
         paddingTop:20,
+        marginTop: 40,
         width:'80%',
         bottom:260
     },

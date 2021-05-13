@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 10,
         justifyContent: "center",
-        alignItems: "center"
+        // alignItems: "center"
     },
     loginBtn: {
         marginTop: 10
