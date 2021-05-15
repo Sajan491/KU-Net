@@ -1,18 +1,5 @@
 import React, { createContext, useState } from 'react';
-import firebase from "firebase";
-
-
-// <--- FIREBASE CONFIG --->
-var firebaseConfig = {
-  apiKey: "AIzaSyCWdmIAjwE9HzKWQha8obHsfozDS4ZdxkM",
-  authDomain: "ku-net-b0cf0.firebaseapp.com",
-  projectId: "ku-net-b0cf0",
-  storageBucket: "ku-net-b0cf0.appspot.com",
-  messagingSenderId: "993085530228",
-  appId: "1:993085530228:web:521a21de7054ee3545f121"  
-};
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+import firebase from "../config/firebase";
 
 const usersCollection = firebase.firestore().collection('users');
 
@@ -45,8 +32,8 @@ export const AuthProvider = ({ children }) => {
                   usersCollection
                     .doc(cred.user.uid)
                     .set({
-                      uid: cred.user.uid,
-                      email: email
+                      email: email,
+                      uid: cred.user.uid
                     })
                   
                 })
