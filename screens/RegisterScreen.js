@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { View, Button, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import {AuthContext} from "../context/AuthProvider";
 
@@ -6,7 +6,7 @@ import {Container, Input, Form, Item, Label} from "native-base"
 import {useForm} from "react-hook-form";
 
 const LoginScreen = ({navigation}) => {
-    const {signUp, error} = useContext(AuthContext)
+    const {signUp, error, setError} = useContext(AuthContext)
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -15,6 +15,10 @@ const LoginScreen = ({navigation}) => {
     const pressHandlerLogin = () => {
         navigation.navigate("Login")
     }
+
+    useEffect(() => {
+        setError(null)
+     }, [])
     return (
         <>
             <Container style={styles.container}>

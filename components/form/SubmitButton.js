@@ -9,7 +9,7 @@ const SubmitButton = ({title}) => {
     return (
         <AppButton
             title={title}
-            onPress={handleSubmit}
+            onPress={handleSubmit} 
         />
     )
 }
