@@ -3,10 +3,15 @@ import { StyleSheet, Text, View } from 'react-native'
 import * as Yup from 'yup';
 import { AppForm, AppFormField, SubmitButton } from '../components/form'
 import Screen from '../components/Screen'
+import ProfileImagePicker from '../components/ProfileImagePicker';
+import DepartmentPicker from '../components/DepartmentPicker';
+
+
 
 const validationSecondRegisterScreen = Yup.object().shape({
     username: Yup.string().required().min(1).label("Username"),
-    department: Yup.string().required().min(1).max(100).label("Department"),
+    age: Yup.string().required().min(1).max(2).label("Age"),
+    department: Yup.object().required().nullable().label("Department"),
     batch:  Yup.string().required().min(4).label("Batch")
 });
 
@@ -24,13 +29,18 @@ const SecondRegisterScreen = () => {
                 placeholder='Username'
                 name="username"
             />
-            
             <AppFormField 
-                maxLength={255}
-                multiline
-                numberOfLines={3}
+                keyboardType="numeric"
+                maxLength = {2}
+                placeholder='Age'
+                name="age"
+            />
+            <ProfileImagePicker name='image' />
+            
+            <DepartmentPicker
                 name="department"
                 placeholder="Department"
+                numberOfColumns={1}
             />
             <AppFormField 
                 keyboardType="numeric"
