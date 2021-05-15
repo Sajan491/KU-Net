@@ -62,7 +62,8 @@ const styles = StyleSheet.create({
         flex:1
     },
     text:{
-        flex:1
+        flex:1,
+        color:colors.medium
     }
     
 })
