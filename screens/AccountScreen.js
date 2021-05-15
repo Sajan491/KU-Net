@@ -40,7 +40,7 @@ const {user, signOut} = useContext(AuthContext);
         <Screen style={styles.screen}>
             <View style={styles.container}>
                 <ListItem 
-                    title="Sajan Mahat"
+                    title= {user.displayName}
                     subTitle= {user.email}
                     image={require('../assets/sajan.png')}
                 />

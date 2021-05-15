@@ -1,9 +1,10 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import { StyleSheet, Text, View ,Button, TextInput} from 'react-native'
 import * as Yup from 'yup';
 import { AppForm, AppFormField, SubmitButton } from '../components/form'
 import Screen from '../components/Screen'
 import firebase from "../config/firebase";
+import { AuthContext } from '../context/AuthProvider';
 const validationSecondRegisterScreen = Yup.object().shape({
     username: Yup.string().required().min(1).label("Username"),
     department: Yup.string().required().min(1).max(100).label("Department"),
@@ -17,14 +18,19 @@ const usersCollection = firebase.firestore().collection("users")
 
 
 const SecondRegisterScreen = () => {
+    const [name, setName] = useState("");
     const [username, setUserName] = useState("");
     const [department, setDepartment] = useState("");
     const [batch, setBatch] = useState("");
-
+    const {user} = useContext(AuthContext)
     const storeUser = () => {
-            const userID = firebase.auth().currentUser.uid;
-            
-            console.log(userID);
+        const userID = firebase.auth().currentUser.uid;
+        console.log(userID);
+        
+        user.updateProfile({
+            displayName: name
+        })
+
         usersCollection.doc(userID).set({
             UID: userID,
             email: firebase.auth().currentUser.email,
@@ -39,6 +45,8 @@ const SecondRegisterScreen = () => {
             console.log(err.message);
         })
     }
+
+
 
     return (
         <Screen style={styles.container}>
@@ -78,6 +86,13 @@ const SecondRegisterScreen = () => {
             />               
         </AppForm> */}
     <View>
+        <View style = {styles.inputGroup}>
+            <TextInput 
+            placeholder='Display Name'
+            value = {name}
+            onChangeText = {(n) => setName(n)}
+            />
+        </View>
         <View style = {styles.inputGroup}>
             <TextInput 
             placeholder='Username'
