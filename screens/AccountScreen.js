@@ -26,7 +26,7 @@ const menuItems = [
     {
         title: "Add Credentials",
         icon: {
-            name: "format-list-bulleted",
+            name: "plus",
             backgroundColor: colors.secondary
         },
         targetScreen: "SecondRegister"
@@ -40,7 +40,7 @@ const {user, signOut} = useContext(AuthContext);
         <Screen style={styles.screen}>
             <View style={styles.container}>
                 <ListItem 
-                    title= {user.displayName}
+                    title= {user.displayName ? user.displayName : "Update name in credentials!"}
                     subTitle= {user.email}
                     image={require('../assets/sajan.png')}
                 />
