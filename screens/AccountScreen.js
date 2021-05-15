@@ -24,6 +24,14 @@ const menuItems = [
             backgroundColor: colors.secondary
         },
         targetScreen:"Messages"
+    },
+    {
+        title: "Add Credentials",
+        icon: {
+            name: "format-list-bulleted",
+            backgroundColor: colors.primary
+        },
+        targetScreen: "SecondRegister"
     }
 ]
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import * as Yup from 'yup';
 import { AppForm, AppFormField, SubmitButton } from '../components/form'
@@ -6,6 +6,8 @@ import Screen from '../components/Screen'
 import ProfileImagePicker from '../components/ProfileImagePicker';
 import DepartmentPicker from '../components/DepartmentPicker';
 import AppText from '../components/AppText';
+import firebase from "../config/firebase";
+import { AuthContext } from '../context/AuthProvider';
 
 
 
@@ -16,15 +18,29 @@ const validationSecondRegisterScreen = Yup.object().shape({
     bio: Yup.string().min(1).label("Bio"),
     batch:  Yup.string().required().min(4).label("Batch")
 });
+const usersCollection = firebase.firestore().collection("users_extended")
 
 const SecondRegisterScreen = () => {
+    const {user} = useContext(AuthContext)
+
+    const handleSubmit=(values)=>{
+        try {
+            const userID = firebase.auth().currentUser.uid;
+            console.log(userID);
+            usersCollection.doc(userID).set(values)
+        } catch (error) {
+            console.log(error)
+        }
+        
+    }
+
     return (
         <Screen style={styles.container}>
             <AppText style={styles.header}>Profile Details</AppText>
             
             <AppForm
-                initialValues={{username:'', department:'', batch:''}}
-                onSubmit={(values)=>console.log(values)}
+                initialValues={{username:'', age:'',  department:null, bio:'', batch:''}}
+                onSubmit={handleSubmit}
                 validationSchema={validationSecondRegisterScreen}
             >
                 <AppFormField 
