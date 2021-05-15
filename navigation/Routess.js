@@ -10,8 +10,8 @@ import firebase from "firebase";
 
 const Routes = () => {
     const {user, setUser} = useContext(AuthContext);
-    const [loading, setLoading] = useState(false);
-    const [initializing, setInitialize] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [initializing, setInitialize] = useState(true);
 
     const onAuthStateChanged = (user) => {
         setUser(user);

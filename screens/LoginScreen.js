@@ -1,11 +1,11 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { View, Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import {AuthContext} from "../context/AuthProvider";
 
 import {Container, Input, Form, Item, Label} from "native-base"
 
 const LoginScreen = ({navigation}) => {
-    const {signIn, error} = useContext(AuthContext)
+    const {signIn, error, setError} = useContext(AuthContext)
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
   
@@ -16,6 +16,10 @@ const LoginScreen = ({navigation}) => {
     const pressHandlerHome = () => {
         navigation.navigate("After")
     }
+
+    useEffect(() => {
+       setError(null)
+    }, [])
 
     return (
         <>
@@ -56,7 +60,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 10,
         justifyContent: "center",
-        alignItems: "center"
+        // alignItems: "center"
     },
     loginBtn: {
         marginTop: 10
