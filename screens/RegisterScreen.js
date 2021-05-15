@@ -3,7 +3,6 @@ import { View, Button, Text, StyleSheet, TouchableOpacity, Alert } from 'react-n
 import {AuthContext} from "../context/AuthProvider";
 
 import {Container, Input, Form, Item, Label} from "native-base"
-import {useForm} from "react-hook-form";
 
 const LoginScreen = ({navigation}) => {
     const {signUp, error, setError} = useContext(AuthContext)

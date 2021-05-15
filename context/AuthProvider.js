@@ -1,7 +1,6 @@
 import React, { createContext, useState } from 'react';
 import firebase from "firebase";
-import firestore from "@react-native-firebase/firestore";
-import { Alert } from 'react-native';
+
 
 // <--- FIREBASE CONFIG --->
 var firebaseConfig = {

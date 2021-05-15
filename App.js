@@ -7,6 +7,7 @@ import Screen from "./components/Screen";
 import { createStackNavigator } from "@react-navigation/stack";
 import {AuthProvider} from "./context/AuthProvider"
 import Providers from "./navigation"
+import SecondRegisterScreen from './screens/SecondRegisterScreen';
 // const Stack = createStackNavigator();
 
 // const MainNavigator=()=>(
@@ -20,7 +21,7 @@ export default function App() {
 
   
   return(
-    <Providers />
+    <SecondRegisterScreen />
     )
   
 }
