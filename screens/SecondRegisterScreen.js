@@ -1,15 +1,23 @@
-import React, {useState, useContext} from 'react'
-import { StyleSheet, Text, View ,Button, TextInput} from 'react-native'
+
+import React, {useContext} from 'react'
+import { StyleSheet, Text, ScrollView } from 'react-native'
 import * as Yup from 'yup';
 import { AppForm, AppFormField, SubmitButton } from '../components/form'
 import Screen from '../components/Screen'
+import ProfileImagePicker from '../components/ProfileImagePicker';
+import DepartmentPicker from '../components/DepartmentPicker';
+import AppText from '../components/AppText';
 import firebase from "../config/firebase";
 import { AuthContext } from '../context/AuthProvider';
+
 const validationSecondRegisterScreen = Yup.object().shape({
     username: Yup.string().required().min(1).label("Username"),
-    department: Yup.string().required().min(1).max(100).label("Department"),
+    age: Yup.string().required().min(1).max(2).label("Age"),
+    department: Yup.object().required().nullable().label("Department"),
+    bio: Yup.string().min(1).label("Bio"),
     batch:  Yup.string().required().min(4).label("Batch")
 });
+const usersCollection = firebase.firestore().collection("users_extended")
 
 const usersCollection = firebase.firestore().collection("users")
 // const userID = firebase.auth().currentUser;
@@ -18,108 +26,72 @@ const usersCollection = firebase.firestore().collection("users")
 
 
 const SecondRegisterScreen = () => {
-    const [name, setName] = useState("");
-    const [username, setUserName] = useState("");
-    const [department, setDepartment] = useState("");
-    const [batch, setBatch] = useState("");
-    const {user} = useContext(AuthContext)
-    const storeUser = () => {
-        const userID = firebase.auth().currentUser.uid;
-        console.log(userID);
-        
-        user.updateProfile({
-            displayName: name
-        })
 
-        usersCollection.doc(userID).set({
-            UID: userID,
-            email: firebase.auth().currentUser.email,
-            username: username,
-            department: department,
-            batch: batch
-        }).then((res) => {
-            setUserName("");
-            setDepartment("");
-            setBatch("");
-        }).catch((err) => {
-            console.log(err.message);
-        })
+    const {user} = useContext(AuthContext)
+
+    const handleSubmit=(values)=>{
+        try {
+            const userID = firebase.auth().currentUser.uid;
+            console.log(userID);
+            usersCollection.doc(userID).set(values)
+        } catch (error) {
+            console.log(error)
+        }
+        
     }
+
+    const {user} = useContext(AuthContext)
 
 
 
     return (
         <Screen style={styles.container}>
-            
-        {/* <AppForm
-            initialValues={{username:'', department:'', batch:''}}
-            onSubmit={(values)=>console.log(values)}
-            validationSchema={validationSecondRegisterScreen}
-        >
-            <AppFormField 
-                maxLength = {255}
-                placeholder='Username'
-                name="username"
-                value = {username}
-                onChangeText = {(un) => setUserName(un)}
-            />
-            
-            <AppFormField 
-                maxLength={255}
-                multiline
-                numberOfLines={3}
-                name="department"
-                placeholder="Department"
-                value = {department}
-                onChangeText = {(dept) => setDepartment(dept)}
-            />
-            <AppFormField 
-                keyboardType="numeric"
-                maxLength = {4}
-                placeholder='Batch'
-                name="batch"
-                value = {batch}
-                onChangeText = {(batch) => setBatch(batch)}
-            />
-            <SubmitButton 
-                title="Save"
-            />               
-        </AppForm> */}
-    <View>
-        <View style = {styles.inputGroup}>
-            <TextInput 
-            placeholder='Display Name'
-            value = {name}
-            onChangeText = {(n) => setName(n)}
-            />
-        </View>
-        <View style = {styles.inputGroup}>
-            <TextInput 
-            placeholder='Username'
-            value = {username}
-            onChangeText = {(un) => setUserName(un)}
-            />
-        </View>
-        <View style = {styles.inputGroup}>
-            <TextInput 
-            multiline
-            numberOfLines={3}
-            placeholder="Department"
-            value = {department}
-            onChangeText = {(dept) => setDepartment(dept)}
-            />
-        </View>
-        <View style = {styles.inputGroup}> 
-            <TextInput 
-            keyboardType="numeric"
-            maxLength = {4}
-            placeholder='Batch'
-            value = {batch}
-            onChangeText = {(batch) => setBatch(batch)}
-            />
-        </View>
-        <Button title = "Add Credentials" color="#19AC52" style={{justifyContent: "center", alignItems: "center"}} onPress = {() => storeUser() } />
-        </View>
+            <ScrollView>
+            <AppText style={styles.header}>Profile Details</AppText>
+
+            <AppForm
+                initialValues={{username:'', age:'',  department:null, bio:'', batch:''}}
+                onSubmit={handleSubmit}
+                validationSchema={validationSecondRegisterScreen}
+            >
+                <AppFormField 
+                    maxLength = {255}
+                    placeholder='Username'
+                    name="username"
+                />
+                <AppFormField 
+                    keyboardType="numeric"
+                    maxLength = {2}
+                    placeholder='Age'
+                    name="age"
+                />
+                <ProfileImagePicker name='image' />
+                
+                <DepartmentPicker
+                    name="department"
+                    placeholder="Department"
+                    numberOfColumns={1}
+                />
+                <AppFormField 
+                    maxLength = {255}
+                    placeholder='Short Bio'
+                    name="bio"
+                    multiline
+                    numberOfLines={4}
+                />
+                <AppFormField 
+                    keyboardType="numeric"
+                    maxLength = {4}
+                    placeholder='Batch'
+                    name="batch"
+                />
+                <SubmitButton 
+                    title="Save"
+                />               
+            </AppForm>
+            </ScrollView>
+
+
     </Screen>
     )
 }
@@ -127,6 +99,10 @@ const SecondRegisterScreen = () => {
 export default SecondRegisterScreen
 
 const styles = StyleSheet.create({
+    header:{
+        paddingLeft:8,
+        paddingTop:30
+    },
     container:{
         padding:20
     },

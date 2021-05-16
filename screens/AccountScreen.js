@@ -28,6 +28,7 @@ const menuItems = [
         icon: {
             name: "plus",
             backgroundColor: colors.secondary
+
         },
         targetScreen: "SecondRegister"
     }
