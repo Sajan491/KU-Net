@@ -42,7 +42,7 @@ const LoginScreen = ({navigation}) => {
                         error ? <Text style={styles.errorMessage}> {error} </Text> : null
                     }
                     <View style={styles.loginBtn}>
-                        <Button title="Login" onPress={() => signIn(email, password)}  />    
+                        <Button title="Login" onPress={() => signIn(email, password)}  />  
                     </View>
                 </Form>
        
@@ -66,11 +66,13 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     navBtn: {
-        marginTop: 15
+        marginTop: 15,
+        alignItems: "center",
     },
     navBtnText: {
-        fontSize: 20,
-        color: "#6646ee"
+        fontSize: 14,
+        color: "#6646ee",
+    
     },
     errorMessage: {
         color: "red",
