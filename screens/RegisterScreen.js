@@ -15,9 +15,22 @@ const LoginScreen = ({navigation}) => {
         navigation.navigate("Login")
     }
 
+    const  handleSubmitRegister = async () => {
+        if(password !== confirmPassword){
+            return setError("Passwords do not match!")
+        }
+        try{
+            await signUp(email, password)
+        } catch (err) {
+            setError("Failed to create Account!")
+            console.log(err);
+        }
+    }
+
     useEffect(() => {
         setError(null)
      }, [])
+
     return (
         <>
             <Container style={styles.container}>
@@ -53,10 +66,10 @@ const LoginScreen = ({navigation}) => {
                         onChangeText={(password) => setConfirmPassword(password)}
                         />
                     </Item>
-                    <Text style={styles.errorMessage}> {error} </Text>
+                    { error && <Text style={styles.errorMessage}> {error} </Text> }
                     </View>
                     <View style={styles.signUp}>
-                        <Button title="Sign Up" onPress={() =>signUp(email, password)}  />    
+                        <Button title="Sign Up" onPress={() => handleSubmitRegister()}  />    
                     </View>
                     <TouchableOpacity style={styles.navBtn} onPress={pressHandlerLogin}> 
                 <Text style={styles.navBtnText}> Already have an account? Sign In Here.</Text>
@@ -85,7 +98,7 @@ const styles = StyleSheet.create({
         marginTop: 15
     },
     navBtnText: {
-        fontSize: 20,
+        fontSize: 14,
         color: "#6646ee"
     },
     errorMessage: {

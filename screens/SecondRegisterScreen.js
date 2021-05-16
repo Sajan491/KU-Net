@@ -1,3 +1,4 @@
+
 import React, {useContext} from 'react'
 import { StyleSheet, Text, ScrollView } from 'react-native'
 import * as Yup from 'yup';
@@ -9,8 +10,6 @@ import AppText from '../components/AppText';
 import firebase from "../config/firebase";
 import { AuthContext } from '../context/AuthProvider';
 
-
-
 const validationSecondRegisterScreen = Yup.object().shape({
     username: Yup.string().required().min(1).label("Username"),
     age: Yup.string().required().min(1).max(2).label("Age"),
@@ -20,7 +19,14 @@ const validationSecondRegisterScreen = Yup.object().shape({
 });
 const usersCollection = firebase.firestore().collection("users_extended")
 
+const usersCollection = firebase.firestore().collection("users")
+// const userID = firebase.auth().currentUser;
+// console.log(userID);
+
+
+
 const SecondRegisterScreen = () => {
+
     const {user} = useContext(AuthContext)
 
     const handleSubmit=(values)=>{
@@ -34,11 +40,15 @@ const SecondRegisterScreen = () => {
         
     }
 
+    const {user} = useContext(AuthContext)
+
+
+
     return (
         <Screen style={styles.container}>
             <ScrollView>
             <AppText style={styles.header}>Profile Details</AppText>
-            
+
             <AppForm
                 initialValues={{username:'', age:'',  department:null, bio:'', batch:''}}
                 onSubmit={handleSubmit}
@@ -80,6 +90,8 @@ const SecondRegisterScreen = () => {
                 />               
             </AppForm>
             </ScrollView>
+
+
     </Screen>
     )
 }
@@ -94,4 +106,11 @@ const styles = StyleSheet.create({
     container:{
         padding:20
     },
+    inputGroup: {
+        flex: 1,
+        padding: 0,
+        marginBottom: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#cccccc',
+      },
 })

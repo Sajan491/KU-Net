@@ -6,8 +6,6 @@ import ListItem from '../components/ListItem';
 import ItemSeperator from '../components/ItemSeperator';
 import MyIcon from "../components/MyIcon";
 import {AuthContext} from "../context/AuthProvider"
-
-
 const menuItems = [
     {
         title:"My Posts",
@@ -28,8 +26,9 @@ const menuItems = [
     {
         title: "Add Credentials",
         icon: {
-            name: "format-list-bulleted",
-            backgroundColor: colors.primary
+            name: "plus",
+            backgroundColor: colors.secondary
+
         },
         targetScreen: "SecondRegister"
     }
@@ -42,8 +41,8 @@ const {user, signOut} = useContext(AuthContext);
         <Screen style={styles.screen}>
             <View style={styles.container}>
                 <ListItem 
-                    title="Sajan Mahat"
-                    subTitle="sajanmahat491@gmail.com"
+                    title= {user.displayName ? user.displayName : "Update name in credentials!"}
+                    subTitle= {user.email}
                     image={require('../assets/sajan.png')}
                 />
             </View>
