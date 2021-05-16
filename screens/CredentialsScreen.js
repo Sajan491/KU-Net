@@ -11,24 +11,27 @@ import firebase from "../config/firebase";
 import { AuthContext } from '../context/AuthProvider';
 
 const validationSecondRegisterScreen = Yup.object().shape({
-    username: Yup.string().required().min(1).label("Username"),
-    age: Yup.string().required().min(1).max(2).label("Age"),
-    department: Yup.object().required().nullable().label("Department"),
+    username: Yup.string().min(1).label("Username"),
+    age: Yup.string().min(1).max(2).label("Age"),
+    department: Yup.object().nullable().label("Department"),
     bio: Yup.string().min(1).label("Bio"),
-    batch:  Yup.string().required().min(4).label("Batch")
+    batch:  Yup.string().min(4).label("Batch")
 });
 const usersCollection = firebase.firestore().collection("users_extended")
 
 
 
 const SecondRegisterScreen = ({navigation}) => {
-    const [un, setUN] = useState()
+    const [userName, setUserName] = useState("");
+    const [department, setDepartment] = useState("");
+    const [age, setAge] = useState(null);
+    const [batch, setBatch] = useState(null);
     const userID = firebase.auth().currentUser.uid;
 
     useEffect(() => {
-        getUsername();
+        getData();
         
-        // setUN(vars)
+        // setuserName(vars)
 
     }, [])
     const handleSubmit=(values)=>{
@@ -37,7 +40,6 @@ const SecondRegisterScreen = ({navigation}) => {
             
             console.log(userID);
             usersCollection.doc(userID).update(values)
-
 
 
             firebase.auth().currentUser.updateProfile({
@@ -52,10 +54,16 @@ const SecondRegisterScreen = ({navigation}) => {
     }
 
 
-    const getUsername =  () => {
+    const getData =  () => {
         usersCollection.doc(userID).get()
         .then((doc) => { 
-              setUN(doc.data()['username'])
+            console.log(doc.data());
+              setUserName(doc.data()['username'])
+            //   const dept = doc.data()['department']
+            //   console.log(dept);
+            //   setDepartment(dept)
+              setAge(doc.data()['age'])
+              setBatch(doc.data()['batch'])
             }).catch ((err) => {
                 console.log(err);
             })
@@ -73,20 +81,20 @@ const SecondRegisterScreen = ({navigation}) => {
             >
                 <AppFormField 
                     maxLength = {255}
-                    defaultValue = {un}
+                    defaultValue = {userName}
                     name="username"
                 />
                 <AppFormField 
                     keyboardType="numeric"
                     maxLength = {2}
-                    placeholder='Age'
+                    defaultValue = {age}
                     name="age"
                 />
                 <ProfileImagePicker name='image' />
                 
                 <DepartmentPicker
                     name="department"
-                    placeholder="Department"
+                    defaultValue = {department}
                     numberOfColumns={1}
                 />
                 <AppFormField 
@@ -99,7 +107,7 @@ const SecondRegisterScreen = ({navigation}) => {
                 <AppFormField 
                     keyboardType="numeric"
                     maxLength = {4}
-                    placeholder='Batch'
+                    defaultValue = {batch}
                     name="batch"
                 />
                 <SubmitButton 
