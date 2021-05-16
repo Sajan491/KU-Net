@@ -1,5 +1,5 @@
 import React, {useContext} from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, ScrollView } from 'react-native'
 import * as Yup from 'yup';
 import { AppForm, AppFormField, SubmitButton } from '../components/form'
 import Screen from '../components/Screen'
@@ -36,6 +36,7 @@ const SecondRegisterScreen = () => {
 
     return (
         <Screen style={styles.container}>
+            <ScrollView>
             <AppText style={styles.header}>Profile Details</AppText>
             
             <AppForm
@@ -78,6 +79,7 @@ const SecondRegisterScreen = () => {
                     title="Save"
                 />               
             </AppForm>
+            </ScrollView>
     </Screen>
     )
 }
