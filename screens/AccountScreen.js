@@ -30,7 +30,7 @@ const menuItems = [
             backgroundColor: colors.secondary
 
         },
-        targetScreen: "SecondRegister"
+        targetScreen: "Credentials"
     }
 ]
 
