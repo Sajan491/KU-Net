@@ -37,7 +37,7 @@ const SecondRegisterScreen = ({navigation}) => {
             console.log(error)
         }
 
-        navigation.navigate("Account")      
+        navigation.navigate("App")      
     }
 
     return (
