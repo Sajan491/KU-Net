@@ -12,8 +12,8 @@ const AccountNavigator=()=>(
                 headerLeft:null,
                 
             }}/>
-        <Stack.Screen name="Messages" component={MessagesScreen}/>
         <Stack.Screen name="SecondRegister" component={SecondRegisterScreen}/>
+        <Stack.Screen name="Messages" component={MessagesScreen}/>
     </Stack.Navigator>
 )
 

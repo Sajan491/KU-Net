@@ -21,9 +21,7 @@ const usersCollection = firebase.firestore().collection("users_extended")
 
 
 
-const SecondRegisterScreen = () => {
-
-    const {user} = useContext(AuthContext)
+const SecondRegisterScreen = ({navigation}) => {
 
     const handleSubmit=(values)=>{
         console.log(values.username);
@@ -38,7 +36,8 @@ const SecondRegisterScreen = () => {
         } catch (error) {
             console.log(error)
         }
-        
+
+        navigation.navigate("Account")      
     }
 
     return (

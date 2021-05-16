@@ -35,8 +35,8 @@ const menuItems = [
 ]
 
 const AccountScreen = ({navigation}) => {
-
-const {user, signOut} = useContext(AuthContext);
+    const {user, signOut} = useContext(AuthContext);
+    console.log(user.displayName);
     return (
         <Screen style={styles.screen}>
             <View style={styles.container}>
