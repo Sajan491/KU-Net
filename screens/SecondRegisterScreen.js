@@ -19,10 +19,6 @@ const validationSecondRegisterScreen = Yup.object().shape({
 });
 const usersCollection = firebase.firestore().collection("users_extended")
 
-const usersCollection = firebase.firestore().collection("users")
-// const userID = firebase.auth().currentUser;
-// console.log(userID);
-
 
 
 const SecondRegisterScreen = () => {
@@ -30,19 +26,20 @@ const SecondRegisterScreen = () => {
     const {user} = useContext(AuthContext)
 
     const handleSubmit=(values)=>{
+        console.log(values.username);
         try {
             const userID = firebase.auth().currentUser.uid;
             console.log(userID);
             usersCollection.doc(userID).set(values)
+
+            user.updateProfile({
+                displayName: values.username
+            })
         } catch (error) {
             console.log(error)
         }
         
     }
-
-    const {user} = useContext(AuthContext)
-
-
 
     return (
         <Screen style={styles.container}>
