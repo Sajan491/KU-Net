@@ -22,7 +22,7 @@ const usersCollection = firebase.firestore().collection("users_extended")
 
 
 const SecondRegisterScreen = ({navigation}) => {
-
+    const user = useContext(AuthContext);
     const handleSubmit=(values)=>{
         console.log(values.username);
         try {
@@ -30,7 +30,7 @@ const SecondRegisterScreen = ({navigation}) => {
             console.log(userID);
             usersCollection.doc(userID).set(values)
 
-            user.updateProfile({
+            firebase.auth().currentUser.updateProfile({
                 displayName: values.username
             })
         } catch (error) {
