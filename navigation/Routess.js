@@ -7,11 +7,13 @@ import Loading from "../components/Loading";
 import AppNavigator from './AppNavigator';
 import AuthNavigator from './AuthNavigator';
 import firebase from "firebase";
+import TestNavigator from './TestNavigator';
 
 const Routes = () => {
-    const {user, setUser} = useContext(AuthContext);
-    const [loading, setLoading] = useState(false);
-    const [initializing, setInitialize] = useState(false);
+    const {user, setUser, isANewUser} = useContext(AuthContext);
+    console.log("New user?", isANewUser);
+    const [loading, setLoading] = useState(true);
+    const [initializing, setInitialize] = useState(true);
 
     const onAuthStateChanged = (user) => {
         setUser(user);
@@ -29,7 +31,7 @@ const Routes = () => {
     }
     return (
         <NavigationContainer>
-            {user? <AppNavigator /> : <AuthNavigator />}
+            {user ? <TestNavigator /> : <AuthNavigator />}
         </NavigationContainer>
     )
 }

@@ -1,18 +1,41 @@
-import React, {useState, useContext} from 'react';
-import { View, Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React, {useState, useContext, useEffect} from 'react';
+import { View, Button, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import {AuthContext} from "../context/AuthProvider";
 
 import {Container, Input, Form, Item, Label} from "native-base"
 
 const LoginScreen = ({navigation}) => {
-    const {signUp, error} = useContext(AuthContext)
+    const {signUp, error, setError} = useContext(AuthContext)
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    // const { register, errors, watch } = useForm();
+
+    const pressHandlerLogin = () => {
+        navigation.navigate("Login")
+    }
+
+    const  handleSubmitRegister = async () => {
+        if(password !== confirmPassword){
+            return setError("Passwords do not match!")
+        }
+        try{
+            await signUp(email, password)
+        } catch (err) {
+            setError("Failed to create Account!")
+            console.log(err);
+        }
+    }
+
+    useEffect(() => {
+        setError(null)
+     }, [])
 
     return (
         <>
             <Container style={styles.container}>
                 <Form>
+                    <View style={styles.items}>
                     <Item floatingLabel>
                         <Label> Email</Label>
                         <Input 
@@ -22,14 +45,35 @@ const LoginScreen = ({navigation}) => {
                             value={email} 
                             onChangeText={(email) => setEmail(email)}/>
                     </Item>
-                    <Item floatingLabel>
+                    <Item floatingLabel style={styles.items}>
                         <Label> Password</Label>
-                        <Input secureTextEntry={true} autoCapitalize="none" autoCorrect={false} value={password} onChangeText={(password) => setPassword(password)}/>
+                        <Input 
+                        secureTextEntry={true} 
+                        autoCapitalize="none" 
+                        autoCorrect={false} 
+                        value={password} 
+                        onChangeText={(password) => setPassword(password)}
+              
+                          />
                     </Item>
-                    <Text style={styles.errorMessage}> {error} </Text>
-                    <View style={styles.signUp}>
-                        <Button title="Sign Up" onPress={() => signUp(email, password)}  />    
+                    <Item floatingLabel style={styles.items}>
+                        <Label> Confirm Password</Label>
+                        <Input 
+                        secureTextEntry={true} 
+                        autoCapitalize="none" 
+                        autoCorrect={false} 
+                        value={confirmPassword} 
+                        onChangeText={(password) => setConfirmPassword(password)}
+                        />
+                    </Item>
+                    { error ? <Text style={styles.errorMessage}> {error} </Text> : null}
                     </View>
+                    <View style={styles.signUp}>
+                        <Button title="Sign Up" onPress={() => handleSubmitRegister()}  />    
+                    </View>
+                    <TouchableOpacity style={styles.navBtn} onPress={pressHandlerLogin}> 
+                <Text style={styles.navBtnText}> Already have an account? Sign In Here.</Text>
+            </TouchableOpacity>
                 </Form>
             </Container>
             
@@ -44,6 +88,9 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center"
     },
+    items: {
+        marginTop: 40,
+    },
     signUp: {
         marginTop: 10
     },
@@ -51,7 +98,7 @@ const styles = StyleSheet.create({
         marginTop: 15
     },
     navBtnText: {
-        fontSize: 20,
+        fontSize: 14,
         color: "#6646ee"
     },
     errorMessage: {

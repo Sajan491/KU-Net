@@ -7,6 +7,9 @@ import Screen from "./components/Screen";
 import { createStackNavigator } from "@react-navigation/stack";
 import {AuthProvider} from "./context/AuthProvider"
 import Providers from "./navigation"
+// import { LogBox } from 'react-native';
+
+// LogBox.ignoreLogs(['Setting a timer']);
 // const Stack = createStackNavigator();
 
 // const MainNavigator=()=>(

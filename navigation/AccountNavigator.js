@@ -2,6 +2,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React from "react"
 import AccountScreen from "../screens/AccountScreen";
 import MessagesScreen from "../screens/MessagesScreen";
+import CredentialsScreen from "../screens/CredentialsScreen";
 
 const Stack = createStackNavigator();
 
@@ -11,6 +12,7 @@ const AccountNavigator=()=>(
                 headerLeft:null,
                 
             }}/>
+        <Stack.Screen name="Credentials" component={CredentialsScreen}/>
         <Stack.Screen name="Messages" component={MessagesScreen}/>
     </Stack.Navigator>
 )
