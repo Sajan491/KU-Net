@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
             try {
               await firebase.auth().signInWithEmailAndPassword(email, password).then((res) => {
                 console.log(res);
-                {res.additionalUserInfo.isNewUser ? setIsANewUser(true) : null}
+                setIsANewUser(false);
                 console.log("User logged in successfully!");
               })
             } catch (e) {
