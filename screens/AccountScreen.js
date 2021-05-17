@@ -6,7 +6,7 @@ import ListItem from '../components/ListItem';
 import ItemSeperator from '../components/ItemSeperator';
 import MyIcon from "../components/MyIcon";
 import {AuthContext} from "../context/AuthProvider"
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+
 
 const menuItems = [
     {
