@@ -66,7 +66,7 @@ const LoginScreen = ({navigation}) => {
                         onChangeText={(password) => setConfirmPassword(password)}
                         />
                     </Item>
-                    { error && <Text style={styles.errorMessage}> {error} </Text> }
+                    { error ? <Text style={styles.errorMessage}> {error} </Text> : null}
                     </View>
                     <View style={styles.signUp}>
                         <Button title="Sign Up" onPress={() => handleSubmitRegister()}  />    

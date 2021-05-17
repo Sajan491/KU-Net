@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#cccccc',
       },
     label: {
-        fontSize: 14,
+        fontSize: 13,
         paddingTop: 10,
         paddingLeft: 8
     }
