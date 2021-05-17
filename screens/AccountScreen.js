@@ -67,7 +67,7 @@ const AccountScreen = ({navigation}) => {
                 refreshControl = {
                     <RefreshControl
                     progressBackgroundColor= {colors.primary}
-                    tintColor={colors.secondary}
+                    tintColor={colors.light}
                     refreshing={loading}
                     onRefresh={loadMore}
                   />
