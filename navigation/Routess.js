@@ -11,7 +11,7 @@ import TestNavigator from './TestNavigator';
 
 const Routes = () => {
     const {user, setUser, isANewUser} = useContext(AuthContext);
-    console.log(isANewUser);
+    console.log("New user?", isANewUser);
     const [loading, setLoading] = useState(true);
     const [initializing, setInitialize] = useState(true);
 

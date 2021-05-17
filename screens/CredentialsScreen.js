@@ -8,7 +8,7 @@ import ProfileImagePicker from '../components/ProfileImagePicker';
 import DepartmentPicker from '../components/DepartmentPicker';
 import AppText from '../components/AppText';
 import firebase from "../config/firebase";
-import { AuthContext } from '../context/AuthProvider';
+import {Label} from "native-base";
 
 const validationSecondRegisterScreen = Yup.object().shape({
     username: Yup.string().min(1).label("Username"),
@@ -29,15 +29,14 @@ const SecondRegisterScreen = ({navigation}) => {
     const userID = firebase.auth().currentUser.uid;
 
     useEffect(() => {
-        getData();
-        
-        // setuserName(vars)
 
-    }, [])
+        getData();
+
+    }, [getData])
+
     const handleSubmit=(values)=>{
         console.log(values.username);
-        try {
-            
+        try {            
             console.log(userID);
             usersCollection.doc(userID).update(values)
 
@@ -46,10 +45,8 @@ const SecondRegisterScreen = ({navigation}) => {
                 displayName: values.username
             })
         } catch (error) {
-            console.log(error)
+            console.log("Error updating values in the database",error)
         }
-
-
         navigation.navigate("Account")      
     }
 
@@ -65,7 +62,7 @@ const SecondRegisterScreen = ({navigation}) => {
               setAge(doc.data()['age'])
               setBatch(doc.data()['batch'])
             }).catch ((err) => {
-                console.log(err);
+                console.log("Error receiving data from the database", err);
             })
     }
 
@@ -79,24 +76,32 @@ const SecondRegisterScreen = ({navigation}) => {
                 onSubmit={handleSubmit}
                 validationSchema={validationSecondRegisterScreen}
             >
+                <Label style = {styles.label}> Username</Label>
                 <AppFormField 
                     maxLength = {255}
                     defaultValue = {userName}
                     name="username"
                 />
+
+                <Label style = {styles.label}>Age</Label>
                 <AppFormField 
                     keyboardType="numeric"
                     maxLength = {2}
                     defaultValue = {age}
                     name="age"
                 />
+
+                <Label style = {styles.label}>Image</Label>
                 <ProfileImagePicker name='image' />
                 
+                <Label style = {styles.label}>Department</Label>
                 <DepartmentPicker
                     name="department"
                     defaultValue = {department}
                     numberOfColumns={1}
                 />
+
+                <Label style = {styles.label}> Bio </Label>
                 <AppFormField 
                     maxLength = {255}
                     placeholder='Short Bio'
@@ -104,6 +109,8 @@ const SecondRegisterScreen = ({navigation}) => {
                     multiline
                     numberOfLines={4}
                 />
+
+                <Label style = {styles.label}> Batch</Label>
                 <AppFormField 
                     keyboardType="numeric"
                     maxLength = {4}
@@ -138,4 +145,9 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#cccccc',
       },
+    label: {
+        fontSize: 14,
+        paddingTop: 10,
+        paddingLeft: 8
+    }
 })
