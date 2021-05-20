@@ -83,7 +83,7 @@ const SecondRegisterScreen = ({navigation}) => {
                         console.log("Updated batch");
                     }
 
-                    if(values.department !== "") {
+                    if(values.department !== null) {
                         usersCollection.doc(userID).update({
                             department: values.department.label
                         })
