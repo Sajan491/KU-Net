@@ -28,7 +28,14 @@ const SecondRegisterScreen = ({navigation}) => {
         try {
             const userID = firebase.auth().currentUser.uid;
             console.log(userID);
-            usersCollection.doc(userID).set(values)
+            usersCollection.doc(userID).set({
+                username: values.username,
+                age: values.age,
+                department: values.department.label,
+                bio: values.bio,
+                batch: values.batch
+
+            })
 
             firebase.auth().currentUser.updateProfile({
                 displayName: values.username
