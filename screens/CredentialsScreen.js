@@ -11,7 +11,7 @@ import firebase from "../config/firebase";
 import {Label} from "native-base";
 
 const validationSecondRegisterScreen = Yup.object().shape({
-    username: Yup.string().min(1).label("Username"),
+    username: Yup.string().min(1).nullable().label("Username"),
     age: Yup.string().min(1).max(2).label("Age"),
     department: Yup.object().nullable().label("Department"),
     bio: Yup.string().min(1).label("Bio"),
@@ -24,26 +24,74 @@ const usersCollection = firebase.firestore().collection("users_extended")
 const SecondRegisterScreen = ({navigation}) => {
     const [userName, setUserName] = useState("");
     const [department, setDepartment] = useState("");
+    const [bio, setBio] = useState("")
     const [age, setAge] = useState(null);
     const [batch, setBatch] = useState(null);
     const userID = firebase.auth().currentUser.uid;
 
     useEffect(() => {
-
         getData();
+    }, [])
 
-    }, [getData])
+    const getData =  () => {
+        usersCollection.doc(userID).get()
+        .then((doc) => { 
+            console.log("Data from the colelction: ", doc.data());
+              setUserName(doc.data()['username'])
+              const dept = doc.data()['department']
+              console.log("Department: ", dept);
+              setDepartment(dept)
+              setAge(doc.data()['age'])
+              setBio(doc.data()['bio'])
+              setBatch(doc.data()['batch'])
+            }).catch ((err) => {
+                console.log("Error receiving data from the database", err);
+            })
+    }
 
     const handleSubmit=(values)=>{
-        console.log(values.username);
+        console.log(userName);
         try {            
-            console.log(userID);
-            usersCollection.doc(userID).update(values)
+            console.log("User ID: ", userID);
+            usersCollection.doc(userID).get()
+                .then( () => {
+                    if(values.username !== "") {
+                        usersCollection.doc(userID).update({
+                            username: values.username
+                        })
+                        console.log("Updated username");
+                        firebase.auth().currentUser.updateProfile({
+                            displayName: values.username
+                        })
+                    }
+                    if(values.age !== "") {
+                        usersCollection.doc(userID).update({
+                            age: values.age
+                        })
+                        console.log("Updated age!")
+                    }
+                    if(values.bio !== "") {
+                        usersCollection.doc(userID).update({
+                            bio: values.bio
+                        })
+                        console.log("Updated bio!");
+                    }
+                    if(values.batch !== "") {
+                        usersCollection.doc(userID).update({
+                            batch: values.batch
+                        })
+                        console.log("Updated batch");
+                    }
 
-
-            firebase.auth().currentUser.updateProfile({
-                displayName: values.username
-            })
+                    if(values.department !== null) {
+                        usersCollection.doc(userID).update({
+                            department: values.department.label
+                        })
+                        console.log(("Department updated!"));
+                    }
+                    
+                    
+                })          
         } catch (error) {
             console.log("Error updating values in the database",error)
         }
@@ -51,28 +99,13 @@ const SecondRegisterScreen = ({navigation}) => {
     }
 
 
-    const getData =  () => {
-        usersCollection.doc(userID).get()
-        .then((doc) => { 
-            console.log(doc.data());
-              setUserName(doc.data()['username'])
-            //   const dept = doc.data()['department']
-            //   console.log(dept);
-            //   setDepartment(dept)
-              setAge(doc.data()['age'])
-              setBatch(doc.data()['batch'])
-            }).catch ((err) => {
-                console.log("Error receiving data from the database", err);
-            })
-    }
-
     return (
         <Screen style={styles.container}>
             <ScrollView>
             <AppText style={styles.header}>Profile Details</AppText>
 
             <AppForm
-                initialValues={{username:'', age:'18',  department:null, bio:'', batch:''}}
+                initialValues={{username: "", age:'',  department:null, bio:'', batch:''}}
                 onSubmit={handleSubmit}
                 validationSchema={validationSecondRegisterScreen}
             >
@@ -90,21 +123,20 @@ const SecondRegisterScreen = ({navigation}) => {
                     defaultValue = {age}
                     name="age"
                 />
-
-                <Label style = {styles.label}>Image</Label>
-                <ProfileImagePicker name='image' />
                 
                 <Label style = {styles.label}>Department</Label>
                 <DepartmentPicker
                     name="department"
                     defaultValue = {department}
                     numberOfColumns={1}
+                    placeholder= {department}
                 />
 
                 <Label style = {styles.label}> Bio </Label>
                 <AppFormField 
                     maxLength = {255}
                     placeholder='Short Bio'
+                    defaultValue = {bio}
                     name="bio"
                     multiline
                     numberOfLines={4}
