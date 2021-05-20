@@ -28,20 +28,14 @@ const SecondRegisterScreen = ({navigation}) => {
         try {
             const userID = firebase.auth().currentUser.uid;
             console.log(userID);
-            usersCollection.doc(userID).set({
-                username: values.username,
-                age: values.age,
-                department: values.department.label,
-                bio: values.bio,
-                batch: values.batch
-
+            usersCollection.doc(userID).set({ ...values, department: values.department.label
             })
 
             firebase.auth().currentUser.updateProfile({
                 displayName: values.username
             })
         } catch (error) {
-            console.log(error)
+            console.log("Error adding values to the database: ", error)
         }
 
         navigation.navigate("App")      

@@ -123,9 +123,6 @@ const SecondRegisterScreen = ({navigation}) => {
                     defaultValue = {age}
                     name="age"
                 />
-
-                <Label style = {styles.label}>Image</Label>
-                <ProfileImagePicker name='image' />
                 
                 <Label style = {styles.label}>Department</Label>
                 <DepartmentPicker

@@ -49,7 +49,7 @@ const AccountScreen = ({navigation}) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-    }, [user.displayName])
+    }, [user])
 
     
 
