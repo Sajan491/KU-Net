@@ -4,7 +4,6 @@ import { StyleSheet, Text, ScrollView } from 'react-native'
 import * as Yup from 'yup';
 import { AppForm, AppFormField, SubmitButton } from '../components/form'
 import Screen from '../components/Screen'
-import ProfileImagePicker from '../components/ProfileImagePicker';
 import DepartmentPicker from '../components/DepartmentPicker';
 import AppText from '../components/AppText';
 import firebase from "../config/firebase";
@@ -20,21 +19,21 @@ const validationSecondRegisterScreen = Yup.object().shape({
 const usersCollection = firebase.firestore().collection("users_extended")
 
 
-
-const SecondRegisterScreen = ({navigation}) => {
+const ProfileSettings = ({navigation}) => {
     const [userName, setUserName] = useState("");
     const [department, setDepartment] = useState("");
     const [bio, setBio] = useState("")
     const [age, setAge] = useState(null);
     const [batch, setBatch] = useState(null);
     const userID = firebase.auth().currentUser.uid;
+    const db = usersCollection.doc(userID)
 
     useEffect(() => {
         getData();
     }, [])
 
     const getData =  () => {
-        usersCollection.doc(userID).get()
+        db.get()
         .then((doc) => { 
             console.log("Data from the colelction: ", doc.data());
               setUserName(doc.data()['username'])
@@ -53,10 +52,10 @@ const SecondRegisterScreen = ({navigation}) => {
         console.log(userName);
         try {            
             console.log("User ID: ", userID);
-            usersCollection.doc(userID).get()
+            db.get()
                 .then( () => {
                     if(values.username !== "") {
-                        usersCollection.doc(userID).update({
+                        db.update({
                             username: values.username
                         })
                         console.log("Updated username");
@@ -65,26 +64,26 @@ const SecondRegisterScreen = ({navigation}) => {
                         })
                     }
                     if(values.age !== "") {
-                        usersCollection.doc(userID).update({
+                        db.update({
                             age: values.age
                         })
                         console.log("Updated age!")
                     }
                     if(values.bio !== "") {
-                        usersCollection.doc(userID).update({
+                        db.update({
                             bio: values.bio
                         })
                         console.log("Updated bio!");
                     }
                     if(values.batch !== "") {
-                        usersCollection.doc(userID).update({
+                        db.update({
                             batch: values.batch
                         })
                         console.log("Updated batch");
                     }
 
                     if(values.department !== null) {
-                        usersCollection.doc(userID).update({
+                        db.update({
                             department: values.department.label
                         })
                         console.log(("Department updated!"));
@@ -95,7 +94,7 @@ const SecondRegisterScreen = ({navigation}) => {
         } catch (error) {
             console.log("Error updating values in the database",error)
         }
-        navigation.navigate("Account")      
+        navigation.navigate("Settings")      
     }
 
 
@@ -160,7 +159,7 @@ const SecondRegisterScreen = ({navigation}) => {
     )
 }
 
-export default SecondRegisterScreen
+export default ProfileSettings
 
 const styles = StyleSheet.create({
     header:{

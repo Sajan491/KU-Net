@@ -26,13 +26,12 @@ const menuItems = [
         targetScreen:"Messages"
     },
     {
-        title: "Add Credentials",
+        title: "Settings",
         icon: {
-            name: "plus",
+            name: "account-settings",
             backgroundColor: colors.secondary
-
         },
-        targetScreen: "Credentials"
+        targetScreen: "Settings"
     }
 ]
 
