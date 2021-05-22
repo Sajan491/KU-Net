@@ -10,7 +10,7 @@ const settingsItems = [
         title: "Account",
         icon: {
             name: "account",
-            color: colors.primary
+            color: colors.secondary
         },
         targetScreen: "AccountSettings"
     },
@@ -19,7 +19,7 @@ const settingsItems = [
         title: "Profile",
         icon: {
             name: "face-profile",
-            color: colors.primary
+            color: colors.secondary
         },
         targetScreen: "ProfileSettings"
     }

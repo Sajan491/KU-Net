@@ -13,7 +13,7 @@ const menuItems = [
         title:"My Posts",
         icon:{
             name:'format-list-bulleted',
-            backgroundColor: colors.primary
+            backgroundColor: colors.secondary
         },
         targetScreen:"Messages"
     },
@@ -74,7 +74,7 @@ const AccountScreen = ({navigation}) => {
             >
                 <View style={styles.container}>
                     <ListItem 
-                        title= {user.displayName ? user.displayName : "Update name in credentials!"}
+                        title= {user.displayName ? user.displayName : "Update name in Settings!"}
                         subTitle= {user.email}
                         image={require('../assets/sajan.png')}
                     />
@@ -99,7 +99,7 @@ const AccountScreen = ({navigation}) => {
                     <ListItem 
                         title="Log Out"
                         IconComponent={
-                            <MyIcon name='logout' backgroundColor='#ffe66d'/>
+                            <MyIcon name='logout' backgroundColor= {colors.primary} />
                         }
                         onPress={()=>signOut()}
                     />
