@@ -12,7 +12,10 @@ const settingsItems = [
             name: "account",
             color: colors.secondary
         },
-        targetScreen: "AccountSettings"
+        targetScreen: "AccountSettings",
+        routes: {
+            name: "Account Settings"
+        }
     },
 
     {
@@ -21,8 +24,11 @@ const settingsItems = [
             name: "face-profile",
             color: colors.secondary
         },
-        targetScreen: "ProfileSettings"
-    }
+        targetScreen: "ProfileSettings",
+        routes: {
+            name: "Profile Settings"
+        }
+        }
 ]
 
 const SettingsScreen = ({navigation}) => {
@@ -38,7 +44,7 @@ const SettingsScreen = ({navigation}) => {
                     IconComponent = {
                         <MyIcon name = {item.icon.name} backgroundColor = {item.icon.color} />
                     }
-                    onPress = {() => navigation.navigate(item.targetScreen)}
+                    onPress = {() => navigation.push(item.targetScreen, item.routes)}
                 />
             )}
           />
