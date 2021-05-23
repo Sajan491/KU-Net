@@ -1,20 +1,48 @@
 import React from 'react'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import colors from '../config/colors'
 import AppText from './AppText'
+import {MaterialCommunityIcons} from '@expo/vector-icons'
 
-const Card = ({title, subTitle, image, onPress}) => {
+const Card = ({
+    postTitle, 
+    content,
+    postImg,
+    username,
+    userImg,
+    postTime,
+    liked,
+    likesCount,
+    commentsCount, onPress}) => {
     return (
-        <TouchableWithoutFeedback onPress={onPress}>
-            <View style={styles.card}>
-                <Image style={styles.image} source={image} />
-                <View style={styles.detailsContainer}>
-                    <AppText style={styles.title}>{title}</AppText>
-                    <AppText style={styles.subTitle}>{subTitle}</AppText>
+        <View style={styles.card}> 
+            <View style={styles.userInfo}>
+                <Image style={styles.userImage} source={userImg} />
+                <View style={styles.userInfoText}>
+                    <Text style={styles.username}>{username}</Text>
+                    <Text style={styles.time}>{postTime}</Text>
                 </View>
             </View>
-        </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={onPress}>
+                <View>
+                    <Text style={styles.title}>{postTitle}</Text>
+                    <Image style={styles.image} source={postImg} />
+                </View>
+            </TouchableWithoutFeedback>
+                <View style={styles.interactionWrapper}>
+                    <TouchableOpacity style={styles.interaction}>
+                        {liked?<MaterialCommunityIcons size={25} name="heart-multiple" color='red'/>:<MaterialCommunityIcons size={25} name="heart-outline" />}
+                        {liked?<Text style={styles.interationText}>Liked</Text>: <Text style={styles.interationText}>Like</Text>}
+                    </TouchableOpacity>
+                        
+                    <TouchableOpacity style={styles.interaction}>
+                        <MaterialCommunityIcons size={25} name="comment-outline" />
+                        <Text style={styles.interationText}>Comments</Text>
+                    </TouchableOpacity>
+                </View>
+            
+        </View>
     )
 }
 
@@ -27,20 +55,59 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         overflow:'hidden'
     },
-    detailsContainer:{
-        padding:20
+    interactionWrapper:{
+        flexDirection:'row',
+        justifyContent:'space-around',
+        padding:15
+    },
+    interaction:{
+        flexDirection:'row',
+        justifyContent:'center',
+        borderRadius:5,
+        
+    },
+    interationText:{
+        fontSize:13,
+        fontWeight:'bold',
+        color:'#333',
+        marginTop:5,
+        marginLeft:5
     },
     image:{
-        marginTop:20,
+        marginTop:14,
         width:"100%",
-        height:200
+        height:210
     },
-    subTitle:{
+    content:{
         color:colors.secondary,
         fontWeight:'bold',
         fontSize:14
     },
+    time:{
+        fontSize:12,
+        color:'#666'
+    },
     title:{
-        marginBottom:3,
+        paddingLeft:15
+    },
+    userImage:{
+        width:46,
+        height:46,
+        borderRadius:23
+    },  
+    
+    userInfo:{
+        flexDirection:"row",
+        justifyContent:'flex-start',
+        padding:14
+    },
+    username:{
+        fontSize:14,
+        fontWeight: "bold"
+    },
+    userInfoText:{
+        flexDirection:'column',
+        justifyContent:'center',
+        marginLeft:10
     }
 })

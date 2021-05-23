@@ -115,6 +115,9 @@ const AddPostScreen = () => {
         else{
             values.userid = userId;
             values.username = userName;
+            values.likesCount = 0;
+            values.comments={};
+            values.postTime = firebase.firestore.Timestamp.fromDate(new Date())
             
             if(values.page['label'] === 'My Department') {
                 values.page = deptName;
