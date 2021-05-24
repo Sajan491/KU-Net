@@ -4,8 +4,8 @@ import Card from '../components/Card';
 import colors from "../config/colors";
 import Screen from '../components/Screen'
 import {AuthContext} from "../context/AuthProvider";
-
-import firebase from '../config/firebase'
+import NotifButton from '../navigation/NotifButton';
+import Constants from 'expo-constants'
 
 const posts=[
     {   
@@ -25,9 +25,9 @@ const posts=[
         username: 'Sabin Thapa',
         userImg:require("../assets/sajan.png"),
         postTime: '4 hours ago',
-        postTitle:"A glimpse of Django workshop!",
+        postTitle:"Hello! hau u?",
         content:"subtitle1",
-        postImg:require("../assets/django.jpg"),
+        
         liked:false,
         likes:'2',
         comments: '1'
@@ -40,7 +40,7 @@ const posts=[
         postTitle:"Aalu lelo!",
         content:"subtitle1",
         postImg:require("../assets/aalu.jpg"),
-        liked:true,
+        liked:false,
         likes:'8',
         comments: '100'
     },
@@ -85,6 +85,11 @@ const HomeScreen = ({navigation}) => {
     const {user} = useContext(AuthContext)
     return (
             <View style={styles.container}>
+                <View  style={styles.header} >
+                    <Text style={styles.headerText}>Home</Text>
+                    <NotifButton style={styles.notifButton} onPress={()=>navigation.navigate("Notifications")}/>
+                </View>
+               
                 <FlatList 
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
@@ -102,6 +107,7 @@ const HomeScreen = ({navigation}) => {
                             likesCount={item.likes}
                             commentsCount={item.comments}
                             onPress={()=>navigation.navigate('PostDetails', item)}
+                            onPressComment={()=> navigation.navigate('Comments', item)}
                         />
                     )}
 
@@ -115,11 +121,28 @@ export default HomeScreen
 const styles = StyleSheet.create({
     container:{
         backgroundColor:colors.light,
-        padding:20,
+        paddingHorizontal:17,
+        paddingTop:20,
         flex:1,
-        
+        marginTop:-10
     },
     text: {
         textAlign: 'center'
+    },
+    header:{
+        paddingTop: Constants.statusBarHeight,
+        flexDirection:'row',
+        paddingLeft:10,
+        paddingBottom:13,
+        justifyContent:'space-between',
+    }
+    ,
+    headerText:{
+        color: 'tomato',
+        fontWeight:'bold',
+        fontSize:19
+    },
+    notifButton:{
+        
     }
 })

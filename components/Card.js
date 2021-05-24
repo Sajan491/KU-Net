@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState} from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import colors from '../config/colors'
@@ -14,7 +14,9 @@ const Card = ({
     postTime,
     liked,
     likesCount,
-    commentsCount, onPress}) => {
+    commentsCount, onPress, onPressComment}) => {
+
+        const [isLiked, setIsLiked] = useState(liked)
     return (
         <View style={styles.card}> 
             <View style={styles.userInfo}>
@@ -27,16 +29,16 @@ const Card = ({
             <TouchableWithoutFeedback onPress={onPress}>
                 <View>
                     <Text style={styles.title}>{postTitle}</Text>
-                    <Image style={styles.image} source={postImg} />
+                    {postImg? <Image style={styles.image} source={postImg} />: <View style={styles.borderline}></View>}
                 </View>
             </TouchableWithoutFeedback>
                 <View style={styles.interactionWrapper}>
-                    <TouchableOpacity style={styles.interaction}>
-                        {liked?<MaterialCommunityIcons size={25} name="heart-multiple" color='red'/>:<MaterialCommunityIcons size={25} name="heart-outline" />}
-                        {liked?<Text style={styles.interationText}>Liked</Text>: <Text style={styles.interationText}>Like</Text>}
+                    <TouchableOpacity style={styles.interaction} onPress={()=>setIsLiked(!isLiked)}>
+                        {isLiked?<MaterialCommunityIcons size={25} name="heart-multiple" color='red'/>:<MaterialCommunityIcons size={25} name="heart-outline" color="black" />}
+                        {isLiked?<Text style={styles.interationText}>Liked</Text>: <Text style={styles.interationText}>Like</Text>}
                     </TouchableOpacity>
                         
-                    <TouchableOpacity style={styles.interaction}>
+                    <TouchableOpacity style={styles.interaction}  onPress={()=>onPressComment()}>
                         <MaterialCommunityIcons size={25} name="comment-outline" />
                         <Text style={styles.interationText}>Comments</Text>
                     </TouchableOpacity>
@@ -49,6 +51,13 @@ const Card = ({
 export default Card
 
 const styles = StyleSheet.create({
+    borderline:{
+        borderBottomColor: '#dddddd',
+        borderBottomWidth: 1,
+        width: '92%',
+        marginTop:15,
+        alignSelf:'center'
+    },  
     card:{
         borderRadius:15,
         backgroundColor: colors.white,
