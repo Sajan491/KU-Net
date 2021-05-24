@@ -9,7 +9,7 @@ import {MaterialCommunityIcons} from '@expo/vector-icons'
 const Card = ({
     postTitle, 
     content,
-    postImg,
+    postImgs,
     username,
     userImg,
     postTime,
@@ -60,18 +60,23 @@ const Card = ({
                     
                 </View>
 
-                    {postImg? <Image style={styles.image} source={postImg} />: <View style={styles.borderline}></View>}
+                    {
+                        postImgs.map(function(postImg){
+                            return  <Image key={postImg.id} style={styles.image} source={postImg.source} />
+                        })
+                    }
+                   
                 
             
                 <View style={styles.interactionWrapper}>
                     <TouchableOpacity style={styles.interaction} onPress={()=>setIsLiked(!isLiked)}>
-                        {isLiked?<MaterialCommunityIcons size={25} name="heart-multiple" color='red'/>:<MaterialCommunityIcons size={25} name="heart-outline" color="black" />}
-                        {isLiked?<Text style={styles.interationText}>Liked</Text>: <Text style={styles.interationText}>Like</Text>}
+                        {isLiked?<MaterialCommunityIcons size={25} name="heart-multiple" color='tomato'/>:<MaterialCommunityIcons size={25} name="heart-outline" color="black" />}
+                        {isLiked?<Text style={styles.interationText}> {likesCount + 1} Likes</Text>: <Text style={styles.interationText}>{likesCount} Likes</Text>}
                     </TouchableOpacity>
                         
                     <TouchableOpacity style={styles.interaction}  onPress={()=>onPressComment()}>
                         <MaterialCommunityIcons size={25} name="comment-outline" />
-                        <Text style={styles.interationText}>Comment</Text>
+                        <Text style={styles.interationText}>Comments ({commentsCount})</Text>
                     </TouchableOpacity>
                 </View>
             

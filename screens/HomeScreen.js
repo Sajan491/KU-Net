@@ -16,10 +16,15 @@ const posts=[
         postTitle:"Hiring a full stack ReactJs developer!",
         content:"We are looking for a great JavaScript developer who is proficient with React.js. Your primary focus will be on developing user interface components and implementing them following well-known React.js workflows (such as Flux or Redux). You will coordinate with the rest of the team working on different layers of the infrastructure. Therefore, a commitment to collaborative problem solving, sophisticated design, and quality product is important. Please leave a comment if you are interested!",
 
-        postImg:require("../assets/react.png"),
+        postImgs:[
+            {source: require("../assets/react.png"), id:1}, 
+            {source: require("../assets/react.png"), id:2}, 
+            {source: require("../assets/react.png"), id:3}, 
+            {source: require("../assets/react.png"), id:4}, 
+             ],
         liked:true,
-        likes:'22',
-        comments: '4'
+        likes:22,
+        comments: 4
     },
     {
         id:2,
@@ -28,10 +33,10 @@ const posts=[
         postTime: '4 hours ago',
         postTitle:"Hello! hau u?",
         content:"subtitle1",
-        
+        postImgs:[],
         liked:false,
-        likes:'2',
-        comments: '1'
+        likes:2,
+        comments: 1
     },
     {
         id:3,
@@ -40,10 +45,15 @@ const posts=[
         postTime: '34 days ago',
         postTitle:"Aalu lelo!",
         content:"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"
-        ,postImg:require("../assets/aalu.jpg"),
+        ,postImgs:[
+            {source: require("../assets/aalu.jpg"), id:1}, 
+            {source: require("../assets/react.png"), id:2}, 
+            {source: require("../assets/react.png"), id:3}, 
+            
+        ],
         liked:false,
-        likes:'8',
-        comments: '100'
+        likes:8,
+        comments: 100
     },
     {
         id:4,
@@ -52,10 +62,25 @@ const posts=[
         postTime: '1 day ago',
         postTitle:"Join AISEC. I beg you!",
         content:"subtitle1",
-        postImg:require("../assets/aisec.png"),
+        postImgs:[{source: require("../assets/aisec.png"), id:1}],
         liked:true,
-        likes:'1',
-        comments: '0'
+        likes:1,
+        comments: 0
+    },
+    {
+        id:5,
+        username: 'Hero Keto',
+        userImg:require("../assets/sajan.png"),
+        postTime: '14 days ago',
+        postTitle:"Please Like!",
+        content:"subtitle1",
+        postImgs:[
+            {source: require("../assets/aisec.png"), id:1}, 
+            {source: require("../assets/react.png"), id:2}, 
+        ],
+        liked:true,
+        likes:5,
+        comments: 0
     }
     
     
@@ -105,7 +130,7 @@ const HomeScreen = ({navigation}) => {
                         <Card
                             postTitle={item.postTitle}
                             content={item.content}
-                            postImg={item.postImg}
+                            postImgs={item.postImgs}
                             username={item.username}
                             userImg={item.userImg}
                             postTime= {item.postTime}
