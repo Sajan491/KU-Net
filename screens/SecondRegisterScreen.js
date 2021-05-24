@@ -17,6 +17,7 @@ const validationSecondRegisterScreen = Yup.object().shape({
     bio: Yup.string().min(1).label("Bio"),
     batch:  Yup.string().required().min(4).label("Batch")
 });
+
 const usersCollection = firebase.firestore().collection("users_extended")
 
 
@@ -38,7 +39,7 @@ const SecondRegisterScreen = ({navigation}) => {
             console.log("Error adding values to the database: ", error)
         }
 
-        navigation.navigate("App")      
+        navigation.navigate("Drawer")      
     }
 
     return (

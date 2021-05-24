@@ -1,20 +1,38 @@
 import React, {useState, useContext, useEffect} from 'react';
-import { View, Button, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import {Text, StyleSheet, TouchableOpacity } from 'react-native';
 import {AuthContext} from "../context/AuthProvider";
+import {Container} from "native-base"
+import colors from '../config/colors';
+import {AppForm, AppFormField, SubmitButton} from "../components/form";
+import AppText from "../components/AppText";
+import * as Yup from "yup";
 
-import {Container, Input, Form, Item, Label} from "native-base"
+const loginValidationSchema = Yup.object().shape({
+    email: Yup
+     .string()
+     .email()
+     .required()
+     .label("Email"),
+    password: Yup
+     .string()
+     .required()
+     .label("Password"),
+})
 
 const LoginScreen = ({navigation}) => {
     const {signIn, error, setError} = useContext(AuthContext)
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-  
+
     const pressHandlerRegister = () => {
         navigation.navigate("Register")
     }
     
-    const pressHandlerHome = () => {
-        navigation.navigate("After")
+    const pressHandlerLogin = async (values) => {
+        try{
+            await signIn(values.email, values.password);
+        }catch(err){
+            setError("Login Failed");
+            console.log(err);
+        }
     }
 
     useEffect(() => {
@@ -24,27 +42,30 @@ const LoginScreen = ({navigation}) => {
     return (
         <>
             <Container style={styles.container}>
-                <Form>
-                    <Item floatingLabel>
-                        <Label> Email</Label>
-                        <Input 
-                            autoCapitalize="none" 
-                            autoCorrect={false} 
-                            keyBoardType = "email-address"
-                            value={email} 
-                            onChangeText={(email) => setEmail(email)}/>
-                    </Item>
-                    <Item floatingLabel>
-                        <Label> Password</Label>
-                        <Input secureTextEntry={true} autoCapitalize="none" autoCorrect={false} value={password} onChangeText={(password) => setPassword(password)}/>
-                    </Item>
+                <AppText style = {styles.headerText}> Login </AppText>
+                <AppForm 
+                    initialValues = {{email: "", password: "",}}
+                    onSubmit = {pressHandlerLogin}
+                    validationSchema = {loginValidationSchema}
+                >
+                    <AppFormField 
+                        name = "email"
+                        placeholder = "Email"
+                        keyboardType = "email"
+                        maxLength = {255}
+                    />
+                    <AppFormField 
+                        name = "password"
+                        placeholder = "Password"
+                        keyboardType = "password"
+                        secureTextEntry = {true}
+                    />
+
+                    <SubmitButton title = "Login" />
                     {
                         error ? <Text style={styles.errorMessage}> {error} </Text> : null
                     }
-                    <View style={styles.loginBtn}>
-                        <Button title="Login" onPress={() => signIn(email, password)}  />  
-                    </View>
-                </Form>
+                </AppForm>
        
             <TouchableOpacity style={styles.navBtn} onPress={pressHandlerRegister}> 
                 <Text style={styles.navBtnText}> New user? Join here.</Text>
@@ -60,7 +81,11 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 10,
         justifyContent: "center",
-        // alignItems: "center"
+    },
+    headerText: {
+        textAlign: "center",
+        marginVertical: 30,
+        fontWeight: "bold"
     },
     loginBtn: {
         marginTop: 10
@@ -71,12 +96,13 @@ const styles = StyleSheet.create({
     },
     navBtnText: {
         fontSize: 14,
-        color: "#6646ee",
+        color: colors.secondary
     
     },
     errorMessage: {
         color: "red",
         marginTop: 10,
+        textAlign: "center"
     }
 })
 export default LoginScreen
