@@ -1,13 +1,12 @@
 import React from 'react';
 import { View , Text, Button,StyleSheet} from 'react-native';
+import Screen from "../../components/Screen";
 const AboutScreen = ({navigation}) => {
     return (
-        <View>
+        <Screen>
             <Text> About Screen</Text>
-            <View style={styles.btn}>
-            <Button title="Back" onPress={() => navigation.navigate("HomeScreenStack")}/>
-            </View>
-        </View>
+    
+            </Screen>
     )
 }
 

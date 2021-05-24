@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect, useCallback} from 'react'
-import { FlatList, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { FlatList, RefreshControl, ScrollView, StyleSheet, View } from 'react-native'
 import colors from "../config/colors";
 import Screen from "../components/Screen";
 import ListItem from '../components/ListItem';
