@@ -17,10 +17,10 @@ const posts=[
         content:"We are looking for a great JavaScript developer who is proficient with React.js. Your primary focus will be on developing user interface components and implementing them following well-known React.js workflows (such as Flux or Redux). You will coordinate with the rest of the team working on different layers of the infrastructure. Therefore, a commitment to collaborative problem solving, sophisticated design, and quality product is important. Please leave a comment if you are interested!",
 
         postImgs:[
-            {source: require("../assets/react.png"), id:1}, 
-            {source: require("../assets/react.png"), id:2}, 
-            {source: require("../assets/react.png"), id:3}, 
-            {source: require("../assets/react.png"), id:4}, 
+            require("../assets/react.png"),
+            require("../assets/react.png"),
+            require("../assets/react.png"),
+            require("../assets/react.png")
              ],
         liked:true,
         likes:22,
@@ -46,9 +46,9 @@ const posts=[
         postTitle:"Aalu lelo!",
         content:"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"
         ,postImgs:[
-            {source: require("../assets/aalu.jpg"), id:1}, 
-            {source: require("../assets/react.png"), id:2}, 
-            {source: require("../assets/react.png"), id:3}, 
+            require("../assets/aalu.jpg"),
+            require("../assets/react.png"), 
+            require("../assets/react.png") 
             
         ],
         liked:false,
@@ -62,7 +62,7 @@ const posts=[
         postTime: '1 day ago',
         postTitle:"Join AISEC. I beg you!",
         content:"subtitle1",
-        postImgs:[{source: require("../assets/aisec.png"), id:1}],
+        postImgs:[require("../assets/aisec.png")],
         liked:true,
         likes:1,
         comments: 0
@@ -75,8 +75,8 @@ const posts=[
         postTitle:"Please Like!",
         content:"subtitle1",
         postImgs:[
-            {source: require("../assets/aisec.png"), id:1}, 
-            {source: require("../assets/react.png"), id:2}, 
+            require("../assets/aisec.png"), 
+            require("../assets/react.png"),
         ],
         liked:true,
         likes:5,

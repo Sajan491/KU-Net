@@ -1,10 +1,12 @@
 import React,{useState} from 'react'
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import colors from '../config/colors'
 import ReadMore from 'react-native-read-more-text';
 
 import {MaterialCommunityIcons} from '@expo/vector-icons'
+
+const ItemWidth = Dimensions.get('window').width / 2 -20;
 
 const Card = ({
     postTitle, 
@@ -16,6 +18,18 @@ const Card = ({
     liked,
     likesCount,
     commentsCount, onPressComment}) => {
+
+            
+        const computeColumns=()=>{
+            if (postImgs.length == 1){
+                return {numCol:1, imgWidth: "100%", imgHeight:200};
+            }
+            else {
+                return {numCol:2, imgWidth: ItemWidth, imgHeight:100};
+            }
+        }
+
+        const {numCol, imgWidth, imgHeight} = computeColumns()
 
         const renderTruncatedFooter = (handlePress) => {
             return (
@@ -60,11 +74,20 @@ const Card = ({
                     
                 </View>
 
-                    {
-                        postImgs.map(function(postImg){
-                            return  <Image key={postImg.id} style={styles.image} source={postImg.source} />
-                        })
-                    }
+                   <FlatList 
+                        data={postImgs}
+                        numColumns={numCol}
+                        keyExtractor={(index)=>{return index}}
+                        renderItem={({item})=>{
+                            return <Image style={{
+                                marginTop:14,
+                                width:imgWidth,
+                                height:imgHeight,
+                                marginRight:4,
+                                resizeMode: 'cover'
+                            }} source={item} />
+                        }}
+                   />
                    
                 
             
@@ -119,11 +142,7 @@ const styles = StyleSheet.create({
         marginTop:5,
         marginLeft:5
     },
-    image:{
-        marginTop:14,
-        width:"100%",
-        height:210
-    },
+    
     content:{
         color:colors.medium,
         fontSize:14,
