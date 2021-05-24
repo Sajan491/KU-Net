@@ -1,26 +1,39 @@
 import React, {useState, useContext, useEffect} from 'react';
 import { View, Button, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import {AuthContext} from "../context/AuthProvider";
+import {Container} from "native-base"
+import colors from '../config/colors';
+import {AppForm, AppFormField, SubmitButton} from "../components/form";
+import AppText from "../components/AppText"
+import * as Yup from "yup";
 
-import {Container, Input, Form, Item, Label} from "native-base"
+const registerValidationSchema = Yup.object().shape({
+    email: Yup
+    .string()
+    .email("Please enter a valid email!")
+    .required("Email is required!")
+    .label("Email"),
+    password: Yup
+    .string()
+    .required("Password is required!")
+    .label("Password"),
+    confirmPassword: Yup
+    .string()
+    .oneOf([Yup.ref('password')], 'Passwords do not match!')
+    .required("Confirm Password is required!")
+    .label("ConfirmPassword")
+})
 
-const LoginScreen = ({navigation}) => {
+const RegisterScreen = ({navigation}) => {
     const {signUp, error, setError} = useContext(AuthContext)
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    // const { register, errors, watch } = useForm();
 
     const pressHandlerLogin = () => {
         navigation.navigate("Login")
     }
 
-    const  handleSubmitRegister = async () => {
-        if(password !== confirmPassword){
-            return setError("Passwords do not match!")
-        }
+    const  pressHandlerRegister = async (values) => {
         try{
-            await signUp(email, password)
+            await signUp(values.email, values.password)
         } catch (err) {
             setError("Failed to create Account!")
             console.log(err);
@@ -34,47 +47,41 @@ const LoginScreen = ({navigation}) => {
     return (
         <>
             <Container style={styles.container}>
-                <Form>
-                    <View style={styles.items}>
-                    <Item floatingLabel>
-                        <Label> Email</Label>
-                        <Input 
-                            autoCapitalize="none" 
-                            autoCorrect={false} 
-                            keyBoardType = "email-address"
-                            value={email} 
-                            onChangeText={(email) => setEmail(email)}/>
-                    </Item>
-                    <Item floatingLabel style={styles.items}>
-                        <Label> Password</Label>
-                        <Input 
-                        secureTextEntry={true} 
-                        autoCapitalize="none" 
-                        autoCorrect={false} 
-                        value={password} 
-                        onChangeText={(password) => setPassword(password)}
-              
-                          />
-                    </Item>
-                    <Item floatingLabel style={styles.items}>
-                        <Label> Confirm Password</Label>
-                        <Input 
-                        secureTextEntry={true} 
-                        autoCapitalize="none" 
-                        autoCorrect={false} 
-                        value={confirmPassword} 
-                        onChangeText={(password) => setConfirmPassword(password)}
-                        />
-                    </Item>
-                    { error ? <Text style={styles.errorMessage}> {error} </Text> : null}
-                    </View>
-                    <View style={styles.signUp}>
-                        <Button title="Sign Up" onPress={() => handleSubmitRegister()}  />    
-                    </View>
-                    <TouchableOpacity style={styles.navBtn} onPress={pressHandlerLogin}> 
-                <Text style={styles.navBtnText}> Already have an account? Sign In Here.</Text>
-            </TouchableOpacity>
-                </Form>
+                <AppText style = {styles.headerText}> Register </AppText>
+                <AppForm 
+                    initialValues = {{email: "", password: "", confirmPassword: ""}}
+                    onSubmit = {pressHandlerRegister}
+                    validationSchema = {registerValidationSchema}
+                >
+                    <AppFormField 
+                        name = "email"
+                        placeholder = "Email"
+                        keyboardType = "email"
+                        maxLength = {255}
+                    />
+                    <AppFormField 
+                        name = "password"
+                        placeholder = "Password"
+                        keyboardType = "password"
+                        secureTextEntry = {true}
+                    />
+                    <AppFormField 
+                        name = "confirmPassword"
+                        placeholder = "Confirm Password"
+                        keyboardType = "password"
+                        secureTextEntry = {true}
+                    />
+
+                    <SubmitButton title = "Register" />
+                    {
+                        error ? <Text style={styles.errorMessage}> {error} </Text> : null
+                    }
+                </AppForm>
+                
+                <TouchableOpacity style={styles.navBtn} onPress={pressHandlerLogin}> 
+                    <Text style={styles.navBtnText}> Already have an account? Sign In.</Text>
+                </TouchableOpacity>
+
             </Container>
             
         </>
@@ -86,24 +93,25 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 10,
         justifyContent: "center",
-        alignItems: "center"
     },
-    items: {
-        marginTop: 40,
-    },
-    signUp: {
-        marginTop: 10
+    headerText: {
+        textAlign: "center",
+        marginVertical: 30,
+        fontWeight: "bold"
     },
     navBtn: {
-        marginTop: 15
+        marginTop: 15,
+        alignItems: "center",
     },
     navBtnText: {
         fontSize: 14,
-        color: "#6646ee"
+        color: colors.secondary
+    
     },
     errorMessage: {
         color: "red",
         marginTop: 10,
+        textAlign: "center"
     }
 })
-export default LoginScreen
+export default RegisterScreen

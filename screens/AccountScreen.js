@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect, useCallback} from 'react'
-import { FlatList, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { FlatList, RefreshControl, ScrollView, StyleSheet, View } from 'react-native'
 import colors from "../config/colors";
 import Screen from "../components/Screen";
 import ListItem from '../components/ListItem';
@@ -13,7 +13,7 @@ const menuItems = [
         title:"My Posts",
         icon:{
             name:'format-list-bulleted',
-            backgroundColor: colors.primary
+            backgroundColor: colors.secondary
         },
         targetScreen:"Messages"
     },
@@ -26,13 +26,12 @@ const menuItems = [
         targetScreen:"Messages"
     },
     {
-        title: "Add Credentials",
+        title: "Settings",
         icon: {
-            name: "plus",
+            name: "account-settings",
             backgroundColor: colors.secondary
-
         },
-        targetScreen: "Credentials"
+        targetScreen: "Settings"
     }
 ]
 
@@ -49,7 +48,7 @@ const AccountScreen = ({navigation}) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-    }, [user.displayName])
+    }, [user])
 
     
 
@@ -75,7 +74,7 @@ const AccountScreen = ({navigation}) => {
             >
                 <View style={styles.container}>
                     <ListItem 
-                        title= {user.displayName ? user.displayName : "Update name in credentials!"}
+                        title= {user.displayName ? user.displayName : "Update name in Settings!"}
                         subTitle= {user.email}
                         image={require('../assets/sajan.png')}
                     />
@@ -100,7 +99,7 @@ const AccountScreen = ({navigation}) => {
                     <ListItem 
                         title="Log Out"
                         IconComponent={
-                            <MyIcon name='logout' backgroundColor='#ffe66d'/>
+                            <MyIcon name='logout' backgroundColor= {colors.primary} />
                         }
                         onPress={()=>signOut()}
                     />
@@ -118,7 +117,8 @@ const styles = StyleSheet.create({
         marginVertical:15
     }
     ,screen:{
-        backgroundColor:colors.light
+        backgroundColor:colors.light,
+        marginTop: 0
     }
 })
 

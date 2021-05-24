@@ -27,13 +27,12 @@ const styles = StyleSheet.create({
     },
     buttonContainer:{
         paddingTop:20,
-        marginTop: 40,
         width:'80%',
-        bottom:260
+        marginBottom: "40%"
     },
     logoContainer:{
         position:'absolute',
-        top: 70,
+        top: 25,
         alignItems:'center'
     },
     
@@ -43,8 +42,8 @@ const styles = StyleSheet.create({
     },
     title:{
         fontSize:25,
-        marginVertical:35,
-        fontWeight:"bold"
+        fontWeight:"bold",
+        color: colors.light
     },
     button:{
         borderRadius: 25,
