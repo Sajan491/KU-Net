@@ -117,7 +117,8 @@ const styles = StyleSheet.create({
         marginVertical:15
     }
     ,screen:{
-        backgroundColor:colors.light
+        backgroundColor:colors.light,
+        marginTop: 0
     }
 })
 

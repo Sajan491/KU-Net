@@ -10,7 +10,7 @@ const Tab = createBottomTabNavigator();
 
 const AppNavigator=()=>(
     <Tab.Navigator tabBarOptions={{
-        style:{height:65, paddingBottom:5}
+        style:{height:65, paddingBottom:5, paddingTop: 10}
       }}>
         <Tab.Screen 
             name="Feed" 

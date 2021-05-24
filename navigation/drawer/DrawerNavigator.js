@@ -1,10 +1,8 @@
 import React from 'react';
 import {createDrawerNavigator} from "@react-navigation/drawer";
-import SettingsScreen from "../screens/SettingsScreen";
-import AccountScreen from '../screens/AccountScreen';
 import DrawerContent from "./DrawerContent";
-import AboutScreen from '../screens/drawerScreens/AboutScreen';
-import AppNavigator from "../navigation/AppNavigator";
+import AboutScreen from '../../screens/drawerScreens/AboutScreen';
+import AppNavigator from "../AppNavigator";
 
 const Drawer = createDrawerNavigator()
 const DrawerNavigator = () => (
