@@ -2,7 +2,8 @@ import React,{useState} from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import colors from '../config/colors'
-import AppText from './AppText'
+import ReadMore from 'react-native-read-more-text';
+
 import {MaterialCommunityIcons} from '@expo/vector-icons'
 
 const Card = ({
@@ -16,6 +17,22 @@ const Card = ({
     likesCount,
     commentsCount, onPressComment}) => {
 
+        const renderTruncatedFooter = (handlePress) => {
+            return (
+              <Text style={{color: "tomato", marginTop: 3}} onPress={handlePress}>
+                Read more ...
+              </Text>
+            );
+          }
+        
+          const renderRevealedFooter = (handlePress) => {
+            return (
+              <Text style={{color: "tomato", marginTop: 3}} onPress={handlePress}>
+                Show less
+              </Text>
+            );
+          }
+
         const [isLiked, setIsLiked] = useState(liked)
     return (
         <View style={styles.card}> 
@@ -28,12 +45,23 @@ const Card = ({
             </View>
             
                 <View>
-                    <Text style={styles.title}>{postTitle}  ...</Text>
-                    <Text style={styles.content}>
-                        {content}
-                    </Text>
-                    {postImg? <Image style={styles.image} source={postImg} />: <View style={styles.borderline}></View>}
+                    <Text style={styles.title}>{postTitle}</Text>
+                    <View style={styles.contentWrapper}>
+                        <ReadMore
+                            numberOfLines={2}
+                            renderTruncatedFooter={renderTruncatedFooter}
+                            renderRevealedFooter={renderRevealedFooter}
+                            >
+                            <Text style={styles.content}>
+                                {content}
+                            </Text>
+                        </ReadMore>
+                    </View>
+                    
                 </View>
+
+                    {postImg? <Image style={styles.image} source={postImg} />: <View style={styles.borderline}></View>}
+                
             
                 <View style={styles.interactionWrapper}>
                     <TouchableOpacity style={styles.interaction} onPress={()=>setIsLiked(!isLiked)}>
@@ -94,9 +122,12 @@ const styles = StyleSheet.create({
     content:{
         color:colors.medium,
         fontSize:14,
+        
+        textAlign:'justify'
+    },
+    contentWrapper:{
         paddingHorizontal: 12,
         paddingTop:10,
-        textAlign:'justify'
     },
     time:{
         fontSize:12,
