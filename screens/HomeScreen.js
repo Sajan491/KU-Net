@@ -14,7 +14,8 @@ const posts=[
         userImg:require("../assets/sajan.png"),
         postTime: '1 day ago',
         postTitle:"Hiring a full stack ReactJs developer!",
-        content:"subtitle1",
+        content:"We are looking for a great JavaScript developer who is proficient with React.js. Your primary focus will be on developing user interface components and implementing them following well-known React.js workflows (such as Flux or Redux). You will ensure that these components and the overall application are robust and easy to maintain. You will coordinate with the rest of the team working on different layers of the infrastructure. Therefore, a commitment to collaborative problem solving, sophisticated design, and quality product is important.",
+        
         postImg:require("../assets/react.png"),
         liked:true,
         likes:'22',
@@ -38,8 +39,8 @@ const posts=[
         userImg:require("../assets/sajan.png"),
         postTime: '34 days ago',
         postTitle:"Aalu lelo!",
-        content:"subtitle1",
-        postImg:require("../assets/aalu.jpg"),
+        content:"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"
+        ,postImg:require("../assets/aalu.jpg"),
         liked:false,
         likes:'8',
         comments: '100'
@@ -88,7 +89,12 @@ const HomeScreen = ({navigation}) => {
                 <View  style={styles.header} >
                     <Text style={styles.headerText}>Home</Text>
                     <NotifButton style={styles.notifButton} onPress={()=>navigation.navigate("Notifications")}/>
+                    
                 </View>
+                <View  style={styles.notifCount}>
+                    <Text style={styles.notifCountText}>1</Text>
+                </View>
+               
                
                 <FlatList 
                     showsVerticalScrollIndicator={false}
@@ -106,7 +112,7 @@ const HomeScreen = ({navigation}) => {
                             liked={item.liked}
                             likesCount={item.likes}
                             commentsCount={item.comments}
-                            onPress={()=>navigation.navigate('PostDetails', item)}
+                            onPress={()=>navigation.navigate('Post Detail', item)}
                             onPressComment={()=> navigation.navigate('Comments', item)}
                         />
                     )}
@@ -142,7 +148,21 @@ const styles = StyleSheet.create({
         fontWeight:'bold',
         fontSize:19
     },
-    notifButton:{
-        
-    }
+    notifCount:{
+        backgroundColor:'tomato',
+        borderRadius:7,
+        width:14,
+        height:14,
+        fontSize:12,
+        zIndex:1,
+        position:'absolute',
+        alignItems:'center',
+        top:Constants.statusBarHeight+20,
+        right:42
+    },
+    notifCountText:{
+        color:'white'
+    },
+    
+    
 })

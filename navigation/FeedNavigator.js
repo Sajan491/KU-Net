@@ -25,7 +25,7 @@ const FeedNavigator=()=>(
                     // headerLeft:null,
                 })}
             />
-            <Stack.Screen name="PostDetails" component={PostDetailScreen}/>
+            <Stack.Screen name="Post Detail" component={PostDetailScreen}/>
             <Stack.Screen name="Notifications" component={NotificationsScreen}/>
             <Stack.Screen name="Comments" component={CommentsScreen}/>
             

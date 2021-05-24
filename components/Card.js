@@ -28,7 +28,7 @@ const Card = ({
             </View>
             <TouchableWithoutFeedback onPress={onPress}>
                 <View>
-                    <Text style={styles.title}>{postTitle}</Text>
+                    <Text style={styles.title}>{postTitle}  ...</Text>
                     {postImg? <Image style={styles.image} source={postImg} />: <View style={styles.borderline}></View>}
                 </View>
             </TouchableWithoutFeedback>
