@@ -14,7 +14,7 @@ const Card = ({
     postTime,
     liked,
     likesCount,
-    commentsCount, onPress, onPressComment}) => {
+    commentsCount, onPressComment}) => {
 
         const [isLiked, setIsLiked] = useState(liked)
     return (
@@ -26,12 +26,15 @@ const Card = ({
                     <Text style={styles.time}>{postTime}</Text>
                 </View>
             </View>
-            <TouchableWithoutFeedback onPress={onPress}>
+            
                 <View>
                     <Text style={styles.title}>{postTitle}  ...</Text>
+                    <Text style={styles.content}>
+                        {content}
+                    </Text>
                     {postImg? <Image style={styles.image} source={postImg} />: <View style={styles.borderline}></View>}
                 </View>
-            </TouchableWithoutFeedback>
+            
                 <View style={styles.interactionWrapper}>
                     <TouchableOpacity style={styles.interaction} onPress={()=>setIsLiked(!isLiked)}>
                         {isLiked?<MaterialCommunityIcons size={25} name="heart-multiple" color='red'/>:<MaterialCommunityIcons size={25} name="heart-outline" color="black" />}
@@ -40,7 +43,7 @@ const Card = ({
                         
                     <TouchableOpacity style={styles.interaction}  onPress={()=>onPressComment()}>
                         <MaterialCommunityIcons size={25} name="comment-outline" />
-                        <Text style={styles.interationText}>Comments</Text>
+                        <Text style={styles.interationText}>Comment</Text>
                     </TouchableOpacity>
                 </View>
             
@@ -64,6 +67,7 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         overflow:'hidden'
     },
+    
     interactionWrapper:{
         flexDirection:'row',
         justifyContent:'space-around',
@@ -88,9 +92,11 @@ const styles = StyleSheet.create({
         height:210
     },
     content:{
-        color:colors.secondary,
-        fontWeight:'bold',
-        fontSize:14
+        color:colors.medium,
+        fontSize:14,
+        paddingHorizontal: 12,
+        paddingTop:10,
+        textAlign:'justify'
     },
     time:{
         fontSize:12,

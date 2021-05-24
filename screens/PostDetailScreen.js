@@ -17,7 +17,7 @@ const PostDetailScreen = ({route}) => {
                 </View>
             </View>
                
-            <Text style={styles.title}>{item.postTitle}  ...</Text>
+            <Text style={styles.title}>{item.postTitle}</Text>
             <View style={styles.borderline}></View>
             <Text style={styles.description}>
                 {item.content}

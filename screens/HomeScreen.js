@@ -14,8 +14,8 @@ const posts=[
         userImg:require("../assets/sajan.png"),
         postTime: '1 day ago',
         postTitle:"Hiring a full stack ReactJs developer!",
-        content:"We are looking for a great JavaScript developer who is proficient with React.js. Your primary focus will be on developing user interface components and implementing them following well-known React.js workflows (such as Flux or Redux). You will ensure that these components and the overall application are robust and easy to maintain. You will coordinate with the rest of the team working on different layers of the infrastructure. Therefore, a commitment to collaborative problem solving, sophisticated design, and quality product is important.",
-        
+        content:"We are looking for a great JavaScript developer who is proficient with React.js. Your primary focus will be on developing user interface components and implementing them following well-known React.js workflows (such as Flux or Redux). You will coordinate with the rest of the team working on different layers of the infrastructure. Therefore, a commitment to collaborative problem solving, sophisticated design, and quality product is important. Please leave a comment if you are interested!",
+
         postImg:require("../assets/react.png"),
         liked:true,
         likes:'22',
@@ -112,7 +112,6 @@ const HomeScreen = ({navigation}) => {
                             liked={item.liked}
                             likesCount={item.likes}
                             commentsCount={item.comments}
-                            onPress={()=>navigation.navigate('Post Detail', item)}
                             onPressComment={()=> navigation.navigate('Comments', item)}
                         />
                     )}
