@@ -51,13 +51,11 @@ const LoginScreen = ({navigation}) => {
                     <AppFormField 
                         name = "email"
                         placeholder = "Email"
-                        keyboardType = "email"
                         maxLength = {255}
                     />
                     <AppFormField 
                         name = "password"
                         placeholder = "Password"
-                        keyboardType = "password"
                         secureTextEntry = {true}
                     />
 
