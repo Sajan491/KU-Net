@@ -25,7 +25,7 @@ const validationSchema = Yup.object().shape({
     title: Yup.string().required().min(1).label("Title"),
     description: Yup.string().label("Description"),
     page: Yup.object().required().nullable().label("Page"),
-    images: Yup.array().min(1, "Please select at least one image")
+    images: Yup.array().min(1, "Please select at least one image").max(4, "Maximum images allowed: 4")
 });
 
 const usersCollection = firebase.firestore().collection("users_extended")
