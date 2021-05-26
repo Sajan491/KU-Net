@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from 'react'
-import { StyleSheet, Text, ScrollView, Alert, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, ScrollView, View, ActivityIndicator } from 'react-native'
 import * as Yup from 'yup';
 import { AppForm, AppFormField, SubmitButton } from '../components/form'
 import AppFormImagePicker from '../components/form/AppFormImagePicker';
@@ -8,7 +8,9 @@ import firebase from "../config/firebase";
 import ItemPicker from '../components/ItemPicker';
 import storage from '@react-native-firebase/storage';
 import * as Firebase from 'firebase'
-
+import Constants from 'expo-constants'
+import colors from '../config/colors'
+import Header from '../components/Header';
 
 const pages = [
     {label: "My Department", value:1, icon:"human-greeting"},
@@ -132,7 +134,9 @@ const AddPostScreen = () => {
 
     return (
         <Screen style={styles.container}>
+            <Header headerText="Add a Post" />
             <ScrollView>
+                <View  style={styles.formContainer}>
                 <AppForm
                     initialValues={{title:'', description:'',page:null, images:[]}}
                     onSubmit={handleSubmit}
@@ -147,7 +151,7 @@ const AddPostScreen = () => {
                 <AppFormField 
                     maxLength={255}
                     multiline
-                    numberOfLines={3}
+                    numberOfLines={4}
                     name="description"
                     placeholder="Description"
                 />
@@ -161,6 +165,7 @@ const AddPostScreen = () => {
                     title="Post"
                 />: <ActivityIndicator size={large} color="#000" /> }
                 </AppForm>
+                </View>
             </ScrollView>
         </Screen>
     )
@@ -169,7 +174,19 @@ const AddPostScreen = () => {
 export default AddPostScreen
 
 const styles = StyleSheet.create({
-container:{
-padding:20
-},
+    formContainer:{
+        backgroundColor:'white',
+        paddingHorizontal:12,
+        borderRadius:15,
+        paddingBottom:50,
+        paddingTop:25,
+    },
+    container:{
+        backgroundColor:colors.light,
+        paddingHorizontal:17,
+        paddingTop:20,
+        flex:1,
+        marginTop:-10
+    },
+    
 })
