@@ -30,7 +30,8 @@ const styles = StyleSheet.create({
     subTitle: {
         color: colors.secondary,
         fontSize: 14,
-        fontWeight: "bold"
+        fontWeight: "bold",
+        marginTop: 3
     },
     description: {
         fontSize: 12,
@@ -39,6 +40,6 @@ const styles = StyleSheet.create({
     editBtn: {
         position: "absolute",
         right: 30,
-        top: 12
+        top: 35
     }
 })
