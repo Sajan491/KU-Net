@@ -109,7 +109,7 @@ const Card = ({
                    <FlatList 
                         data={postImgs}
                         numColumns={numCol}
-                        keyExtractor={(item)=>{return item.id}}
+                        keyExtractor={(item)=>{return item.id.toString()}}
                         renderItem={({item})=>{
                             return (<TouchableWithoutFeedback onPress={()=>{
                                 setModalVisible(true)
