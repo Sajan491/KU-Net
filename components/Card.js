@@ -16,6 +16,7 @@ const Card = ({
     postTime,
     liked,
     likesCount,
+    comments,
     commentsCount, onPressComment}) => {
 
             
@@ -54,8 +55,7 @@ const Card = ({
         {modalVisible && <Modal
                 animationType="fade"
                 transparent={true}
-                visible={modalVisible}
-                
+                visible={modalVisible} 
                 onRequestClose={() => {
                 setModalVisible(false);
             }}>

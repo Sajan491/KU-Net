@@ -60,8 +60,8 @@ const NotificationsScreen = () => {
                                         </View>
                                         <Text style={styles.time}>{item.time}</Text>
                                         {item.type=='request' && <View style={styles.requestsHandlers}>
-                                                <TouchableOpacity style={styles.buttons} onPress={()=> console.log('accepted')}><Text style={{fontWeight:'bold'}}>Accept</Text></TouchableOpacity>
-                                                <TouchableOpacity style={styles.buttons} onPress={()=> console.log('declined')}><Text style={{fontWeight:'bold'}}>Decline</Text></TouchableOpacity>
+                                                <TouchableOpacity style={styles.buttonaccept} onPress={()=> console.log('accepted')}><Text style={{fontWeight:'bold'}}>Accept</Text></TouchableOpacity>
+                                                <TouchableOpacity style={styles.buttondecline} onPress={()=> console.log('declined')}><Text style={{fontWeight:'bold'}}>Decline</Text></TouchableOpacity>
                                             </View>}
                                     </View>
                                 </View>
@@ -81,10 +81,17 @@ const styles = StyleSheet.create({
     activity:{
         fontSize:15
     },  
-    buttons:{
+    buttonaccept:{
         paddingVertical:10,
         paddingHorizontal:30,
         backgroundColor:'#77daf3',
+        marginRight:13,
+        borderRadius:6
+    },  
+    buttondecline:{
+        paddingVertical:10,
+        paddingHorizontal:30,
+        backgroundColor:'#d6d4ce',
         marginRight:13,
         borderRadius:6
     },  
@@ -103,6 +110,7 @@ const styles = StyleSheet.create({
         backgroundColor:colors.light,
         borderBottomWidth:0.6,
         borderBottomColor:'#fff',
+        borderRadius:5
         
     },
     username:{

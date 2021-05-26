@@ -23,8 +23,13 @@ const posts=[
             {uri: require("../assets/aalu.jpg"),id:4}
              ],
         liked:true,
-        likes:22,
-        comments: 4
+        likesCount:22,
+        comments: [
+            {id:1, user:{name:'Myakuri', userImg:require("../assets/sajan.png")}, comment: 'Wow! Amazing Stuff.', time:'24 mins ago'},
+            {id:2, user:{name:'Thakuri', userImg:require("../assets/sajan.png")}, comment: 'I am interested in web development with React. How do I apply?', time:'1 day ago'},
+            {id:3, user:{name:'Lyakuri', userImg:require("../assets/sajan.png")}, comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum', time:'2 days ago'},
+            {id:4, user:{name:'Sabin', userImg:require("../assets/sajan.png")}, comment: '@Janesh dai. Eta herna paryo.', time:'2 days ago'},
+        ]
     },
     {
         id:2,
@@ -35,8 +40,8 @@ const posts=[
         content:"subtitle1",
         postImgs:[],
         liked:false,
-        likes:2,
-        comments: 1
+        likesCount:2,
+        comments: []
     },
     {
         id:3,
@@ -52,8 +57,8 @@ const posts=[
             
         ],
         liked:false,
-        likes:8,
-        comments: 100
+        likesCount:8,
+        comments: []
     },
     {
         id:4,
@@ -64,8 +69,8 @@ const posts=[
         content:"subtitle1",
         postImgs:[{uri: require("../assets/aisec.png"),id:1}],
         liked:true,
-        likes:1,
-        comments: 0
+        likesCount:1,
+        comments: []
     },
     {
         id:5,
@@ -79,8 +84,8 @@ const posts=[
             {uri: require("../assets/react.png"),id:2},
         ],
         liked:true,
-        likes:5,
-        comments: 0
+        likesCount:5,
+        comments: []
     }
     
     
@@ -135,9 +140,10 @@ const HomeScreen = ({navigation}) => {
                             userImg={item.userImg}
                             postTime= {item.postTime}
                             liked={item.liked}
-                            likesCount={item.likes}
-                            commentsCount={item.comments}
-                            onPressComment={()=> navigation.navigate('Comments', item)}
+                            likesCount={item.likesCount}
+                            comments={item.comments}
+                            commentsCount={item.comments.length}
+                            onPressComment={()=> navigation.navigate('Comments', {comments: item.comments})}
                         />
                     )}
 
