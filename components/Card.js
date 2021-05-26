@@ -1,11 +1,10 @@
 import React,{useState} from 'react'
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View, Dimensions, Modal, Button, TouchableWithoutFeedback } from 'react-native'
+import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
+
 import colors from '../config/colors'
 import ReadMore from 'react-native-read-more-text';
-
 import {MaterialCommunityIcons} from '@expo/vector-icons'
-
 const ItemWidth = Dimensions.get('window').width / 2 -20;
 
 const Card = ({
@@ -48,7 +47,39 @@ const Card = ({
           }
 
         const [isLiked, setIsLiked] = useState(liked)
+        const [modalVisible, setModalVisible] = useState(false);
+        const [modalUri, setModalUri] = useState({})
     return (
+        <>
+        {modalVisible && <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalVisible}
+                
+                onRequestClose={() => {
+                setModalVisible(false);
+            }}>
+               
+                <View style={styles.modalView}>
+                    <View style={styles.modalButton}>
+                        <Button title='X' onPress={()=>setModalVisible(false)} />
+                    </View>
+                    <ReactNativeZoomableView
+                        maxZoom={1.5}
+                        minZoom={1}
+                        zoomStep={0.04}
+                        initialZoom={1}
+                        bindToBorders={true} 
+                        pinchToZoomInSensitivity={9}  
+                        zoomEnabled={true} 
+                    >
+                        <Image style={{width: Dimensions.get('window').width,resizeMode: 'contain' }} source={modalUri.uri} />
+                    </ReactNativeZoomableView>
+                   
+                </View>
+                
+            </Modal>}
+        
         <View style={styles.card}> 
             <View style={styles.userInfo}>
                 <Image style={styles.userImage} source={userImg} />
@@ -77,19 +108,21 @@ const Card = ({
                    <FlatList 
                         data={postImgs}
                         numColumns={numCol}
-                        keyExtractor={(index)=>{return index}}
+                        keyExtractor={(item)=>{return item.id}}
                         renderItem={({item})=>{
-                            return <Image style={{
+                            return (<TouchableWithoutFeedback onPress={()=>{
+                                setModalVisible(true)
+                                setModalUri(item)}
+                                
+                            }><Image style={{
                                 marginTop:14,
                                 width:imgWidth,
                                 height:imgHeight,
                                 marginRight:4,
                                 resizeMode: 'cover'
-                            }} source={item} />
+                            }} source={item.uri} /></TouchableWithoutFeedback>)
                         }}
                    />
-                   
-                
             
                 <View style={styles.interactionWrapper}>
                     <TouchableOpacity style={styles.interaction} onPress={()=>setIsLiked(!isLiked)}>
@@ -104,6 +137,7 @@ const Card = ({
                 </View>
             
         </View>
+        </>
     )
 }
 
@@ -152,6 +186,21 @@ const styles = StyleSheet.create({
     contentWrapper:{
         paddingHorizontal: 12,
         paddingTop:10,
+    },
+    modalView:{
+        alignItems:'center',
+        justifyContent:'center',
+        flex:1,
+        backgroundColor:'rgba(0, 0, 0, 0.8)'
+    },
+    modalButton:{
+        width:40,
+        height:40,
+        alignSelf:'flex-end',
+        top:20,
+        right:20,
+        position:'absolute',
+        zIndex:1
     },
     time:{
         fontSize:12,
