@@ -1,7 +1,8 @@
 import React from 'react'
-import { ColorPropType, FlatList, Image, StyleSheet, Text, View } from 'react-native'
+import { ColorPropType, FlatList, Image, StyleSheet, Text, TextInput, View } from 'react-native'
 import colors from '../config/colors';
 import ReadMore from 'react-native-read-more-text';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const CommentsScreen = ({route}) => {
     const renderTruncatedFooter = (handlePress) => {
@@ -20,7 +21,7 @@ const CommentsScreen = ({route}) => {
         );
       }
     return (
-        <View>
+        <View style={{flex:1}}>
             <FlatList 
                 data={route.params.comments}
                 keyExtractor={(item)=>{return item.id.toString()}}
@@ -47,19 +48,34 @@ const CommentsScreen = ({route}) => {
                             )
                 }}
             />
-        </View>
+            <View style={styles.addComment}>
+                <TextInput placeholder="Add a comment."/>
+                <MaterialCommunityIcons name='send' size={25} color='tomato'/>
+            </View>
+            
+            </View>
     )
 }
 
 export default CommentsScreen
 
 const styles = StyleSheet.create({
-    
+    addComment:{
+        flexDirection:'row',
+        justifyContent:'space-between',
+        padding:15,
+        zIndex:1,
+        backgroundColor:'#faefe6',
+        borderTopColor:'#fff',
+        borderTopWidth:0.5,
+        borderRadius:10
+
+    },
     commentBlock:{
         flexDirection:"row",
         paddingVertical:13,
         marginLeft:14,
-        marginRight:65,
+        paddingRight:65,
         backgroundColor:colors.light,
         borderBottomWidth:0.6,
         borderBottomColor:'#fff',
@@ -70,6 +86,7 @@ const styles = StyleSheet.create({
         marginLeft:5,
         paddingLeft:10,
         paddingRight:10,
+        paddingVertical:3,
         backgroundColor:'white',
         borderRadius:5
     },

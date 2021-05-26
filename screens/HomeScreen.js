@@ -29,6 +29,9 @@ const posts=[
             {id:2, user:{name:'Thakuri', userImg:require("../assets/sajan.png")}, comment: 'I am interested in web development with React. How do I apply?', time:'1 day ago'},
             {id:3, user:{name:'Lyakuri', userImg:require("../assets/sajan.png")}, comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum', time:'2 days ago'},
             {id:4, user:{name:'Sabin', userImg:require("../assets/sajan.png")}, comment: '@Janesh dai. Eta herna paryo.', time:'2 days ago'},
+            {id:5, user:{name:'Myakuri', userImg:require("../assets/sajan.png")}, comment: 'Wow! Amazing Stuff.', time:'24 mins ago'},
+            {id:6, user:{name:'Thakuri', userImg:require("../assets/sajan.png")}, comment: 'I am interested in web development with React. How do I apply?', time:'1 day ago'},
+            
         ]
     },
     {
