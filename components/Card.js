@@ -72,6 +72,7 @@ const Card = ({
                         bindToBorders={true} 
                         pinchToZoomInSensitivity={9}  
                         zoomEnabled={true} 
+                        captureEvent={true} 
                     >
                         <Image style={{width: Dimensions.get('window').width,resizeMode: 'contain' }} source={modalUri.uri} />
                     </ReactNativeZoomableView>
