@@ -168,14 +168,12 @@ const HomeScreen = ({navigation}) => {
                 <View  style={styles.notifCount}>
                     <Text style={styles.notifCountText}>1</Text>
                 </View>
-              <ScrollView 
-                showsVerticalScrollIndicator = {false}
-                showsHorizontalScrollIndicator = {false}
-              >
+              {/* <ScrollView>
                 <ScrollView 
                     horizontal
                     showsHorizontalScrollIndicator = {false}
                     showsVerticalScrollIndicator = {false}
+                    style = {styles.scrollView}
                 >
                     <FlatList
                         horizontal 
@@ -186,8 +184,21 @@ const HomeScreen = ({navigation}) => {
                         )}
                     />
 
-                </ScrollView>
+                </ScrollView> */}
                 <FlatList 
+                    ListHeaderComponent = {
+                        <>
+                            <FlatList
+                                horizontal 
+                                showsHorizontalScrollIndicator={false}
+                                data = {groups}
+                                keyExtractor = {(item) => item.id.toString()}
+                                renderItem = {({item}) => (
+                                    <GroupLogoWithTitle title = {item.title} image = {item.image} onPress = {() => navigation.navigate("GroupDetails", item)} />
+                                )}
+                            />
+                        </>
+                    }
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
                     data={posts}
@@ -209,9 +220,8 @@ const HomeScreen = ({navigation}) => {
                     )}
 
                 />
-                </ScrollView> 
+                {/* </ScrollView> */}
             </View>
-        
     )
 }
 
@@ -257,6 +267,9 @@ const styles = StyleSheet.create({
     notifCountText:{
         color:'white'
     },
+    scrollView: {
+        marginBottom: 15
+    }
     
     
 })

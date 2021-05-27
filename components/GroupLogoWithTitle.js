@@ -6,7 +6,9 @@ const GroupLogoWithTitle = ({title, image, onPress}) => {
     return (
             <View>
                 <TouchableOpacity onPress = {onPress} style = {styles.logoContainer}>
-                    <Image source = {image} style = {styles.logo} resizeMode = {'contain'}/>
+                    <View style = {styles.bgContainer}>
+                        <Image source = {image} style = {styles.logo} resizeMode = {'contain'}/>
+                    </View>
                     <Text style = {styles.text}> {title} </Text>
                 </TouchableOpacity>
             </View>
@@ -19,15 +21,20 @@ const styles = StyleSheet.create({
     logo: {
         height: 50,
         width: 50,
-        borderRadius: 12
+        borderRadius: 50,
     },
     logoContainer: {
         height: 70,
         marginHorizontal: 12,
-        marginVertical: 14
+        marginVertical: 6
     },
     text: {
     fontSize: 12,
     textAlign: "center"        
+    },
+    bgContainer: {
+        borderRadius: 50,
+        backgroundColor: "white"
+
     }
 })
