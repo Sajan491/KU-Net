@@ -10,6 +10,7 @@ const AccountNavigator=()=>(
     <Stack.Navigator mode="modal">
         <Stack.Screen name="Account" component={AccountScreen} options={{
                 headerLeft:null,
+                headerShown: false,
                 
             }}/>
         <Stack.Screen name="Credentials" component={CredentialsScreen}/>

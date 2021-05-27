@@ -173,16 +173,17 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         paddingLeft:10,
         paddingBottom:13,
+        marginTop:12,
         justifyContent:'space-between',
     }
     ,
     headerText:{
-        color: 'tomato',
+        color: colors.primary,
         fontWeight:'bold',
-        fontSize:19
+        fontSize:21
     },
     notifCount:{
-        backgroundColor:'tomato',
+        backgroundColor:colors.primary,
         borderRadius:7,
         width:14,
         height:14,
@@ -190,7 +191,7 @@ const styles = StyleSheet.create({
         zIndex:1,
         position:'absolute',
         alignItems:'center',
-        top:Constants.statusBarHeight+20,
+        top:Constants.statusBarHeight+30,
         right:42
     },
     notifCountText:{

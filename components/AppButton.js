@@ -21,9 +21,10 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         alignItems:'center',
         padding:15,
-        width:'100%',
-        marginVertical:10,
-        marginBottom:5
+        width:'80%',
+        marginVertical:20,
+        marginBottom:5,
+        alignSelf:'center'
     },
     text:{
         color:colors.white,

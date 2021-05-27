@@ -6,6 +6,7 @@ import ListItem from '../components/ListItem';
 import ItemSeperator from '../components/ItemSeperator';
 import MyIcon from "../components/MyIcon";
 import {AuthContext} from "../context/AuthProvider"
+import Header from '../components/Header';
 
 
 const menuItems = [
@@ -13,18 +14,11 @@ const menuItems = [
         title:"My Posts",
         icon:{
             name:'format-list-bulleted',
-            backgroundColor: colors.primary
-        },
-        targetScreen:"Messages"
-    },
-    {
-        title:"Chat",
-        icon:{
-            name:'email',
             backgroundColor: colors.secondary
         },
         targetScreen:"Messages"
     },
+    
     {
         title: "Add Credentials",
         icon: {
@@ -63,7 +57,8 @@ const AccountScreen = ({navigation}) => {
 
     return (
         <Screen style={styles.screen}>
-            <ScrollView 
+            <Header headerText="Account" />
+            <View 
                 refreshControl = {
                     <RefreshControl
                     progressBackgroundColor= {colors.primary}
@@ -100,12 +95,12 @@ const AccountScreen = ({navigation}) => {
                     <ListItem 
                         title="Log Out"
                         IconComponent={
-                            <MyIcon name='logout' backgroundColor='#ffe66d'/>
+                            <MyIcon name='logout' backgroundColor={colors.primary}/>
                         }
                         onPress={()=>signOut()}
                     />
                 </View>
-            </ScrollView>
+            </View>
         </Screen>
     )
 }
@@ -114,11 +109,15 @@ export default AccountScreen
 
 const styles = StyleSheet.create({
     container:{
-        marginTop:-20,
-        marginVertical:15
+        marginBottom:10,
+        borderRadius:20
     }
     ,screen:{
-        backgroundColor:colors.light
+        backgroundColor:colors.light,
+        paddingHorizontal:17,
+        paddingTop:20,
+        flex:1,
+        marginTop:-10
     }
 })
 

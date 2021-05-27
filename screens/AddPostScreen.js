@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from 'react'
-import { StyleSheet, Text, ScrollView, View, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, ScrollView, View, ActivityIndicator, Alert } from 'react-native'
 import * as Yup from 'yup';
 import { AppForm, AppFormField, SubmitButton } from '../components/form'
 import AppFormImagePicker from '../components/form/AppFormImagePicker';
@@ -63,10 +63,12 @@ const AddPostScreen = ({navigation}) => {
             
             posts.add(values).then(()=>{
             console.log("Post successfully added!")
+            Alert.alert('Success!','Post Added Successfully')
+
             })
             
         }  
-
+        
 
     }
 

@@ -127,7 +127,7 @@ const Card = ({
             
                 <View style={styles.interactionWrapper}>
                     <TouchableOpacity style={styles.interaction} onPress={()=>setIsLiked(!isLiked)}>
-                        {isLiked?<MaterialCommunityIcons size={25} name="heart-multiple" color='tomato'/>:<MaterialCommunityIcons size={25} name="heart-outline" color="black" />}
+                        {isLiked?<MaterialCommunityIcons size={25} name="heart-multiple" color={colors.primary}/>:<MaterialCommunityIcons size={25} name="heart-outline" color="black" />}
                         {isLiked?<Text style={styles.interationText}> {likesCount + 1} Likes</Text>: <Text style={styles.interationText}>{likesCount} Likes</Text>}
                     </TouchableOpacity>
                         
