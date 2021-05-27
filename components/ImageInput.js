@@ -30,7 +30,8 @@ const ImageInput = ({imageUri, onChangeImage}) => {
     const selectImage = async () =>{
         try{
             const result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
                 quality: 0.5
             });
             if(!result.cancelled){
@@ -61,7 +62,8 @@ const styles = StyleSheet.create({
         alignItems:"center",
         height:100,
         width:100,
-        overflow:"hidden"
+        overflow:"hidden",
+        
     },
     image:{
         width:"100%",

@@ -7,9 +7,9 @@ import Screen from "./components/Screen";
 import { createStackNavigator } from "@react-navigation/stack";
 import {AuthProvider} from "./context/AuthProvider"
 import Providers from "./navigation"
-// import { LogBox } from 'react-native';
+import { LogBox } from 'react-native';
 
-// LogBox.ignoreLogs(['Setting a timer']);
+LogBox.ignoreLogs(['Setting a timer']);
 // const Stack = createStackNavigator();
 
 // const MainNavigator=()=>(
@@ -18,6 +18,7 @@ import Providers from "./navigation"
 //       <Stack.Screen name="After" component={AppNavigator} options={{ headerShown:false}}/>
 //   </Stack.Navigator>
 // )
+
 
 export default function App() {
 
