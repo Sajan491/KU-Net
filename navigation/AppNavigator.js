@@ -15,7 +15,7 @@ const AppNavigator=()=>(
 
     <Tab.Navigator tabBarOptions={{activeTintColor: colors.primary,
     inactiveTintColor: 'gray',
-        style:{height:65, paddingBottom:10, paddingHorizontal:10}
+        style:{height:70, paddingBottom:10, paddingHorizontal:10}
       }}>
         <Tab.Screen 
             name="Feed" 
@@ -36,7 +36,7 @@ const AppNavigator=()=>(
             component={AddPostScreen} 
             options={({navigation})=>({
                 tabBarButton:()=> <AddButton onPress={()=>navigation.navigate("AddPost")} />,
-                tabBarIcon:({color, size})=><MaterialCommunityIcons name="plus-circle" size={35} color={color} />
+                tabBarIcon:({color, size})=><MaterialCommunityIcons name="plus-circle" size={32} color={color} />
             })}
         />
         <Tab.Screen 

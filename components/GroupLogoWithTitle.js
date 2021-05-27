@@ -22,6 +22,7 @@ const styles = StyleSheet.create({
         borderRadius: 12
     },
     logoContainer: {
+        height: 70,
         marginHorizontal: 12,
         marginVertical: 14
     },

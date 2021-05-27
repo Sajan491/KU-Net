@@ -116,7 +116,9 @@ const ProfileSettings = ({navigation}) => {
 
     return (
         <Screen style={styles.container}>
-            <ScrollView>
+            <ScrollView
+                showsVerticalScrollIndicator = {false}
+            >
             <AppText style={styles.header}>Profile Details</AppText>
 
             <AppForm

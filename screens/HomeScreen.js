@@ -1,7 +1,5 @@
-import React, {useContext} from 'react'
-import { FlatList, StyleSheet, Text, View, ScrollView } from 'react-native'
 import React, {useContext, useEffect} from 'react'
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet, Text, View, ScrollView } from 'react-native'
 import Card from '../components/Card';
 import colors from "../config/colors";
 import Screen from '../components/Screen'
@@ -160,8 +158,20 @@ const HomeScreen = ({navigation}) => {
 
     const {user} = useContext(AuthContext)
     return (
+                
 
-            <View style={styles.screen}>
+            <View style={styles.container}>
+                <View  style={styles.header} >
+                    <Text style={styles.headerText}>Home</Text>
+                    <NotifButton style={styles.notifButton} onPress={()=>navigation.navigate("Notifications")}/>
+                </View>
+                <View  style={styles.notifCount}>
+                    <Text style={styles.notifCountText}>1</Text>
+                </View>
+              <ScrollView 
+                showsVerticalScrollIndicator = {false}
+                showsHorizontalScrollIndicator = {false}
+              >
                 <ScrollView 
                     horizontal
                     showsHorizontalScrollIndicator = {false}
@@ -177,17 +187,6 @@ const HomeScreen = ({navigation}) => {
                     />
 
                 </ScrollView>
-
-            <View style={styles.container}>
-                <View  style={styles.header} >
-                    <Text style={styles.headerText}>Home</Text>
-                    <NotifButton style={styles.notifButton} onPress={()=>navigation.navigate("Notifications")}/>
-                    
-                </View>
-                <View  style={styles.notifCount}>
-                    <Text style={styles.notifCountText}>1</Text>
-                </View>
-               
                 <FlatList 
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
@@ -210,7 +209,9 @@ const HomeScreen = ({navigation}) => {
                     )}
 
                 />
+                </ScrollView> 
             </View>
+        
     )
 }
 
