@@ -3,16 +3,16 @@ import { StyleSheet, Text, View } from 'react-native'
 import Header from '../components/Header'
 import colors from '../config/colors'
 
-const MessagesScreen = () => {
+const GroupsScreen = () => {
     return (
         <View style={styles.container}>
-            <Header headerText="Chat" />
-            <Text>Messages Screen</Text>
+            <Header headerText="Groups" />
+            <Text>Group Screen</Text>
         </View>
     )
 }
 
-export default MessagesScreen
+export default GroupsScreen
 
 const styles = StyleSheet.create({
     container:{

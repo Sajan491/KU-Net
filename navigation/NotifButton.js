@@ -1,17 +1,17 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'; 
-const ChatButton = ({onPress}) => {
+const NotifButton = ({onPress}) => {
     return (
         <TouchableOpacity onPress={onPress}>
             <View style={styles.container}>
-                <Ionicons name="chatbox-outline" size={30}/>
+                <Ionicons name="notifications-outline" size={30}/>
             </View>
         </TouchableOpacity>
     )
 }
 
-export default ChatButton
+export default NotifButton
 
 const styles = StyleSheet.create({
     container:{
