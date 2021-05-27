@@ -6,13 +6,15 @@ import { useFormikContext } from 'formik'
 
 const AppFormField = ({name, ...otherProps}) => {
 
-    const {setFieldTouched, handleChange, errors, touched } = useFormikContext();
+    const {setFieldTouched, placeholder, handleChange, errors, touched, values } = useFormikContext();
 
     return (
         <>
             <AppTextInput
+                placeholder = {placeholder}
                 onBlur={()=> setFieldTouched(name)}
                 onChangeText={handleChange(name)}
+                selectedItem = {values[name]}
                 {...otherProps}
                 
             />
