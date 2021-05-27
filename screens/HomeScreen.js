@@ -1,9 +1,11 @@
 import React, {useContext} from 'react'
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet, Text, View, ScrollView } from 'react-native'
 import Card from '../components/Card';
 import colors from "../config/colors";
 import Screen from '../components/Screen'
 import {AuthContext} from "../context/AuthProvider";
+import {MaterialCommunityIcons} from "@expo/vector-icons";
+import GroupLogoWithTitle from '../components/GroupLogoWithTitle';
 
 const posts=[
     {   
@@ -27,11 +29,63 @@ const posts=[
     
 ]
 
+const groups = [
+    {
+        id: 1,
+        title: "KUCC",
+        image:require("../assets/groups/kucc.png")
+    },
+    {
+        id: 2,
+        title: "AIESEC",
+        image:require("../assets/groups/aiesec.png")
+    },
+    {
+        id: 3,
+        title: "KUSWC",
+        image:require("../assets/groups/ku.png")
+    },
+    {
+        id: 4,
+        title: "ALUMNI",
+        image:require("../assets/django.jpg"),
+    },
+    {
+        id: 5,
+        title: "KURCS",
+        image:require("../assets/groups/redcross.png"),
+    },
+    {
+        id: 6,
+        title: "KUCS",
+        image:require("../assets/django.jpg"),
+    },
+    {
+        id: 7,
+        title: "KUCE",
+        image:require("../assets/groups/itmeet.png"),
+    },
+]
+
 const HomeScreen = ({navigation}) => {
     const {user} = useContext(AuthContext)
     return (
             <View style={styles.screen}>
-                <Text style={styles.text}> Welcome, {user.email}</Text>
+                <ScrollView 
+                    horizontal
+                    showsHorizontalScrollIndicator = {false}
+                    showsVerticalScrollIndicator = {false}
+                >
+                    <FlatList
+                        horizontal 
+                        data = {groups}
+                        keyExtractor = {(item) => item.id.toString()}
+                        renderItem = {({item}) => (
+                            <GroupLogoWithTitle title = {item.title} image = {item.image} onPress = {() => navigation.navigate("GroupDetails", item)} />
+                        )}
+                    />
+
+                </ScrollView>
                 <FlatList 
                     data={posts}
                     keyExtractor={(item)=>item.id.toString()}

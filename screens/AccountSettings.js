@@ -37,6 +37,7 @@ const AccountSettings = () => {
     
             }).catch((err) => {
                 Alert.alert(err.message)
+                setCurrentPassword("");
             })
 
         }else {
@@ -51,8 +52,10 @@ const AccountSettings = () => {
            Alert.alert("Email successfully changed!");
            setModalOpen(false);
             setNewEmail("");
+            setCurrentPassword("");
         }).catch((err) => {
             Alert.alert(err.message);
+            setCurrentPassword("");
         }) 
 
     }).catch((err) => {
