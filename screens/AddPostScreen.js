@@ -59,9 +59,12 @@ const AddPostScreen = ({navigation}) => {
                 values.page = deptName;
             }
             console.log(values)
+
+            
             posts.add(values).then(()=>{
             console.log("Post successfully added!")
             })
+            
         }  
 
 
@@ -75,8 +78,10 @@ const AddPostScreen = ({navigation}) => {
                 <Formik
                     initialValues={{title:'', description:'',page:null, images:[], userid:firebase.auth().currentUser.uid, likesCount:0, comments:{}, postTime:firebase.firestore.Timestamp.fromDate(new Date())}}
                     onSubmit={(values, {resetForm})=>{
+                        setUploading(true)
                         handleSubmit(values)
                         resetForm({});
+                        setUploading(false)
                     }}
                     validationSchema={validationSchema}
                 >
@@ -102,7 +107,7 @@ const AddPostScreen = ({navigation}) => {
                         />
                         {!uploading? <SubmitButton 
                             title="Post"
-                        />: <ActivityIndicator size={large} color="#000" /> }
+                        />: <ActivityIndicator size={40} color="#000" /> }
                     </>}
                 
                 </Formik>
