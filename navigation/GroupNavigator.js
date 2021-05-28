@@ -1,6 +1,6 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react"
-import GroupsScreen from "../screens/GroupsScreen";
+import GroupsScreen from "../screens/drawerScreens/GroupsScreen";
 const Stack = createStackNavigator();
 
 const GroupNavigator=()=>(
@@ -9,9 +9,6 @@ const GroupNavigator=()=>(
             <Stack.Screen 
                 name="Group" 
                 component={GroupsScreen} 
-                options={({})=>({
-                    headerShown: false,
-                })}
             />
            
             

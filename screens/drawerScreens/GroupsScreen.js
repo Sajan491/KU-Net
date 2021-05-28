@@ -1,14 +1,16 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import Header from '../components/Header'
-import colors from '../config/colors'
+import Header from '../../components/Header'
+import colors from '../../config/colors'
+import Screen from "../../components/Screen";
 
 const GroupsScreen = () => {
     return (
-        <View style={styles.container}>
+        <Screen style = {styles.screen}>        
             <Header headerText="Groups" />
             <Text>Group Screen</Text>
-        </View>
+        </Screen>
+
     )
 }
 
@@ -16,10 +18,15 @@ export default GroupsScreen
 
 const styles = StyleSheet.create({
     container:{
+        marginBottom:10,
+        borderRadius:20
+    }
+    ,screen:{
         backgroundColor:colors.light,
         paddingHorizontal:17,
         paddingTop:20,
         flex:1,
         marginTop:-10
+
     }
 })
