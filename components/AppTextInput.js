@@ -7,10 +7,7 @@ import colors from '../config/colors'
 const AppTextInput = ({placeholder,selectedItem, ...otherProps}) => {
     return (
         <View style={styles.container}>
-            {selectedItem? (<TextInput style={styles.inputText} placeholderTextColor={colors.medium} {...otherProps}/>):
-                        (<TextInput style={styles.inputText} placeholder={placeholder} placeholderTextColor={colors.medium} {...otherProps}/>)
-                        }
-            
+            <TextInput style={styles.inputText} placeholder={placeholder} placeholderTextColor={colors.medium} {...otherProps}/>
         </View>
     )
 }

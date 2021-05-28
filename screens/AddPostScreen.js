@@ -35,14 +35,13 @@ const usersCollection = firebase.firestore().collection("users_extended")
 const posts = firebase.firestore().collection("posts")
 
 const AddPostScreen = ({navigation}) => {
-    const [deptName, setDeptName] = useState({})
+    const [deptName, setDeptName] = useState("")
     const [uploading, setUploading] = useState(false)
     
     useEffect(() => {
         const userID = firebase.auth().currentUser.uid;
         usersCollection.doc(userID).get().then((abc)=>{
             setDeptName(abc.data()['department'])
-           
         }).catch((error)=>{
             console.log(error)
         })
@@ -87,12 +86,13 @@ const AddPostScreen = ({navigation}) => {
                     }}
                     validationSchema={validationSchema}
                 >
-                    {()=><>
+                    {({values})=><>
                         <AppFormImagePicker name="images" />
                         <AppFormField 
                             maxLength = {255}
                             placeholder="Title"
                             name="title"
+                            value={values.title || ''}
                         />
                         <AppFormField 
                             maxLength={255}
@@ -100,6 +100,7 @@ const AddPostScreen = ({navigation}) => {
                             numberOfLines={4}
                             name="description"
                             placeholder="Description"
+                            value={values.description || ''}
                         />
                         <ItemPicker
                             name="page"

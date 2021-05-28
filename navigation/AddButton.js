@@ -18,10 +18,10 @@ export default AddButton
 const styles = StyleSheet.create({
     container:{
         backgroundColor:colors.primary,
-        borderRadius:45,
-        height:90,
-        width:90,
-        bottom:20,
+        borderRadius:42,
+        height:85,
+        width:85,
+        bottom:9,
         borderColor:colors.white,
         borderWidth:10,
         alignItems:"center",

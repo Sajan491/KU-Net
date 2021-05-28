@@ -156,7 +156,8 @@ const styles = StyleSheet.create({
         borderRadius:15,
         backgroundColor: colors.white,
         marginBottom: 15,
-        overflow:'hidden'
+        overflow:'hidden',
+        
     },
     
     interactionWrapper:{
