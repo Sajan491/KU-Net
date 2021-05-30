@@ -4,7 +4,7 @@ import {
     DrawerContentScrollView,
     DrawerItem
 } from "@react-navigation/drawer";
-import { Drawer, Avatar, Title, Caption, Paragraph, TouchableRipple, Switch } from 'react-native-paper';
+import { Drawer, Avatar, Title, Caption, Paragraph } from 'react-native-paper';
 import {AuthContext} from "../../context/AuthProvider";
 import firebase from "../../config/firebase";
 import AppText from "../../components/AppText";

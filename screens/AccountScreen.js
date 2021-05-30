@@ -7,6 +7,7 @@ import ItemSeperator from '../components/ItemSeperator';
 import MyIcon from "../components/MyIcon";
 import {AuthContext} from "../context/AuthProvider"
 import Header from '../components/Header';
+import firebase from "../config/firebase";
 
 
 const menuItems = [
@@ -40,9 +41,14 @@ const delay = (timeout)  => {
 const AccountScreen = ({navigation}) => {
     const {user, signOut} = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
+    const userId = firebase.auth().currentUser.uid;
 
     useEffect(() => {
-    }, [user])
+        const subscriber = firebase.firestore().collection("users").doc(userId).onSnapshot((documentSnapshot) => {
+            console.log("User data: ", documentSnapshot.data());
+        });
+        return () => subscriber();
+    }, [userId])
 
     
 
@@ -52,7 +58,6 @@ const AccountScreen = ({navigation}) => {
         delay(500).then(() => setLoading(false))
     }, [loading])
 
-    console.log("Username: " ,user.displayName);
 
     return (
         <Screen style={styles.screen}>
