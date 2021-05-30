@@ -1,4 +1,3 @@
-
 import React, {useEffect, useState} from 'react'
 import { StyleSheet, Text, ScrollView } from 'react-native'
 import * as Yup from 'yup';
@@ -145,7 +144,6 @@ const ProfileSettings = ({navigation}) => {
                 <ItemPicker
                     items={departments}
                     name="department"
-                    defaultValue = {department}
                     numberOfColumns={1}
                     placeholder= {department}
                 />
