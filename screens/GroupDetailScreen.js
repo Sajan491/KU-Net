@@ -7,17 +7,21 @@ import {AuthContext} from "../context/AuthProvider";
 import {posts} from "../data/posts"
 import Card from "../components/Card";
 import { GroupContext } from '../context/GroupProvider';
+import colors from '../config/colors';
 
 const GroupDetailScreen = ({route, navigation}) => {
     const group = route.params
     const [postSelected, setPostSelected] = useState(false);
     const [memberSelected, setMemberSelected] = useState(false);
     const {user} = useContext(AuthContext);
-    const {member, setMember, addMember} = useContext(GroupContext);
+    const {addMember} = useContext(GroupContext);
+
+    //If member exists in a group database then setMember true : false
+    const [member, setMember] = useState(false)
 
     const joinGroupHandler =  () => {
         setMember(true);
-        addMember();
+        addMember(group.id);
     }
 
     const showtPostsHandler = () => {
@@ -45,10 +49,10 @@ const GroupDetailScreen = ({route, navigation}) => {
                             </View>
                             <View style = {styles.switchTab}>
                                <TouchableOpacity onPress = {() => showtPostsHandler()}>
-                                   <Caption >Group Posts</Caption>
+                                   <AppText style = {styles.appText}> Posts</AppText>
                                 </TouchableOpacity> 
                                <TouchableOpacity onPress ={() => showMembersHandler()}>
-                                   <Caption>Group Members</Caption>
+                                   <AppText style = {styles.appText}> Members</AppText>
                                 </TouchableOpacity> 
                             </View>
                             <Caption style = {{alignSelf: "flex-start", padding: 4}}> Group Posts</Caption>
@@ -93,7 +97,8 @@ const styles = StyleSheet.create({
         margin: 10,
         height: windowHeight,
         backgroundColor: "#fff",
-        flex: 1
+        flex: 1,
+        borderRadius: 10,
     },
     groupInfo: {
         justifyContent: "center",
@@ -107,8 +112,14 @@ const styles = StyleSheet.create({
         marginTop: 5,
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: "space-evenly",
-        borderWidth: 1,
-        borderColor: "gray"
+        marginLeft: windowWidth/8,
+        marginRight: windowWidth/8,
+        justifyContent: "space-between",
+
+    },
+    appText: {
+        fontSize: 14,
+        fontWeight: "bold",
+        color: colors.secondary
     }
 })
