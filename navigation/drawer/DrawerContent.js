@@ -104,6 +104,7 @@ const DrawerContent = (props) => {
                         {groups.map((group) => {
                             return(
                                 <DrawerItem 
+                                    key = {group.id}
                                     icon = {({size}) => (
                                         <FontAwesome name="hand-o-right" size = {size/1.2} color = {colors.secondary} />
                                     )}
