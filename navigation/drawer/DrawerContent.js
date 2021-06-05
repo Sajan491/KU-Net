@@ -10,6 +10,7 @@ import firebase from "../../config/firebase";
 import AppText from "../../components/AppText";
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../../config/colors';
+import {groups} from "../../data/groups";
 const DrawerContent = (props) => {
     const {user, signOut} = useContext(AuthContext);
     const [username, setUsername] = useState("")
@@ -67,24 +68,24 @@ const DrawerContent = (props) => {
 
                <Drawer.Section style = {styles.topDdrawerSection}>
                   <DrawerItem
-                        icon = {({size, color}) => (
-                            <FontAwesome name="home" size = {size} color = {color} />
+                        icon = {({size}) => (
+                            <FontAwesome name="home" size = {size/1.2} color = {colors.black} />
                             )
                         }
                         label = "Home"
                         onPress = {() => props.navigation.navigate("Home")}
                     />
                   <DrawerItem
-                        icon = {({size, color}) => (
-                            <FontAwesome name="user" size = {size} color = {color} />
+                        icon = {({size}) => (
+                            <FontAwesome name="user-circle" size = {size/1.2} color = {colors.black} />
                             )
                         }
                         label = "Profile"
                         onPress = {() => props.navigation.navigate("Profile")}
                     />
                     <DrawerItem 
-                        icon = {({size, color}) => (
-                            <FontAwesome name="group" size = {size} color = {color} />
+                        icon = {({size}) => (
+                            <FontAwesome name="group" size = {size/1.2} color = {colors.black}/>
                         )}
                         label = "Groups"
                         onPress = {() => props.navigation.navigate("Group")}
@@ -100,27 +101,17 @@ const DrawerContent = (props) => {
                </Drawer.Section>
                <Drawer.Section style = {styles.enrolledGroup}>
                    <Caption style = {styles.drawerText}> Enrolled</Caption>
-                        <DrawerItem 
-                            icon = {({size, color}) => (
-                                <MaterialCommunityIcons name="group" size = {size} color = {color} />
-                            )}
-                            label = "AIESEC"
-                            onPress = {() => props.navigation.navigate("Group")}
-                        />
-                        <DrawerItem 
-                            icon = {({size, color}) => (
-                                <MaterialCommunityIcons name="group" size = {size} color = {color} />
-                            )}
-                            label = "KUCC"
-                            onPress = {() => props.navigation.navigate("Group")}
-                        />
-                        <DrawerItem 
-                            icon = {({size, color}) => (
-                                <MaterialCommunityIcons name="group" size = {size} color = {color} />
-                            )}
-                            label = "KURCS"
-                            onPress = {() => props.navigation.navigate("Group")}
-                        />
+                        {groups.map((group) => {
+                            return(
+                                <DrawerItem 
+                                    icon = {({size}) => (
+                                        <FontAwesome name="hand-o-right" size = {size/1.2} color = {colors.secondary} />
+                                    )}
+                                    label = {group.title}
+                                    onPress = {() => props.navigation.navigate("GroupDetails", group)}
+                                />
+                            )
+                        })}
                </Drawer.Section>
             </DrawerContentScrollView>
 
@@ -135,8 +126,8 @@ const DrawerContent = (props) => {
                     style = {{ borderBottomColor: "#f4f4f4", borderBottomWidth: 1}}
                 />
                 <DrawerItem 
-                     icon = {({size, color}) => (
-                        <MaterialCommunityIcons name="logout" size = {size} color = {color} />
+                     icon = {({size}) => (
+                        <MaterialCommunityIcons name="logout" size = {size} color = {colors.danger} />
                         )
                     }
                     label = "Log Out"
@@ -177,5 +168,8 @@ const styles = StyleSheet.create({
     },
     drawerText: {
         marginLeft: 10,
+    },
+    enrolledGroup: {
+        marginVertical: 5
     }
 })
