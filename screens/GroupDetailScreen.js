@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import { StyleSheet, View, Image, Button, FlatList, TouchableOpacity } from 'react-native'
 import AppText from '../components/AppText';
 import {windowHeight, windowWidth} from "../config/Dimensions";
@@ -8,6 +8,7 @@ import {posts} from "../data/posts"
 import Card from "../components/Card";
 import { GroupContext } from '../context/GroupProvider';
 import colors from '../config/colors';
+import firebase from "../config/firebase";
 
 const GroupDetailScreen = ({route, navigation}) => {
     const group = route.params
@@ -15,9 +16,19 @@ const GroupDetailScreen = ({route, navigation}) => {
     const [memberSelected, setMemberSelected] = useState(false);
     const {user} = useContext(AuthContext);
     const {addMember} = useContext(GroupContext);
-
+    const usersDB = firebase.firestore().collection("users")
+    const userID = firebase.auth().currentUser.uid;
     //If member exists in a group database then setMember true : false
     const [member, setMember] = useState(false)
+    useEffect(() => {
+        getMember();
+    }, [])
+
+    const getMember = async () => {
+        await usersDB.doc(userID).get().then((doc) => {
+            console.log("Data from the coll: ", doc.data());
+        })
+    }
 
     const joinGroupHandler =  () => {
         setMember(true);
