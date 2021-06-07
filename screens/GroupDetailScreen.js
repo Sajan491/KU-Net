@@ -14,6 +14,7 @@ const GroupDetailScreen = ({route, navigation}) => {
     const group = route.params
     const [postSelected, setPostSelected] = useState(false);
     const [memberSelected, setMemberSelected] = useState(false);
+    const [groupData, setGroupData] = useState([]);
     const {user} = useContext(AuthContext);
     const {addMember} = useContext(GroupContext);
     const usersDB = firebase.firestore().collection("users")
@@ -21,18 +22,41 @@ const GroupDetailScreen = ({route, navigation}) => {
     //If member exists in a group database then setMember true : false
     const [member, setMember] = useState(false)
     useEffect(() => {
-        getMember();
+        // getMember();
+        getData();
     }, [])
 
     const getMember = async () => {
         await usersDB.doc(userID).get().then((doc) => {
-            console.log("Data from the coll: ", doc.data());
         })
     }
 
-    const joinGroupHandler =  () => {
-        setMember(true);
-        addMember(group.id);
+    const getData = async () => {
+        await usersDB.doc(userID).get().then((doc) => {
+            setGroupData(doc.data()['groups'])
+            console.log(doc.data(), "is the docs data");
+        })
+ 
+    }
+
+    const joinGroupHandler =  async () => {
+
+        try{
+            console.log(groupData, "is the state data");
+            setGroupData([...groupData, group.title])
+            await usersDB.doc(userID).get().then((doc)=> {
+
+                    usersDB.doc(userID).update({
+                       groups: groupData
+                    }).then(() => {
+
+                        console.log("Joined Successfully");
+                    })
+            })
+            
+        }catch(err){
+            console.log("Error joining group:", err);
+        };
     }
 
     const showtPostsHandler = () => {

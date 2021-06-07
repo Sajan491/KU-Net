@@ -1,13 +1,25 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { StyleSheet, Text, View, FlatList } from 'react-native'
 import Header from '../../components/Header'
 import colors from '../../config/colors'
 import Screen from "../../components/Screen";
 import ListItem from "../../components/ListItem";
 import ItemSeparator from "../../components/ItemSeperator";
-import {groups} from "../../data/groups";
+import firebase from "../../config/firebase";
 
 const GroupsScreen = ({navigation}) => {
+    const [groups, setGroups] = useState({});
+    const groupsDB = firebase.firestore().collection("groups")
+    useEffect(() => {
+        groupsDB.get().then((docs)=> {
+            const groupsArray = []
+            docs.forEach((doc) => {
+                groupsArray.push({id: doc.id, ...doc.data()})
+            })
+            console.log("GROUPS ARRAY: __________________--------------------_________-",groupsArray);
+            setGroups(groupsArray);
+        })
+    }, [])
     return (
         <Screen style = {styles.screen}>        
             <Header headerText="Groups" />

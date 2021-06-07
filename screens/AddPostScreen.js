@@ -60,9 +60,10 @@ const AddPostScreen = ({navigation}) => {
             console.log(values)
 
             
-            posts.add(values).then(()=>{
-            console.log("Post successfully added!")
-            Alert.alert('Success!','Post Added Successfully')
+            posts.add(values).then((doc)=>{
+                console.log(doc.id);
+                console.log("Post successfully added!")
+                Alert.alert('Success!','Post Added Successfully')
 
             })
             
