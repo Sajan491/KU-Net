@@ -58,13 +58,15 @@ const AddPostScreen = ({navigation}) => {
                 values.page = deptName;
             }
             console.log(values)
-
+            values.page=values.page['label']
             
-            posts.add(values).then(()=>{
+            posts.add(values).then((doc)=>{
             console.log("Post successfully added!")
+            console.log(doc.id)
             Alert.alert('Success!','Post Added Successfully')
 
             })
+
             
         }  
         
