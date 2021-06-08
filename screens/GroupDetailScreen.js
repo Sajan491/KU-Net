@@ -6,70 +6,99 @@ import {Caption} from "react-native-paper";
 import {AuthContext} from "../context/AuthProvider";
 import {posts} from "../data/posts"
 import Card from "../components/Card";
-// import { GroupContext } from '../context/GroupProvider';
 import colors from '../config/colors';
 import firebase from "../config/firebase";
 import Loading from "../components/Loading";
 
 const GroupDetailScreen = ({route, navigation}) => {
     const group = route.params
-    const [postSelected, setPostSelected] = useState(false);
-    const [memberSelected, setMemberSelected] = useState(false);
     const [isAMember, setIsAMember] = useState(false);
     const [loading, setLoading] = useState(false);
     
     const [groupData, setGroupData] = useState([]);
-    const [membersData, setMembersData] = useState([]);
+    const [membersData, setMembersData] = useState([])
     const {user} = useContext(AuthContext);
-    // const {addMember} = useContext(GroupContext);
-    const usersDB = firebase.firestore().collection("users_extended")
-    const groupsDB = firebase.firestore().collection("groups")
     const userID = firebase.auth().currentUser.uid;
-    
-    useEffect(() => {
-        // getData();
-    }, [])
+    const usersDB = firebase.firestore().collection("users_extended")
+    const groupsDB = firebase.firestore().collection("groups");
+    useEffect(  () => {
+        const subscriber = usersDB
+                            .doc(userID)
+                            .onSnapshot((docs) => {
+                                console.log(docs.data(), "-----updated----------");
+                                          })
+        getGroups();
+        getMembers();
 
-
-    // const getData = async () => {
-    //     try{
-    //          await usersDB.doc(userID).get().then((doc) => {
-    //              console.log("PUlled data", doc.data()['groups']);
-    //              if(doc.data()['groups'] !== undefined) {
-    //                  setGroupData(doc.data()['groups'])
-    //                 } else{
-    //                     usersDB.doc(userID).update({
-    //                         groups: []
-    //                  })
-    //              }
-    //         }).catch(err => {
-    //             console.log("Error fetching users data", err);
-    //         })
-    
-    //         await groupsDB.doc(group.id).get().then((doc) => {
-    //             if(doc.data()['members' !== undefined]) {
-    //                 setMembersData(doc.data()['members']);
-    //             } else {
-    //                 groupData.doc(group.id).update({
-    //                     members: []
-    //                 })
-    //             }
-    //             membersData.forEach((member) => {
-    //                 if(member === userID) {
-    //                     setIsAMember(true);
-    //                 }
-    //             })
-    //         }).catch((err) => {
-    //             console.log("Error fetching groups data: ", err);
-    //         })
-    //         setLoading(false);
-    //     }catch(err) {
-    //         console.log(err);
-    //     }
+        return () => subscriber();
  
-    // }
+    }, [userID])
+    
+    const getGroups = async () => {
+        await usersDB.doc(userID).get().then((doc) => {
+           setLoading(false);  
+           if(doc.data()['groups'] !== undefined) {
+               const groupArr = doc.data()['groups']
+               setGroupData(groupArr)
+               console.log(groupData, " is set");
+              } else{
+                  usersDB.doc(userID).update({
+                      groups: []
+               })
+           }
+      }).catch(err => {
+          console.log("Error fetching users data", err);
+      })
+    }
 
-    // const joinGroupHandler = async  () => {
+    const getMembers =  () => {
+        groupsDB.doc(group.id).collection("members").get().then((docs) => {
+            const membersArr = [];
+            docs.forEach((doc) => {
+                console.log(doc.data(), "MEMBERS LIST");
+                membersArr.push(doc.data());
+                if (doc === userID) {
+                    setIsAMember(true);
+                    console.log(isAMember, "issS?");
+                } else {
+                    setIsAMember(false);
+                    console.log(isAMember, "isNOT?");
+                }
+            })
+            console.log(membersArr, "Members");
+            setMembersData(membersArr)
+        })
+    }
+
+    const updateData = () => {
+        setGroupData([...groupData, {id: group.id}])
+        console.log(groupData, "join");
+        
+        setMembersData([...membersData, {id: userID}])
+        console.log(membersData, "join");
+
+    }
+
+    const joinGroupHandler =  () => {
+        updateData();
+         usersDB.doc(userID).update({
+            groups: groupData
+        }).then(()=> {
+            console.log("Group", group.title ," added to the database");
+        }).catch((err) => {
+            console.log("Error adding group to the database", err.message);
+        })
+
+        groupsDB.doc(group.id).collection("members").add({
+            members: membersData
+        }).then(() => {
+            console.log("Members added to the database");
+        }).catch((err) => {
+            console.log("Error adding members to the database: ", err.message);
+        })
+    }
+
+    // const joinGroupHandler =   () => {
     //             try{
     //                 //Add group in groups array inside users collection
     //                 setGroupData([...groupData, group.title])
@@ -83,7 +112,7 @@ const GroupDetailScreen = ({route, navigation}) => {
                     
     //                 // Add member in members array inside groups collection
     //                 setMembersData ([...membersData, group.title])
-    //                 await groupsDB.doc(group.id).get().then(() => {
+    //                  groupsDB.doc(group.id).get().then(() => {
     //                     groupsDB.doc(group.id).update({
     //                         members: membersData
     //                     }).then(()=> {
@@ -122,7 +151,9 @@ const GroupDetailScreen = ({route, navigation}) => {
                                 <Caption> {group.about} </Caption>
                                 { isAMember
                                     ? <Caption> Hello {user.displayName}!</Caption> 
-                                    :<Button title="Join" onPress = {() => joinGroupHandler()}/>
+                                    :<TouchableOpacity onPress = {joinGroupHandler}> 
+                                        <AppText> Join</AppText>
+                                     </TouchableOpacity>
                                 }
                             </View>
                             <View style = {styles.switchTab}>

@@ -12,7 +12,12 @@ const GroupsScreen = ({navigation}) => {
     const [groups, setGroups] = useState({});
     const [loading, setLoading] = useState(true);
     const groupsDB = firebase.firestore().collection("groups")
+    const usersDB = firebase.firestore().collection("users_extended");
     useEffect(() => {
+        getGroups();
+    }, [])
+
+    const getGroups = () => {
         groupsDB.get().then((docs)=> {
             const groupsArray = []
             docs.forEach((doc) => {
@@ -21,11 +26,8 @@ const GroupsScreen = ({navigation}) => {
             setGroups(groupsArray);
             setLoading(false);
         })
-    }, [])
-
-    const joinGroupHandler = () => {
-        console.log("Joined Group");
     }
+
     if(loading) {
         return <Loading />
     }
@@ -42,7 +44,7 @@ const GroupsScreen = ({navigation}) => {
                         title = {item.title}
                         image = {item.image}
                         icon = "plus"
-                        onPress = {() => joinGroupHandler()}
+                        onPress = {() => navigation.navigate("GroupDetails", item)}
                         />
                         )}
                         />
