@@ -30,7 +30,6 @@ const validationSchema = Yup.object().shape({
 });
 
 const usersCollection = firebase.firestore().collection("users_extended")
-const posts = firebase.firestore().collection("posts")
 
 const AddPostScreen = ({navigation}) => {
     const [deptName, setDeptName] = useState("")
@@ -58,6 +57,8 @@ const AddPostScreen = ({navigation}) => {
 
 
     const handleSubmit= async (values) =>{
+        const groupPosts = firebase.firestore().collection('groups').doc(values.page['value']).collection('posts')
+
         if(Object.keys(deptName).length===0){
             console.log('try again')
         }
@@ -68,19 +69,12 @@ const AddPostScreen = ({navigation}) => {
             else{
                 values.page=values.page['label']
             }
-            
             console.log(values)
-            posts.add(values).then((doc)=>{
+            groupPosts.add(values).then((doc)=>{
             console.log("Post successfully added!")
-            console.log(doc.id)
             Alert.alert('Success!','Post Added Successfully')
-
             })
-
-            
         }  
-        
-
     }
 
     return (
