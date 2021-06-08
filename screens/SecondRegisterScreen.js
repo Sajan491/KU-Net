@@ -19,19 +19,20 @@ const validationSecondRegisterScreen = Yup.object().shape({
 });
 
 import departments from '../components/Departments'
-    
 const usersCollection = firebase.firestore().collection("users_extended")
-
-
 
 const SecondRegisterScreen = ({navigation}) => {
     const user = useContext(AuthContext);
     const handleSubmit=(values)=>{
-        console.log(values.username);
+
+        const departMembers = firebase.firestore().collection('departments').doc(values.department.value).collection('members')
         try {
             const userID = firebase.auth().currentUser.uid;
             console.log(userID);
-            usersCollection.doc(userID).set({ ...values, department: values.department.label, posts:[]
+            usersCollection.doc(userID).set({ ...values, department: values.department
+            })
+            departMembers.add({id:userID}).then(()=>{
+                console.log("member added in department")
             })
 
             firebase.auth().currentUser.updateProfile({

@@ -11,16 +11,6 @@ import colors from '../config/colors'
 import Header from '../components/Header';
 import {Formik} from 'formik'
 
-// const pages = [
-//     {label: "My Department", value:1, icon:"human-greeting"},
-//     {label: "Red Cross Society", value:2, icon:"hospital-box"},
-//     {label: "Alumni Group", value:3, icon:"face-woman"},
-//     {label: "KUCC", value:4, icon:"laptop"},
-//     {label: "ANNFSU KU", value:5, icon:"fountain-pen"},
-//     {label: "Sports Club", value:6, icon:"football"},
-//     {label: "Chess Club", value:7, icon:"chess-knight"},
-//     {label: "Dance Club", value:8, icon:"human"},
-// ];
 
 const validationSchema = Yup.object().shape({
     title: Yup.string().required().min(1).label("Title"),
@@ -32,7 +22,7 @@ const validationSchema = Yup.object().shape({
 const usersCollection = firebase.firestore().collection("users_extended")
 
 const AddPostScreen = ({navigation}) => {
-    const [deptName, setDeptName] = useState("")
+    const [dept, setDept] = useState("")
     const [uploading, setUploading] = useState(false)
     const [clubs, setClubs] = useState([])
     useEffect(() => {
@@ -40,14 +30,13 @@ const AddPostScreen = ({navigation}) => {
 
 
         usersCollection.doc(userID).get().then((abc)=>{
-            setDeptName(abc.data()['department'])
-            let data=[{label: "My Department", value:100, icon:"human-greeting"}]
+            setDept(abc.data()['department'])
+            let data=[{label: "My Department", value:dept.value, icon:dept.icon}]
             let joinedClubs = abc.data()['groups'];
             joinedClubs.forEach(function(doc){
                 data.push({label: doc.title, value:doc.id, icon:doc.icon})
             })
             setClubs(data)
-            console.log(clubs)
 
         }).catch((error)=>{
             console.log(error)
@@ -58,22 +47,28 @@ const AddPostScreen = ({navigation}) => {
 
     const handleSubmit= async (values) =>{
         const groupPosts = firebase.firestore().collection('groups').doc(values.page['value']).collection('posts')
+        const departPosts = firebase.firestore().collection('departments').doc(dept.value).collection('posts')
 
-        if(Object.keys(deptName).length===0){
+        if(Object.keys(dept.label).length===0){
             console.log('try again')
         }
         else{  
             if(values.page['label'] === 'My Department') {
-                values.page = deptName;
+                values.page = dept.label;
+                departPosts.add(values).then(()=>{
+                    console.log("Post successfully added to department!")
+                    Alert.alert('Success!','Post Added Successfully')
+                })
             }
             else{
                 values.page=values.page['label']
+                groupPosts.add(values).then(()=>{
+                    console.log("Post successfully added to group!")
+                    Alert.alert('Success!','Post Added Successfully')
+                })
             }
             console.log(values)
-            groupPosts.add(values).then((doc)=>{
-            console.log("Post successfully added!")
-            Alert.alert('Success!','Post Added Successfully')
-            })
+            
         }  
     }
 
