@@ -6,9 +6,11 @@ import Screen from "../../components/Screen";
 import ListItem from "../../components/ListItem";
 import ItemSeparator from "../../components/ItemSeperator";
 import firebase from "../../config/firebase";
+import Loading from "../../components/Loading";
 
 const GroupsScreen = ({navigation}) => {
     const [groups, setGroups] = useState({});
+    const [loading, setLoading] = useState(true);
     const groupsDB = firebase.firestore().collection("groups")
     useEffect(() => {
         groupsDB.get().then((docs)=> {
@@ -18,9 +20,14 @@ const GroupsScreen = ({navigation}) => {
             })
             console.log("GROUPS ARRAY: __________________--------------------_________-",groupsArray);
             setGroups(groupsArray);
+            setLoading(false);
         })
     }, [])
-    return (
+
+    if(loading) {
+        return <Loading />
+    }
+     return (
         <Screen style = {styles.screen}>        
             <Header headerText="Groups" />
             <View style ={styles.container}>
