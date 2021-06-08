@@ -18,12 +18,14 @@ const GroupsScreen = ({navigation}) => {
             docs.forEach((doc) => {
                 groupsArray.push({id: doc.id, ...doc.data()})
             })
-            console.log("GROUPS ARRAY: __________________--------------------_________-",groupsArray);
             setGroups(groupsArray);
             setLoading(false);
         })
     }, [])
 
+    const joinGroupHandler = () => {
+        console.log("Joined Group");
+    }
     if(loading) {
         return <Loading />
     }
@@ -40,7 +42,7 @@ const GroupsScreen = ({navigation}) => {
                         title = {item.title}
                         image = {item.image}
                         icon = "plus"
-                        onPress = {() => navigation.navigate("GroupDetails", item)}
+                        onPress = {() => joinGroupHandler()}
                         />
                         )}
                         />

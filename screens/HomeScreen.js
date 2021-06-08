@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react'
+import React, {useContext, useState, useEffect} from 'react'
 import { FlatList, StyleSheet, Text, View, ScrollView } from 'react-native'
 import Card from '../components/Card';
 import colors from "../config/colors";
@@ -9,9 +9,11 @@ import GroupLogoWithTitle from '../components/GroupLogoWithTitle';
 import NotifButton from '../navigation/NotifButton';
 import Constants from 'expo-constants'
 import {posts} from "../data/posts"
-import {groups} from "../data/groups";
+import firebase from "../config/firebase";
 const HomeScreen = ({navigation}) => {
-
+    const [groups, setGroups] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const groupsDB = firebase.firestore().collection("groups")
     // useEffect(() => {
     //     const fetchPosts =()=>{
     //         try {
@@ -32,7 +34,18 @@ const HomeScreen = ({navigation}) => {
     //     fetchPosts()
     // }, [])
 
-    const {user} = useContext(AuthContext)
+    useEffect(()=> {
+        groupsDB.get().then((docs)=> {
+            const groupsArr = []
+            docs.forEach((doc) => {
+                groupsArr.push({id: doc.id, ...doc.data()})
+            })
+            setGroups(groupsArr);
+            setLoading(false);
+            console.log(groups);
+        })
+    }, [])
+
     return (
                 
 
@@ -70,7 +83,7 @@ const HomeScreen = ({navigation}) => {
                                 data = {groups}
                                 keyExtractor = {(item) => item.id.toString()}
                                 renderItem = {({item}) => (
-                                    <GroupLogoWithTitle title = {item.title} image = {item.image} onPress = {() => navigation.navigate("GroupDetails", item)} />
+                                    <GroupLogoWithTitle title = {item.abbr} icon = {item.icon}  onPress = {() => navigation.navigate("GroupDetails", item)} />
                                 )}
                             />
                         </>
