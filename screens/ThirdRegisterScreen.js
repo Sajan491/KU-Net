@@ -19,7 +19,7 @@ const ThirdRegisterScreen = ({navigation}) => {
         clubsCollection.get().then((abc)=>{
             let data=[]
             abc.forEach(function(doc){
-                data.push({title: doc.data()['title'], id:doc.data()['id'], check:false})
+                data.push({title: doc.data()['title'], id:doc.data()['id'], check:false, icon:doc.data()['icon']})
             })
             setClubs(data)
             
@@ -39,10 +39,10 @@ const ThirdRegisterScreen = ({navigation}) => {
         item.check = !(item.check);
 
         if(item.check){
-            setChecked([...checked, item.title])
+            setChecked([...checked, {title: item.title, id:item.id, icon:item.icon }])
         }
         else{
-            setChecked(checked.filter(e=> e!== item.title)) 
+            setChecked(checked.filter(e=> e.title!== item.title)) 
         }
         
     }

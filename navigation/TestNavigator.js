@@ -13,7 +13,10 @@ const TestNavigator = () => {
     return (
       <Stack.Navigator>
          {isANewUser ? <Stack.Screen name = "SecondRegister" component = {SecondRegisterScreen} /> : null }
-         {isANewUser ? <Stack.Screen name = "ThirdRegister" component = {ThirdRegisterScreen} /> : null }
+         {isANewUser ? <Stack.Screen name = "ThirdRegister" component = {ThirdRegisterScreen} options={({})=>({
+                    headerShown: false,
+                    
+                })} /> : null }
           <Stack.Screen name = "Drawer" component = {DrawerNavigator} options = {{headerShown: false}} />
           <Stack.Screen name = "App" component = {AppNavigator} options = {{headerShown: false}} />
           
