@@ -7,7 +7,8 @@ import {AuthContext} from "../context/AuthProvider";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
 import GroupLogoWithTitle from '../components/GroupLogoWithTitle';
 import NotifButton from '../navigation/NotifButton';
-import Constants from 'expo-constants'
+import Constants from 'expo-constants';
+
 
 const posts=[
     {   
@@ -157,6 +158,7 @@ const HomeScreen = ({navigation}) => {
     // }, [])
 
     const {user} = useContext(AuthContext)
+   
     return (
                 
 
