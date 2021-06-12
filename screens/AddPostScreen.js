@@ -83,7 +83,6 @@ const AddPostScreen = ({navigation}) => {
                         setUploading(true)
                         handleSubmit(values)
                         resetForm({});
-                        setUploading(false)
                     }}
                     validationSchema={validationSchema}
                 >

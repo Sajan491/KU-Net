@@ -14,9 +14,8 @@ const GroupDetailScreen = ({route, navigation}) => {
     const group = route.params
     const [isAMember, setIsAMember] = useState(false);
     const [loading, setLoading] = useState(false);
-    
     const [groupData, setGroupData] = useState([]);
-    const [membersData, setMembersData] = useState([])
+    const [membersData, setMembersData] = useState("")
     const {user} = useContext(AuthContext);
     const userID = firebase.auth().currentUser.uid;
     const usersDB = firebase.firestore().collection("users_extended")
@@ -32,7 +31,7 @@ const GroupDetailScreen = ({route, navigation}) => {
 
         return () => subscriber();
  
-    }, [userID])
+    }, [userID, isAMember])
     
     const getGroups = async () => {
         await usersDB.doc(userID).get().then((doc) => {
@@ -53,31 +52,26 @@ const GroupDetailScreen = ({route, navigation}) => {
 
     const getMembers =  () => {
         groupsDB.doc(group.id).collection("members").get().then((docs) => {
-            const membersArr = [];
             docs.forEach((doc) => {
-                console.log(doc.data(), "MEMBERS LIST");
-                membersArr.push(doc.data());
-                if (doc === userID) {
+                console.log(doc.data().id, "MEMBERS LIST");
+                console.log(userID, "Current user iD");
+                if (doc.data().id === userID) {
                     setIsAMember(true);
-                    console.log(isAMember, "issS?");
-                } else {
-                    setIsAMember(false);
-                    console.log(isAMember, "isNOT?");
+                    console.log(isAMember, "IS A MEMBER!");
                 }
             })
-            console.log(membersArr, "Members");
-            setMembersData(membersArr)
         })
     }
 
     const updateData = () => {
         setGroupData([...groupData, {id: group.id}])
         console.log(groupData, "join");
-        
-        setMembersData([...membersData, {id: userID}])
-        console.log(membersData, "join");
 
-    }
+       
+            setMembersData({id: userID})
+            console.log(membersData, "join");
+        } 
+
 
     const joinGroupHandler =  () => {
         updateData();
@@ -90,7 +84,7 @@ const GroupDetailScreen = ({route, navigation}) => {
         })
 
         groupsDB.doc(group.id).collection("members").add({
-            members: membersData
+          id: userID
         }).then(() => {
             console.log("Members added to the database");
         }).catch((err) => {
