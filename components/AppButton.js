@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
         alignSelf:'center'
     },
     text:{
-        color:colors.white,
+        color:colors.black,
         fontSize:18,
         textTransform: 'uppercase',
         fontWeight: 'bold',

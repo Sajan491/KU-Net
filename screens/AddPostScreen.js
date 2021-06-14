@@ -6,7 +6,6 @@ import AppFormImagePicker from '../components/form/AppFormImagePicker';
 import Screen from '../components/Screen'
 import firebase from "../config/firebase";
 import ItemPicker from '../components/ItemPicker';
-import { useIsFocused } from '@react-navigation/native';
 import colors from '../config/colors'
 import Header from '../components/Header';
 import {Formik} from 'formik'
@@ -24,31 +23,24 @@ const usersCollection = firebase.firestore().collection("users_extended")
 const AddPostScreen = ({navigation}) => {
     const [dept, setDept] = useState({})
     const [uploading, setUploading] = useState(false)
-    const [joinedClubs, setJoinedClubs] = useState([])
     const [clubs, setClubs] = useState([])
-
-    const isFocused = useIsFocused();
-    
-    console.log(isFocused)
 
     useEffect(() => {
         const userID = firebase.auth().currentUser.uid;
 
-
-        usersCollection.doc(userID).get().then((abc)=>{
-            setDept(abc.data()['department'])
-            let data=[]
-            setJoinedClubs(abc.data()['groups']);
-            console.log(joinedClubs)
-            joinedClubs.forEach(function(doc){
+        usersCollection.doc(userID).get().then((usr)=>{
+            let dep = usr.data()['department']
+            setDept(dep)
+            let data=[{label:'My Department', value:dep.value, icon:dep.icon}]
+            let groups = usr.data()['groups']
+            groups.forEach(function(doc){
                 data.push({label: doc.title, value:doc.id, icon:doc.icon})
             })
             setClubs(data)
-
         }).catch((error)=>{
             console.log(error)
         })
-    }, [isFocused])
+    }, [])
     
 
 
@@ -63,14 +55,12 @@ const AddPostScreen = ({navigation}) => {
             if(values.page['label'] === 'My Department') {
                 values.page = dept.label;
                 departPosts.add(values).then(()=>{
-                    console.log("Post successfully added to department!")
                     Alert.alert('Success!','Post Added Successfully')
                 })
             }
             else{
                 values.page=values.page['label']
                 groupPosts.add(values).then(()=>{
-                    console.log("Post successfully added to group!")
                     Alert.alert('Success!','Post Added Successfully')
                 })
             }

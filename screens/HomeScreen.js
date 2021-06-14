@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import { FlatList, StyleSheet, Text, View, ScrollView } from 'react-native'
 import Card from '../components/Card';
 import colors from "../config/colors";
@@ -8,9 +8,10 @@ import {MaterialCommunityIcons} from "@expo/vector-icons";
 import GroupLogoWithTitle from '../components/GroupLogoWithTitle';
 import NotifButton from '../navigation/NotifButton';
 import Constants from 'expo-constants';
+import firebase from "../config/firebase";
 
 
-const posts=[
+const dummyPosts=[
     {   
         id:1,
         username: 'Sajan Mahat',
@@ -134,28 +135,27 @@ const groups = [
         image:require("../assets/groups/itmeet.png"),
     },
 ]
+const usersCollection = firebase.firestore().collection("users_extended")
 
 const HomeScreen = ({navigation}) => {
 
-    // useEffect(() => {
-    //     const fetchPosts =()=>{
-    //         try {
-    //             const list = []
-    //             firebase.firestore().collection('posts').get().then((querySnapshot)=>{
-    //                 console.log("total posts", querySnapshot.size)
-    //                 querySnapshot.forEach(doc=>{
-    //                     const {} = doc.data();
-    //                     list.push({
+    const [homePosts, setHomePosts] = useState([])
 
-    //                     });
-    //                 })
-    //             })
-    //         } catch (error) {
-    //             console.log(error)
-    //         }
-    //     }
-    //     fetchPosts()
-    // }, [])
+    useEffect(() => {
+        const userID = firebase.auth().currentUser.uid;
+        usersCollection.doc(userID).get().then((usr)=>{
+            let department_id = usr.data()['department'].value
+            console.log(department_id);
+            let data=[]
+            let groups = usr.data()['groups']
+            groups.forEach(function(grp){
+                data.push(grp.id)
+            })
+            console.log(data)
+        }).catch((error)=>{
+            console.log(error)
+        })
+    }, [])
 
     const {user} = useContext(AuthContext)
    
@@ -170,23 +170,7 @@ const HomeScreen = ({navigation}) => {
                 <View  style={styles.notifCount}>
                     <Text style={styles.notifCountText}>1</Text>
                 </View>
-              {/* <ScrollView>
-                <ScrollView 
-                    horizontal
-                    showsHorizontalScrollIndicator = {false}
-                    showsVerticalScrollIndicator = {false}
-                    style = {styles.scrollView}
-                >
-                    <FlatList
-                        horizontal 
-                        data = {groups}
-                        keyExtractor = {(item) => item.id.toString()}
-                        renderItem = {({item}) => (
-                            <GroupLogoWithTitle title = {item.title} image = {item.image} onPress = {() => navigation.navigate("GroupDetails", item)} />
-                        )}
-                    />
-
-                </ScrollView> */}
+             
                 <FlatList 
                     ListHeaderComponent = {
                         <>
@@ -203,7 +187,7 @@ const HomeScreen = ({navigation}) => {
                     }
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
-                    data={posts}
+                    data={dummyPosts}
                     keyExtractor={(item)=>item.id.toString()}
                     renderItem={({item})=>(
                         <Card
