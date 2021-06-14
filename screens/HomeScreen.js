@@ -141,23 +141,57 @@ const HomeScreen = ({navigation}) => {
 
     const [homePosts, setHomePosts] = useState([])
 
-    useEffect(() => {
+    const getPosts = async ()=>{
         const userID = firebase.auth().currentUser.uid;
-        usersCollection.doc(userID).get().then((usr)=>{
-            let department_id = usr.data()['department'].value
-            console.log(department_id);
-            let data=[]
+        let department_id;
+        let allPosts = []
+        let data=[]
+        await usersCollection.doc(userID).get().then((usr)=>{
+            department_id = usr.data()['department'].value
+            
             let groups = usr.data()['groups']
             groups.forEach(function(grp){
                 data.push(grp.id)
             })
-            console.log(data)
+            console.log(data);
         }).catch((error)=>{
             console.log(error)
         })
+
+        // -----------fetching posts---------------------//
+        await data.forEach((doc)=>{
+            const groupPosts = firebase.firestore().collection('groups').doc(doc).collection('posts')
+            
+            groupPosts.get().then((snapshot2)=>{
+                snapshot2.forEach(doc=>{
+                    let b=doc.data()
+                    allPosts.push(b);
+                })
+            })
+            
+        })
+
+        const departPosts = await firebase.firestore().collection('departments').doc(department_id).collection('posts')
+        await departPosts.get().then((snapshot1)=>{
+            snapshot1.forEach(doc => {
+                let a = doc.data()
+                allPosts.push(a)
+                
+            });
+        })
+        setHomePosts(allPosts)
+
+        
+        console.log(homePosts);
+       
+
+
+        //   --------------------------------------------- //
+    }
+    useEffect(() => {
+        (async () => getPosts())();
     }, [])
 
-    const {user} = useContext(AuthContext)
    
     return (
                 

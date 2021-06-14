@@ -55,12 +55,14 @@ const AddPostScreen = ({navigation}) => {
             if(values.page['label'] === 'My Department') {
                 values.page = dept.label;
                 departPosts.add(values).then(()=>{
+                    console.log("Post successfully added to department!")
                     Alert.alert('Success!','Post Added Successfully')
                 })
             }
             else{
                 values.page=values.page['label']
                 groupPosts.add(values).then(()=>{
+                    console.log("Post successfully added to group!")
                     Alert.alert('Success!','Post Added Successfully')
                 })
             }
