@@ -138,33 +138,34 @@ const groups = [
 const usersCollection = firebase.firestore().collection("users_extended")
 
 const HomeScreen = ({navigation}) => {
-
+    const [loading, setLoading] = useState(false)
     const [homePosts, setHomePosts] = useState([])
 
     const getPosts = async ()=>{
+        setLoading(true)
         const userID = firebase.auth().currentUser.uid;
         let department_id;
         let allPosts = []
-        let data=[]
+        let groupIds=[]
         await usersCollection.doc(userID).get().then((usr)=>{
             department_id = usr.data()['department'].value
             
             let groups = usr.data()['groups']
             groups.forEach(function(grp){
-                data.push(grp.id)
+                groupIds.push(grp.id)
             })
-            console.log(data);
         }).catch((error)=>{
             console.log(error)
         })
 
         // -----------fetching posts---------------------//
-        await data.forEach((doc)=>{
+        await groupIds.forEach((doc)=>{
             const groupPosts = firebase.firestore().collection('groups').doc(doc).collection('posts')
             
             groupPosts.get().then((snapshot2)=>{
                 snapshot2.forEach(doc=>{
-                    let b=doc.data()
+                    
+                    let b=Object.assign(doc.data(), {id:doc.id})  
                     allPosts.push(b);
                 })
             })
@@ -174,7 +175,7 @@ const HomeScreen = ({navigation}) => {
         const departPosts = await firebase.firestore().collection('departments').doc(department_id).collection('posts')
         await departPosts.get().then((snapshot1)=>{
             snapshot1.forEach(doc => {
-                let a = doc.data()
+                let a = Object.assign(doc.data(), {id:doc.id})
                 allPosts.push(a)
                 
             });
@@ -183,13 +184,15 @@ const HomeScreen = ({navigation}) => {
 
         
         console.log(homePosts);
-       
+        setLoading(false)
 
 
         //   --------------------------------------------- //
     }
     useEffect(() => {
+        
         (async () => getPosts())();
+        
     }, [])
 
    
@@ -204,8 +207,8 @@ const HomeScreen = ({navigation}) => {
                 <View  style={styles.notifCount}>
                     <Text style={styles.notifCountText}>1</Text>
                 </View>
-             
-                <FlatList 
+
+                {!loading && <FlatList 
                     ListHeaderComponent = {
                         <>
                             <FlatList
@@ -221,17 +224,17 @@ const HomeScreen = ({navigation}) => {
                     }
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
-                    data={dummyPosts}
+                    data={homePosts}
                     keyExtractor={(item)=>item.id.toString()}
                     renderItem={({item})=>(
                         <Card
-                            postTitle={item.postTitle}
-                            content={item.content}
-                            postImgs={item.postImgs}
+                            postTitle={item.title}
+                            content={item.description}
+                            postImgs={item.images}
                             username={item.username}
-                            userImg={item.userImg}
+                            userImg={require("../assets/sajan.png")}
                             postTime= {item.postTime}
-                            liked={item.liked}
+                            liked={false}
                             likesCount={item.likesCount}
                             comments={item.comments}
                             commentsCount={item.comments.length}
@@ -239,8 +242,7 @@ const HomeScreen = ({navigation}) => {
                         />
                     )}
 
-                />
-                {/* </ScrollView> */}
+                />}
             </View>
     )
 }

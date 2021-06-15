@@ -19,7 +19,7 @@ const Card = ({
     comments,
     commentsCount, onPressComment}) => {
 
-            
+        
         const computeColumns=()=>{
             if (postImgs.length == 1){
                 return {numCol:1, imgWidth: "100%", imgHeight:200};
@@ -86,7 +86,7 @@ const Card = ({
                 <Image style={styles.userImage} source={userImg} />
                 <View style={styles.userInfoText}>
                     <Text style={styles.username}>{username}</Text>
-                    <Text style={styles.time}>{postTime}</Text>
+                    <Text style={styles.time}>{postTime.toDate().toString().slice(0,15)}</Text>
                 </View>
             </View>
             
@@ -109,7 +109,7 @@ const Card = ({
                    <FlatList 
                         data={postImgs}
                         numColumns={numCol}
-                        keyExtractor={(item)=>{return item.id.toString()}}
+                        keyExtractor={(item)=>{return item.id}}
                         renderItem={({item})=>{
                             return (<TouchableWithoutFeedback onPress={()=>{
                                 setModalVisible(true)

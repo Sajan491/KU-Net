@@ -24,6 +24,7 @@ const AddPostScreen = ({navigation}) => {
     const [dept, setDept] = useState({})
     const [uploading, setUploading] = useState(false)
     const [clubs, setClubs] = useState([])
+    const [userName, setUserName] = useState('')
 
     useEffect(() => {
         const userID = firebase.auth().currentUser.uid;
@@ -37,6 +38,9 @@ const AddPostScreen = ({navigation}) => {
                 data.push({label: doc.title, value:doc.id, icon:doc.icon})
             })
             setClubs(data)
+
+            let uName= usr.data()['username']
+            setUserName(uName)
         }).catch((error)=>{
             console.log(error)
         })
@@ -54,6 +58,7 @@ const AddPostScreen = ({navigation}) => {
         else{  
             if(values.page['label'] === 'My Department') {
                 values.page = dept.label;
+                values.username = userName;
                 departPosts.add(values).then(()=>{
                     console.log("Post successfully added to department!")
                     Alert.alert('Success!','Post Added Successfully')
@@ -61,6 +66,7 @@ const AddPostScreen = ({navigation}) => {
             }
             else{
                 values.page=values.page['label']
+                values.username = userName;
                 groupPosts.add(values).then(()=>{
                     console.log("Post successfully added to group!")
                     Alert.alert('Success!','Post Added Successfully')
@@ -77,7 +83,7 @@ const AddPostScreen = ({navigation}) => {
             <ScrollView>
                 <View  style={styles.formContainer}>
                 <Formik
-                    initialValues={{title:'', description:'',page:null, images:[], userid:firebase.auth().currentUser.uid, likesCount:0, comments:{}, postTime:firebase.firestore.Timestamp.fromDate(new Date())}}
+                    initialValues={{title:'', description:'',page:null, peopleWhoLiked:{}, images:[], username:'', likesCount:0, comments:{}, postTime:firebase.firestore.Timestamp.fromDate(new Date())}}
                     onSubmit={(values, {resetForm})=>{
                         setUploading(true)
                         handleSubmit(values)
