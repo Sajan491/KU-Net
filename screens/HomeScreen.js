@@ -147,9 +147,13 @@ const HomeScreen = ({navigation}) => {
         let department_id;
         let allPosts = []
         let groupIds=[]
+        let userName;
+        
+        
         await usersCollection.doc(userID).get().then((usr)=>{
             department_id = usr.data()['department'].value
-            
+            userName = usr.data()['username']
+            console.log(userName);
             let groups = usr.data()['groups']
             groups.forEach(function(grp){
                 groupIds.push(grp.id)
@@ -183,7 +187,6 @@ const HomeScreen = ({navigation}) => {
         setHomePosts(allPosts)
 
         
-        console.log(homePosts);
         setLoading(false)
 
 
