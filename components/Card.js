@@ -74,7 +74,7 @@ const Card = ({
                         zoomEnabled={true} 
                         captureEvent={true} 
                     >
-                        <Image style={{width: Dimensions.get('window').width,resizeMode: 'contain' }} source={modalUri.uri} />
+                        <Image style={{width: Dimensions.get('window').width,resizeMode: 'contain' }} source={{uri:modalUri}} />
                     </ReactNativeZoomableView>
                    
                 </View>
@@ -86,13 +86,13 @@ const Card = ({
                 <Image style={styles.userImage} source={userImg} />
                 <View style={styles.userInfoText}>
                     <Text style={styles.username}>{username}</Text>
-                    <Text style={styles.time}>{postTime.toDate().toString().slice(0,15)}</Text>
+                    {/* <Text style={styles.time}>{postTime}</Text> */}
                 </View>
             </View>
             
                 <View>
                     <Text style={styles.title}>{postTitle}</Text>
-                    <View style={styles.contentWrapper}>
+                    {content? <View style={styles.contentWrapper}>
                         <ReadMore
                             numberOfLines={2}
                             renderTruncatedFooter={renderTruncatedFooter}
@@ -102,7 +102,7 @@ const Card = ({
                                 {content}
                             </Text>
                         </ReadMore>
-                    </View>
+                    </View>:null}
                     
                 </View>
 
@@ -121,7 +121,7 @@ const Card = ({
                                 height:imgHeight,
                                 marginRight:4,
                                 resizeMode: 'cover'
-                            }} source={item.uri} /></TouchableWithoutFeedback>)
+                            }} source={{uri:item}} /></TouchableWithoutFeedback>)
                         }}
                    />
             

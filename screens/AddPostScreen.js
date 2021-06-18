@@ -9,7 +9,7 @@ import ItemPicker from '../components/ItemPicker';
 import colors from '../config/colors'
 import Header from '../components/Header';
 import {Formik} from 'formik'
-
+import { v4 as uuidv4 } from 'uuid';
 var storageRef = firebase.storage().ref();
 
 const validationSchema = Yup.object().shape({
@@ -50,65 +50,65 @@ const AddPostScreen = ({navigation}) => {
     
     
     const uploadImage= async (values)=>{
-        
-        
-    }
-
-    const handleSubmit= async (values) =>{
-        const groupPosts = firebase.firestore().collection('groups').doc(values.page['value']).collection('posts')
-        const departPosts = firebase.firestore().collection('departments').doc(dept.value).collection('posts')
-
-        
+       
         // ----------uploading to storage-----------
-        if(values.images.length>0){
-            var uris = []
-            await values.images.forEach(async(img)=>{
-                let a = img.split('/')
-                let b = a[a.length-1]
-                
-                const blob = await new Promise((resolve,reject)=>{
-                    const xhr = new XMLHttpRequest();
-                    xhr.onload = function(){
-                        resolve(xhr.response);
-                    };
-                    xhr.onerror = function(){
-                        reject(new TypeError('Network request failed'));
-                    };
-                    xhr.responseType = 'blob';
-                    xhr.open('GET', img, true);
-                    xhr.send(null);
-                });
-                
-                const picRef = storageRef.child(`posts/${b}`)
-                const snapshot = picRef.put(blob)
+        
+        var uris = []
+        var count = 0;
+        var limit = values.images.length;
+        await values.images.forEach( async (img)=>{
+            
+            const random_id = uuidv4();
+            
+            const blob = await new Promise((resolve,reject)=>{
+                const xhr = new XMLHttpRequest();
+                console.log('xhr test');
+                xhr.onload = function(){
+                    resolve(xhr.response);
+                };
+                xhr.onerror = function(){
+                    reject(new TypeError('Network request failed'));
+                };
+                xhr.responseType = 'blob';
+                xhr.open('GET', img, true);
+                xhr.send(null);
 
-                snapshot.on(firebase.storage.TaskEvent.STATE_CHANGED, 
+            });
+           
+            const picRef = storageRef.child(`posts/${random_id}`)
+            const snapshot = picRef.put(blob)
+            snapshot.on(firebase.storage.TaskEvent.STATE_CHANGED, 
                 (snapshot)=>{
-                    console.log(snapshot.state);
-                    console.log('progress:' + (snapshot.bytesTransferred / snapshot.totalBytes)*100);
-                    setUploading(true);
-                },
-                (error)=>{
-                    setUploading(false)
-                    console.log(error);
+                console.log(snapshot.state);
+                console.log('progress:' + (snapshot.bytesTransferred / snapshot.totalBytes)*100);
+                setUploading(true);
+            },
+            (error)=>{
+                setUploading(false)
+                console.log(error);
+                blob.close()
+                return
+            },
+            ()=>{
+                picRef.getDownloadURL().then((downloadUrl)=>{
+                    count= count+1;
                     blob.close()
-                    return
-                },
-                ()=>{
-                    picRef.getDownloadURL().then((downloadUrl)=>{
-                        console.log("download url: ",downloadUrl);
-                        blob.close()
-                        uris.push(downloadUrl)
+                    uris.push(downloadUrl)
+                    if (count === limit){ 
+                        delete values.images
                         setUploading(false)                  
                         values.imgs = uris
-                    })
-                }
-                );
-            })
-        }
-            
-        // ----------uploading to storage-----------
+                        finalSubmit(values)
+                    }
+                })
+            }
+            );
+        })
+    }
 
+    const finalSubmit= async (values)=>{
+        const groupPosts = firebase.firestore().collection('groups').doc(values.page['value']).collection('posts')
+        const departPosts = firebase.firestore().collection('departments').doc(dept.value).collection('posts')
 
         if(Object.keys(dept.label).length===0){
             console.log('try again')
@@ -131,8 +131,12 @@ const AddPostScreen = ({navigation}) => {
                 })
             }
             
-            
         }  
+    }
+
+    const handleSubmit= async (values) =>{
+        await uploadImage(values);
+        
     }
 
     return (
@@ -141,7 +145,7 @@ const AddPostScreen = ({navigation}) => {
             <ScrollView>
                 <View  style={styles.formContainer}>
                 <Formik
-                    initialValues={{title:'', description:'',page:null, imgs:[], peopleWhoLiked:{}, images:[], username:'', likesCount:0, comments:{}, postTime:firebase.firestore.Timestamp.fromDate(new Date())}}
+                    initialValues={{title:'', description:'',page:null, imgs:[], peopleWhoLiked:{}, images:[], username:'', likesCount:0, comments:{}, postTime:firebase.firestore.FieldValue.serverTimestamp()}}
                     onSubmit={(values, {resetForm})=>{
                         
                         handleSubmit(values)

@@ -166,11 +166,11 @@ const HomeScreen = ({navigation}) => {
         await groupIds.forEach((doc)=>{
             const groupPosts = firebase.firestore().collection('groups').doc(doc).collection('posts')
             
-            groupPosts.get().then((snapshot2)=>{
+            groupPosts.orderBy('postTime').get().then((snapshot2)=>{
                 snapshot2.forEach(doc=>{
-                    
-                    let b=Object.assign(doc.data(), {id:doc.id})  
-                    allPosts.push(b);
+                    const postItem = doc.data()
+                    postItem.id = doc.id;
+                    allPosts.push(postItem)
                 })
             })
             
@@ -179,8 +179,9 @@ const HomeScreen = ({navigation}) => {
         const departPosts = await firebase.firestore().collection('departments').doc(department_id).collection('posts')
         await departPosts.get().then((snapshot1)=>{
             snapshot1.forEach(doc => {
-                let a = Object.assign(doc.data(), {id:doc.id})
-                allPosts.push(a)
+                const postItem = doc.data()
+                postItem.id = doc.id;
+                allPosts.push(postItem)
                 
             });
         })
@@ -233,7 +234,7 @@ const HomeScreen = ({navigation}) => {
                         <Card
                             postTitle={item.title}
                             content={item.description}
-                            postImgs={item.images}
+                            postImgs={item.imgs}
                             username={item.username}
                             userImg={require("../assets/sajan.png")}
                             postTime= {item.postTime}
