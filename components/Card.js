@@ -1,6 +1,7 @@
 import React,{useState} from 'react'
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View, Dimensions, Modal, Button, TouchableWithoutFeedback } from 'react-native'
 import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
+import firebase from "../config/firebase";
 
 import colors from '../config/colors'
 import ReadMore from 'react-native-read-more-text';
@@ -18,7 +19,14 @@ const Card = ({
     likesCount,
     comments,
     commentsCount, onPressComment}) => {
-
+        let formatted_date;
+        const computeDate=()=>{
+            let a = postTime.toDate().toString();
+            let b = a.split(" ");
+            let c= b[4].split(':')
+            formatted_date = b[0]+"  "+ b[1]+" " + b[2]+", "+b[3]+ " at " + c[0]+':'+c[1]; 
+        }
+        computeDate();
         
         const computeColumns=()=>{
             if (postImgs.length == 1){
@@ -86,7 +94,7 @@ const Card = ({
                 <Image style={styles.userImage} source={userImg} />
                 <View style={styles.userInfoText}>
                     <Text style={styles.username}>{username}</Text>
-                    {/* <Text style={styles.time}>{postTime.toDate()}</Text> */}
+                    <Text style={styles.time}>{formatted_date}</Text>
                 </View>
             </View>
             

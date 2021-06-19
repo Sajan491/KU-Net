@@ -85,6 +85,7 @@ const usersCollection = firebase.firestore().collection("users_extended")
 const HomeScreen = ({navigation}) => {
     const [loading, setLoading] = useState(false)
     const [homePosts, setHomePosts] = useState([])
+    
 
     const getPosts = async ()=>{
         setLoading(true)
@@ -132,7 +133,6 @@ const HomeScreen = ({navigation}) => {
         
         
         setHomePosts(allPosts)
-        console.log(allPosts);
         
         setLoading(false)
 

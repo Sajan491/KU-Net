@@ -117,16 +117,20 @@ const AddPostScreen = ({navigation}) => {
                 values.page = dept.label;
                 values.username = userName;
                 departPosts.add(values).then(()=>{
-                    console.log("Post successfully added to department!")
-                    Alert.alert('Success!','Post Added Successfully')
+                    Alert.alert('Success!','Post Added Successfully',[
+                        {text: 'Continue', onPress: () => navigation.jumpTo('Feed')},
+                      ])
                 })
+                
             }
             else{
                 values.page=values.page['label']
                 values.username = userName;
                 groupPosts.add(values).then(()=>{
-                    console.log("Post successfully added to group!")
-                    Alert.alert('Success!','Post Added Successfully')
+                    
+                    Alert.alert('Success!','Post Added Successfully',[
+                        {text: 'Continue', onPress: () => navigation.jumpTo('Feed')},
+                      ])
                 })
             }
             
