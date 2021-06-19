@@ -1,5 +1,5 @@
-import React, {useContext, useEffect, useState} from 'react'
-import { FlatList, StyleSheet, Text, View, ScrollView } from 'react-native'
+import React, {useContext, useEffect, useState, useCallback} from 'react'
+import { FlatList, StyleSheet, Text, View, ScrollView, RefreshControl, ActivityIndicator } from 'react-native'
 import Card from '../components/Card';
 import colors from "../config/colors";
 import Screen from '../components/Screen'
@@ -81,11 +81,15 @@ const groups = [
     },
 ]
 const usersCollection = firebase.firestore().collection("users_extended")
-
+const delay = (timeout)  => {
+    return new Promise(resolve => {
+        setTimeout(resolve, timeout)
+    })
+}
 const HomeScreen = ({navigation}) => {
     const [loading, setLoading] = useState(false)
     const [homePosts, setHomePosts] = useState([])
-    
+    const [refreshing, setRefreshing] = useState(false);
 
     const getPosts = async ()=>{
         setLoading(true)
@@ -145,6 +149,12 @@ const HomeScreen = ({navigation}) => {
         
     }, [])
 
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        await getPosts()
+        setRefreshing(false)
+    }, [])
+
    
     return (
                 
@@ -158,7 +168,7 @@ const HomeScreen = ({navigation}) => {
                     <Text style={styles.notifCountText}>1</Text>
                 </View>
 
-                {!loading && <FlatList 
+                {!loading? <FlatList 
                     ListHeaderComponent = {
                         <>
                             <FlatList
@@ -176,6 +186,12 @@ const HomeScreen = ({navigation}) => {
                     showsHorizontalScrollIndicator={false}
                     data={homePosts}
                     keyExtractor={(item)=>item.id.toString()}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                        />
+                    }
                     renderItem={({item})=>(
                         <Card
                             postTitle={item.title}
@@ -192,7 +208,7 @@ const HomeScreen = ({navigation}) => {
                         />
                     )}
 
-                />}
+                />: <ActivityIndicator style={{marginTop:55}} size={65} color={colors.primary} />}
             </View>
     )
 }

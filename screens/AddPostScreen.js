@@ -138,7 +138,13 @@ const AddPostScreen = ({navigation}) => {
     }
 
     const handleSubmit= async (values) =>{
-        await uploadImage(values);
+        if(values.images.length>0){
+            await uploadImage(values);
+        }
+        else{
+            finalSubmit(values)
+        }
+        
         
     }
 
