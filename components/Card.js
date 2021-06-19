@@ -25,7 +25,7 @@ const Card = ({
                 return {numCol:1, imgWidth: "100%", imgHeight:200};
             }
             else {
-                return {numCol:2, imgWidth: ItemWidth, imgHeight:100};
+                return {numCol:2, imgWidth: ItemWidth, imgHeight:120};
             }
         }
 
@@ -86,7 +86,7 @@ const Card = ({
                 <Image style={styles.userImage} source={userImg} />
                 <View style={styles.userInfoText}>
                     <Text style={styles.username}>{username}</Text>
-                    {/* <Text style={styles.time}>{postTime}</Text> */}
+                    {/* <Text style={styles.time}>{postTime.toDate()}</Text> */}
                 </View>
             </View>
             

@@ -166,7 +166,7 @@ const HomeScreen = ({navigation}) => {
         await groupIds.forEach((doc)=>{
             const groupPosts = firebase.firestore().collection('groups').doc(doc).collection('posts')
             
-            groupPosts.orderBy('postTime').get().then((snapshot2)=>{
+            groupPosts.orderBy('postTime','desc').get().then((snapshot2)=>{
                 snapshot2.forEach(doc=>{
                     const postItem = doc.data()
                     postItem.id = doc.id;
@@ -177,16 +177,17 @@ const HomeScreen = ({navigation}) => {
         })
 
         const departPosts = await firebase.firestore().collection('departments').doc(department_id).collection('posts')
-        await departPosts.get().then((snapshot1)=>{
+        await departPosts.orderBy('postTime','desc').get().then((snapshot1)=>{
             snapshot1.forEach(doc => {
                 const postItem = doc.data()
                 postItem.id = doc.id;
-                allPosts.push(postItem)
-                
+                allPosts.push(postItem)  
             });
         })
+        
+        
         setHomePosts(allPosts)
-
+        console.log(allPosts);
         
         setLoading(false)
 

@@ -62,7 +62,6 @@ const AddPostScreen = ({navigation}) => {
             
             const blob = await new Promise((resolve,reject)=>{
                 const xhr = new XMLHttpRequest();
-                console.log('xhr test');
                 xhr.onload = function(){
                     resolve(xhr.response);
                 };
