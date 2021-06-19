@@ -49,7 +49,7 @@ const Card = ({
 
         const [isLiked, setIsLiked] = useState(liked)
         const [modalVisible, setModalVisible] = useState(false);
-        const [modalUri, setModalUri] = useState({})
+        const [modalUri, setModalUri] = useState()
     return (
         <>
         {modalVisible && <Modal
@@ -74,7 +74,7 @@ const Card = ({
                         zoomEnabled={true} 
                         captureEvent={true} 
                     >
-                        <Image style={{width: Dimensions.get('window').width,resizeMode: 'contain' }} source={{uri:modalUri}} />
+                        <Image style={styles.modalImage} source={{uri:modalUri}} />
                     </ReactNativeZoomableView>
                    
                 </View>
@@ -113,7 +113,7 @@ const Card = ({
                         renderItem={({item})=>{
                             return (<TouchableWithoutFeedback onPress={()=>{
                                 setModalVisible(true)
-                                setModalUri(item)}
+                                setModalUri(item.uri)}
                                 
                             }><Image style={{
                                 marginTop:14,
@@ -121,7 +121,7 @@ const Card = ({
                                 height:imgHeight,
                                 marginRight:4,
                                 resizeMode: 'cover'
-                            }} source={{uri:item}} /></TouchableWithoutFeedback>)
+                            }} source={{uri:item.uri}} /></TouchableWithoutFeedback>)
                         }}
                    />
             
@@ -145,6 +145,11 @@ const Card = ({
 export default Card
 
 const styles = StyleSheet.create({
+    modalImage:{
+        width: Dimensions.get('window').width,
+        resizeMode: 'contain',
+        height:'100%'
+    },
     borderline:{
         borderBottomColor: '#dddddd',
         borderBottomWidth: 1,

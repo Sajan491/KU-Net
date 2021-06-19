@@ -17,10 +17,10 @@ const dummyPosts=[
         username: 'Sajan Mahat',
         userImg:require("../assets/sajan.png"),
         postTime: '1 day ago',
-        postTitle:"Hiring a full stack ReactJs developer!",
-        content:"We are looking for a great JavaScript developer who is proficient with React.js. Your primary focus will be on developing user interface components and implementing them following well-known React.js workflows (such as Flux or Redux). You will coordinate with the rest of the team working on different layers of the infrastructure. Therefore, a commitment to collaborative problem solving, sophisticated design, and quality product is important. Please leave a comment if you are interested!",
+        title:"Hiring a full stack ReactJs developer!",
+        description:"We are looking for a great JavaScript developer who is proficient with React.js. Your primary focus will be on developing user interface components and implementing them following well-known React.js workflows (such as Flux or Redux). You will coordinate with the rest of the team working on different layers of the infrastructure. Therefore, a commitment to collaborative problem solving, sophisticated design, and quality product is important. Please leave a comment if you are interested!",
 
-        postImgs:[
+        imgs:[
             {uri: require("../assets/react.png"), id:1},
             {uri: require("../assets/sajan.png"),id:2},
             {uri: require("../assets/aisec.png"),id:3},
@@ -38,62 +38,7 @@ const dummyPosts=[
             
         ]
     },
-    {
-        id:2,
-        username: 'Sabin Thapa',
-        userImg:require("../assets/sajan.png"),
-        postTime: '4 hours ago',
-        postTitle:"Hello! hau u?",
-        content:"subtitle1",
-        postImgs:[],
-        liked:false,
-        likesCount:2,
-        comments: []
-    },
-    {
-        id:3,
-        username: 'Nripesh Karmacharya',
-        userImg:require("../assets/sajan.png"),
-        postTime: '34 days ago',
-        postTitle:"Aalu lelo!",
-        content:"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"
-        ,postImgs:[
-            {uri: require("../assets/aalu.jpg"),id:1},
-            {uri: require("../assets/aisec.png"),id:2}, 
-            {uri: require("../assets/react.png"),id:3 }
-            
-        ],
-        liked:false,
-        likesCount:8,
-        comments: []
-    },
-    {
-        id:4,
-        username: 'Rojan Thapa',
-        userImg:require("../assets/sajan.png"),
-        postTime: '1 day ago',
-        postTitle:"Join AISEC. I beg you!",
-        content:"subtitle1",
-        postImgs:[{uri: require("../assets/aisec.png"),id:1}],
-        liked:true,
-        likesCount:1,
-        comments: []
-    },
-    {
-        id:5,
-        username: 'Hero Keto',
-        userImg:require("../assets/sajan.png"),
-        postTime: '14 days ago',
-        postTitle:"Please Like!",
-        content:"subtitle1",
-        postImgs:[
-            {uri: require("../assets/aisec.png"),id:1}, 
-            {uri: require("../assets/react.png"),id:2},
-        ],
-        liked:true,
-        likesCount:5,
-        comments: []
-    }
+    
     
     
 ]

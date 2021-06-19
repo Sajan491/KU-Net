@@ -92,7 +92,7 @@ const AddPostScreen = ({navigation}) => {
                 picRef.getDownloadURL().then((downloadUrl)=>{
                     count= count+1;
                     blob.close()
-                    uris.push(downloadUrl)
+                    uris.push({uri:downloadUrl, id:random_id})
                     if (count === limit){ 
                         delete values.images
                         setUploading(false)                  
