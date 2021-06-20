@@ -81,18 +81,14 @@ const groups = [
     },
 ]
 const usersCollection = firebase.firestore().collection("users_extended")
-const delay = (timeout)  => {
-    return new Promise(resolve => {
-        setTimeout(resolve, timeout)
-    })
-}
+
 const HomeScreen = ({navigation}) => {
     const [loading, setLoading] = useState(false)
     const [homePosts, setHomePosts] = useState([])
     const [refreshing, setRefreshing] = useState(false);
 
     const getPosts = async ()=>{
-        setLoading(true)
+        
         const userID = firebase.auth().currentUser.uid;
         let department_id;
         let allPosts = []
@@ -138,7 +134,7 @@ const HomeScreen = ({navigation}) => {
         
         setHomePosts(allPosts)
         
-        setLoading(false)
+        
 
 
         //   --------------------------------------------- //
