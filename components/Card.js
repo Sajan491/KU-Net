@@ -2,6 +2,7 @@ import React,{useState} from 'react'
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View, Dimensions, Modal, Button, TouchableWithoutFeedback } from 'react-native'
 import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
 import firebase from "../config/firebase";
+import { Video, AVPlaybackStatus } from 'expo-av';
 
 import colors from '../config/colors'
 import ReadMore from 'react-native-read-more-text';
@@ -11,7 +12,7 @@ const ItemWidth = Dimensions.get('window').width / 2 -20;
 const Card = ({
     postTitle, 
     content,
-    postImgs,
+    postContents,
     username,
     userImg,
     postTime,
@@ -19,6 +20,10 @@ const Card = ({
     likesCount,
     comments,
     commentsCount, onPressComment}) => {
+
+        const video = React.useRef(null);
+        const [status, setStatus] = React.useState({});
+
         let formatted_date;
         const computeDate=()=>{
             let a = postTime.toDate().toString();
@@ -29,7 +34,7 @@ const Card = ({
         computeDate();
         
         const computeColumns=()=>{
-            if (postImgs.length == 1){
+            if (postContents.length == 1){
                 return {numCol:1, imgWidth: "100%", imgHeight:200};
             }
             else {
@@ -72,6 +77,7 @@ const Card = ({
                     <View style={styles.modalButton}>
                         <Button title='X' onPress={()=>setModalVisible(false)} />
                     </View>
+                    {modalUri.type === 'image'?
                     <ReactNativeZoomableView
                         maxZoom={1.5}
                         minZoom={1}
@@ -82,8 +88,21 @@ const Card = ({
                         zoomEnabled={true} 
                         captureEvent={true} 
                     >
-                        <Image style={styles.modalImage} source={{uri:modalUri}} />
+                        <Image style={styles.modalImage} source={{uri:modalUri.uri}} />
                     </ReactNativeZoomableView>
+                    :
+                    <Video
+                        ref={video}
+                        style={styles.video}
+                        source={{
+                        uri: modalUri.uri,
+                        }}
+                        useNativeControls
+                        resizeMode="contain"
+                        isLooping
+                        onPlaybackStatusUpdate={status => setStatus(() => status)}
+                    />
+                    }
                    
                 </View>
                 
@@ -115,21 +134,36 @@ const Card = ({
                 </View>
 
                    <FlatList 
-                        data={postImgs}
+                        data={postContents}
                         numColumns={numCol}
                         keyExtractor={(item)=>{return item.id}}
                         renderItem={({item})=>{
-                            return (<TouchableWithoutFeedback onPress={()=>{
-                                setModalVisible(true)
-                                setModalUri(item.uri)}
-                                
-                            }><Image style={{
-                                marginTop:14,
-                                width:imgWidth,
-                                height:imgHeight,
-                                marginRight:4,
-                                resizeMode: 'cover'
-                            }} source={{uri:item.uri}} /></TouchableWithoutFeedback>)
+                            return (
+                                <TouchableWithoutFeedback onPress={()=>{
+                                    setModalVisible(true)
+                                    setModalUri(item)}
+                                }>
+                                    
+                                    {item.type==='image'?
+                                        <Image style={{
+                                        marginTop:14,
+                                        width:imgWidth,
+                                        height:imgHeight,
+                                        marginRight:4,
+                                        resizeMode: 'cover'
+                                        }} source={{uri:item.uri}} />
+                                    :
+                                    <Image style={{
+                                        marginTop:14,
+                                        width:imgWidth,
+                                        height:imgHeight,
+                                        marginRight:4,
+                                        resizeMode: 'cover'
+                                    }} source={require("../assets/thumbnail3.jpg")} />
+                                    
+                                    }
+
+                                </TouchableWithoutFeedback>)
                         }}
                    />
             
@@ -153,6 +187,11 @@ const Card = ({
 export default Card
 
 const styles = StyleSheet.create({
+    video:{
+       
+        width:'100%',
+        height:'100%'
+    },
     modalImage:{
         width: Dimensions.get('window').width,
         resizeMode: 'contain',

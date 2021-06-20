@@ -2,46 +2,13 @@ import React, {useContext, useEffect, useState, useCallback} from 'react'
 import { FlatList, StyleSheet, Text, View, ScrollView, RefreshControl, ActivityIndicator } from 'react-native'
 import Card from '../components/Card';
 import colors from "../config/colors";
-import Screen from '../components/Screen'
-import {AuthContext} from "../context/AuthProvider";
-import {MaterialCommunityIcons} from "@expo/vector-icons";
+
 import GroupLogoWithTitle from '../components/GroupLogoWithTitle';
 import NotifButton from '../navigation/NotifButton';
 import Constants from 'expo-constants';
 import firebase from "../config/firebase";
 
 
-const dummyPosts=[
-    {   
-        id:1,
-        username: 'Sajan Mahat',
-        userImg:require("../assets/sajan.png"),
-        postTime: '1 day ago',
-        title:"Hiring a full stack ReactJs developer!",
-        description:"We are looking for a great JavaScript developer who is proficient with React.js. Your primary focus will be on developing user interface components and implementing them following well-known React.js workflows (such as Flux or Redux). You will coordinate with the rest of the team working on different layers of the infrastructure. Therefore, a commitment to collaborative problem solving, sophisticated design, and quality product is important. Please leave a comment if you are interested!",
-
-        imgs:[
-            {uri: require("../assets/react.png"), id:1},
-            {uri: require("../assets/sajan.png"),id:2},
-            {uri: require("../assets/aisec.png"),id:3},
-            {uri: require("../assets/aalu.jpg"),id:4}
-             ],
-        liked:true,
-        likesCount:22,
-        comments: [
-            {id:1, user:{name:'Myakuri', userImg:require("../assets/sajan.png")}, comment: 'Wow! Amazing Stuff.', time:'24 mins ago'},
-            {id:2, user:{name:'Thakuri', userImg:require("../assets/sajan.png")}, comment: 'I am interested in web development with React. How do I apply?', time:'1 day ago'},
-            {id:3, user:{name:'Lyakuri', userImg:require("../assets/sajan.png")}, comment: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum', time:'2 days ago'},
-            {id:4, user:{name:'Sabin', userImg:require("../assets/sajan.png")}, comment: '@Janesh dai. Eta herna paryo.', time:'2 days ago'},
-            {id:5, user:{name:'Myakuri', userImg:require("../assets/sajan.png")}, comment: 'Wow! Amazing Stuff.', time:'24 mins ago'},
-            {id:6, user:{name:'Thakuri', userImg:require("../assets/sajan.png")}, comment: 'I am interested in web development with React. How do I apply?', time:'1 day ago'},
-            
-        ]
-    },
-    
-    
-    
-]
 
 const groups = [
     {
@@ -86,7 +53,7 @@ const HomeScreen = ({navigation}) => {
     const [loading, setLoading] = useState(false)
     const [homePosts, setHomePosts] = useState([])
     const [refreshing, setRefreshing] = useState(false);
-
+ 
     const getPosts = async ()=>{
         
         const userID = firebase.auth().currentUser.uid;
@@ -164,7 +131,7 @@ const HomeScreen = ({navigation}) => {
                     <Text style={styles.notifCountText}>1</Text>
                 </View>
 
-                {!loading? <FlatList 
+                <FlatList 
                     ListHeaderComponent = {
                         <>
                             <FlatList
@@ -192,7 +159,7 @@ const HomeScreen = ({navigation}) => {
                         <Card
                             postTitle={item.title}
                             content={item.description}
-                            postImgs={item.imgs}
+                            postContents={item.postContents}
                             username={item.username}
                             userImg={require("../assets/sajan.png")}
                             postTime= {item.postTime}
@@ -204,7 +171,7 @@ const HomeScreen = ({navigation}) => {
                         />
                     )}
 
-                />: <ActivityIndicator style={{marginTop:55}} size={65} color={colors.primary} />}
+                />
             </View>
     )
 }

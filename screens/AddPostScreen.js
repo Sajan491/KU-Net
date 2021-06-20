@@ -59,6 +59,7 @@ const AddPostScreen = ({navigation}) => {
         await values.images.forEach( async (img)=>{
             
             const random_id = uuidv4();
+            const extension = img.split('.').pop();
             
             const blob = await new Promise((resolve,reject)=>{
                 const xhr = new XMLHttpRequest();
@@ -74,7 +75,7 @@ const AddPostScreen = ({navigation}) => {
 
             });
            
-            const picRef = storageRef.child(`posts/${random_id}`)
+            const picRef = storageRef.child(`posts/${random_id+'.'+extension}`)
             const snapshot = picRef.put(blob)
             snapshot.on(firebase.storage.TaskEvent.STATE_CHANGED, 
                 (snapshot)=>{
@@ -91,13 +92,20 @@ const AddPostScreen = ({navigation}) => {
             ()=>{
                 picRef.getDownloadURL().then((downloadUrl)=>{
                     count= count+1;
-                    blob.close()
-                    uris.push({uri:downloadUrl, id:random_id})
+                    blob.close();
+                    let extensions = ['jpg', 'png', 'jpeg', 'gif', 'webp','bmp', 'svg']
+                    if (extensions.includes(extension)){
+                        uris.push({uri:downloadUrl, id:random_id, type:'image'})
+                    }
+                    else{
+                        uris.push({uri:downloadUrl, id:random_id, type:'video'})
+                    }
+                    
                     if (count === limit){ 
                         delete values.images
-                        setUploading(false)                  
-                        values.imgs = uris
+                        values.postContents = uris
                         finalSubmit(values)
+                        setUploading(false)                  
                     }
                 })
             }
@@ -154,7 +162,7 @@ const AddPostScreen = ({navigation}) => {
             <ScrollView>
                 <View  style={styles.formContainer}>
                 <Formik
-                    initialValues={{title:'', description:'',page:null, imgs:[], peopleWhoLiked:{}, images:[], username:'', likesCount:0, comments:{}, postTime:firebase.firestore.FieldValue.serverTimestamp()}}
+                    initialValues={{title:'', description:'',page:null, postContents:[], peopleWhoLiked:{}, images:[], username:'', likesCount:0, comments:{}, postTime:firebase.firestore.FieldValue.serverTimestamp()}}
                     onSubmit={(values, {resetForm})=>{
                         
                         handleSubmit(values)
