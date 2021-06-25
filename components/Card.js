@@ -110,7 +110,7 @@ const Card = ({
         
         <View style={styles.card}> 
             <View style={styles.userInfo}>
-                <Image style={styles.userImage} source={userImg} />
+                {userImg? <Image style={styles.userImage} source={{uri:userImg}} /> : <Image style={styles.userImage} source={require("../assets/sajan.png")} />}
                 <View style={styles.userInfoText}>
                     <Text style={styles.username}>{username}</Text>
                     <Text style={styles.time}>{formatted_date}</Text>

@@ -1,6 +1,6 @@
 
-import React, {useContext} from 'react'
-import { StyleSheet, Text, ScrollView } from 'react-native'
+import React, {useContext, useState} from 'react'
+import { StyleSheet, Text, ScrollView, ActivityIndicator } from 'react-native'
 import * as Yup from 'yup';
 import { AppForm, AppFormField, SubmitButton } from '../components/form'
 import Screen from '../components/Screen'
@@ -9,6 +9,8 @@ import ItemPicker from '../components/ItemPicker';
 import AppText from '../components/AppText';
 import firebase from "../config/firebase";
 import { AuthContext } from '../context/AuthProvider';
+var storageRef = firebase.storage().ref();
+import { v4 as uuidv4 } from 'uuid';
 
 const validationSecondRegisterScreen = Yup.object().shape({
     username: Yup.string().required().min(1).label("Username"),
@@ -19,23 +21,73 @@ const validationSecondRegisterScreen = Yup.object().shape({
 });
 
 import departments from '../components/Departments'
+import colors from '../config/colors';
 const usersCollection = firebase.firestore().collection("users_extended")
 
 const SecondRegisterScreen = ({navigation}) => {
     const user = useContext(AuthContext);
-    const handleSubmit=(values)=>{
+    const [uploading, setUploading] = useState(false)
 
-        const departMembers = firebase.firestore().collection('departments').doc(values.department.value).collection('members')
+    const handleSubmit = async (values)=>{
+
+        const departMembers = firebase.firestore().collection('departments').doc(values.department.value).collection('members');
+
+        const random_id = uuidv4();
+        const extension = values.profileImage.split('.').pop();
+
+        const blob = await new Promise((resolve,reject)=>{
+            const xhr = new XMLHttpRequest();
+            xhr.onload = function(){
+                resolve(xhr.response);
+            };
+            xhr.onerror = function(){
+                reject(new TypeError('Network request failed'));
+            };
+            xhr.responseType = 'blob';
+            xhr.open('GET', values.profileImage, true);
+            xhr.send(null);
+
+        });
+        const ppicRef = storageRef.child(`profilePictures/${random_id+'.'+extension}`)
+        const snapshot = ppicRef.put(blob);
+
+        snapshot.on(firebase.storage.TaskEvent.STATE_CHANGED, 
+            (snapshot)=>{
+            console.log(snapshot.state);
+            console.log('progress:' + (snapshot.bytesTransferred / snapshot.totalBytes)*100);
+            setUploading(true);
+        },
+        (error)=>{
+            setUploading(false)
+            console.log(error);
+            blob.close()
+            return
+        },
+        ()=>{
+            ppicRef.getDownloadURL().then((downloadUrl)=>{
+                blob.close();
+                
+                delete values.profileImage
+                values.profilePic = downloadUrl
+                finalSubmit(values)
+                setUploading(false)                  
+            })
+        }
+        );
+
+    }
+
+    const finalSubmit = async (values) =>{
         try {
             const userID = firebase.auth().currentUser.uid;
             console.log(userID);
-            usersCollection.doc(userID).set({ ...values, department: values.department
+            await usersCollection.doc(userID).set({ ...values, department: values.department
             })
-            departMembers.add({id:userID}).then(()=>{
+            await departMembers.add({id:userID}).then(()=>{
                 console.log("member added in department")
             })
 
-            firebase.auth().currentUser.updateProfile({
+            await firebase.auth().currentUser.updateProfile({
                 displayName: values.username
             })
         } catch (error) {
@@ -45,13 +97,15 @@ const SecondRegisterScreen = ({navigation}) => {
         navigation.navigate("ThirdRegister")      
     }
 
+
+
     return (
         <Screen style={styles.container}>
             <ScrollView>
             <AppText style={styles.header}>Profile Details</AppText>
 
             <AppForm
-                initialValues={{username:'', age:'',  department:null, bio:'', batch:''}}
+                initialValues={{username:'', age:'',  department:null, bio:'', batch:'', profileImage:''}}
                 onSubmit={handleSubmit}
                 validationSchema={validationSecondRegisterScreen}
             >
@@ -66,7 +120,7 @@ const SecondRegisterScreen = ({navigation}) => {
                     placeholder='Age'
                     name="age"
                 />
-                <ProfileImagePicker name='image' />
+                <ProfileImagePicker name='profileImage' />
                 
                 <ItemPicker
                     items = {departments}
@@ -87,9 +141,9 @@ const SecondRegisterScreen = ({navigation}) => {
                     placeholder='Batch'
                     name="batch"
                 />
-                <SubmitButton 
+                { !uploading? <SubmitButton 
                     title="Save"
-                />               
+                />:<ActivityIndicator size={40} color={colors.primary} />}               
             </AppForm>
             </ScrollView>
 

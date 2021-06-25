@@ -60,13 +60,9 @@ const HomeScreen = ({navigation}) => {
         let department_id;
         let allPosts = []
         let groupIds=[]
-        let userName;
-        
         
         await usersCollection.doc(userID).get().then((usr)=>{
             department_id = usr.data()['department'].value
-            userName = usr.data()['username']
-            console.log(userName);
             let groups = usr.data()['groups']
             groups.forEach(function(grp){
                 groupIds.push(grp.id)
@@ -81,7 +77,13 @@ const HomeScreen = ({navigation}) => {
             
             groupPosts.orderBy('postTime','desc').get().then((snapshot2)=>{
                 snapshot2.forEach(doc=>{
+                    
                     const postItem = doc.data()
+                    usersCollection.doc(postItem.userId).get().then((usr)=>{
+                        postItem.username = usr.data()['username'];
+                        postItem.profilePic = usr.data()['profilePic']
+                    }).catch(err=>console.log(err))
+
                     postItem.id = doc.id;
                     allPosts.push(postItem)
                 })
@@ -92,20 +94,29 @@ const HomeScreen = ({navigation}) => {
         const departPosts = await firebase.firestore().collection('departments').doc(department_id).collection('posts')
         await departPosts.orderBy('postTime','desc').get().then((snapshot1)=>{
             snapshot1.forEach(doc => {
+             
                 const postItem = doc.data()
+                usersCollection.doc(postItem.userId).get().then((usr)=>{
+                    postItem.username = usr.data()['username'];   
+                    postItem.profilePic = usr.data()['profilePic']   
+                    console.log(postItem);  
+                }).catch(err=>console.log(err))
+                 
                 postItem.id = doc.id;
-                allPosts.push(postItem)  
+                console.log(postItem);
+                allPosts.push(postItem) 
+
             });
         })
         
         
         setHomePosts(allPosts)
         
-        
 
 
         //   --------------------------------------------- //
     }
+  
     useEffect(() => {
         
         (async () => getPosts())();
@@ -161,7 +172,7 @@ const HomeScreen = ({navigation}) => {
                             content={item.description}
                             postContents={item.postContents}
                             username={item.username}
-                            userImg={require("../assets/sajan.png")}
+                            userImg={item.profilePic}
                             postTime= {item.postTime}
                             liked={false}
                             likesCount={item.likesCount}

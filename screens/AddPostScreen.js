@@ -25,10 +25,11 @@ const AddPostScreen = ({navigation}) => {
     const [dept, setDept] = useState({})
     const [uploading, setUploading] = useState(false)
     const [clubs, setClubs] = useState([])
-    const [userName, setUserName] = useState('')
+    const [userId, setUserId] = useState('')
 
     useEffect(() => {
         const userID = firebase.auth().currentUser.uid;
+        setUserId(userID)
 
         usersCollection.doc(userID).get().then((usr)=>{
             let dep = usr.data()['department']
@@ -40,8 +41,8 @@ const AddPostScreen = ({navigation}) => {
             })
             setClubs(data)
 
-            let uName= usr.data()['username']
-            setUserName(uName)
+            
+            
         }).catch((error)=>{
             console.log(error)
         })
@@ -123,7 +124,7 @@ const AddPostScreen = ({navigation}) => {
         else{  
             if(values.page['label'] === 'My Department') {
                 values.page = dept.label;
-                values.username = userName;
+                values.userInfo = userId;
                 departPosts.add(values).then(()=>{
                     Alert.alert('Success!','Post Added Successfully',[
                         {text: 'Continue', onPress: () => navigation.jumpTo('Feed')},
@@ -133,7 +134,7 @@ const AddPostScreen = ({navigation}) => {
             }
             else{
                 values.page=values.page['label']
-                values.username = userName;
+                values.userInfo = userId;
                 groupPosts.add(values).then(()=>{
                     
                     Alert.alert('Success!','Post Added Successfully',[
@@ -162,7 +163,7 @@ const AddPostScreen = ({navigation}) => {
             <ScrollView>
                 <View  style={styles.formContainer}>
                 <Formik
-                    initialValues={{title:'', description:'',page:null, postContents:[], peopleWhoLiked:{}, images:[], username:'', likesCount:0, comments:{}, postTime:firebase.firestore.FieldValue.serverTimestamp()}}
+                    initialValues={{title:'', description:'',page:null, postContents:[], peopleWhoLiked:{}, images:[], userInfo:{}, likesCount:0, comments:{}, postTime:firebase.firestore.FieldValue.serverTimestamp()}}
                     onSubmit={(values, {resetForm})=>{
                         
                         handleSubmit(values)
