@@ -94,18 +94,9 @@ const HomeScreen = ({navigation}) => {
         const departPosts = await firebase.firestore().collection('departments').doc(department_id).collection('posts')
         await departPosts.orderBy('postTime','desc').get().then((snapshot1)=>{
             snapshot1.forEach(doc => {
-             
-                const postItem = doc.data()
-                usersCollection.doc(postItem.userId).get().then((usr)=>{
-                    postItem.username = usr.data()['username'];   
-                    postItem.profilePic = usr.data()['profilePic']   
-                    console.log(postItem);  
-                }).catch(err=>console.log(err))
-                 
+                const postItem = doc.data()  
                 postItem.id = doc.id;
-                console.log(postItem);
                 allPosts.push(postItem) 
-
             });
         })
         
@@ -171,8 +162,8 @@ const HomeScreen = ({navigation}) => {
                             postTitle={item.title}
                             content={item.description}
                             postContents={item.postContents}
-                            username={item.username}
-                            userImg={item.profilePic}
+                            username={item.userInfo.username}
+                            userImg={item.userInfo.profilePic}
                             postTime= {item.postTime}
                             liked={false}
                             likesCount={item.likesCount}

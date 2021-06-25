@@ -25,11 +25,11 @@ const AddPostScreen = ({navigation}) => {
     const [dept, setDept] = useState({})
     const [uploading, setUploading] = useState(false)
     const [clubs, setClubs] = useState([])
-    const [userId, setUserId] = useState('')
+    const [userName, setUserName] = useState('')
+    const [userPpic, setUserPpic] = useState('')
 
     useEffect(() => {
         const userID = firebase.auth().currentUser.uid;
-        setUserId(userID)
 
         usersCollection.doc(userID).get().then((usr)=>{
             let dep = usr.data()['department']
@@ -40,7 +40,10 @@ const AddPostScreen = ({navigation}) => {
                 data.push({label: doc.title, value:doc.id, icon:doc.icon})
             })
             setClubs(data)
-
+            setUserName(usr.data()['username'])
+            if(usr.data()['profilePic']){
+                setUserPpic(usr.data()['profilePic'])
+            }
             
             
         }).catch((error)=>{
@@ -124,7 +127,7 @@ const AddPostScreen = ({navigation}) => {
         else{  
             if(values.page['label'] === 'My Department') {
                 values.page = dept.label;
-                values.userInfo = userId;
+                values.userInfo = {username: userName, profilePic: userPpic};
                 departPosts.add(values).then(()=>{
                     Alert.alert('Success!','Post Added Successfully',[
                         {text: 'Continue', onPress: () => navigation.jumpTo('Feed')},
@@ -134,7 +137,7 @@ const AddPostScreen = ({navigation}) => {
             }
             else{
                 values.page=values.page['label']
-                values.userInfo = userId;
+                values.userInfo = {username: userName, profilePic: userPpic};
                 groupPosts.add(values).then(()=>{
                     
                     Alert.alert('Success!','Post Added Successfully',[
