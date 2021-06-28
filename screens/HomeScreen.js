@@ -79,32 +79,26 @@ const HomeScreen = ({navigation}) => {
                 snapshot2.forEach(doc=>{
                     
                     const postItem = doc.data()
-                    usersCollection.doc(postItem.userId).get().then((usr)=>{
-                        postItem.username = usr.data()['username'];
-                        postItem.profilePic = usr.data()['profilePic']
-                    }).catch(err=>console.log(err))
-
                     postItem.id = doc.id;
+                    postItem.path = groupPosts
                     allPosts.push(postItem)
                 })
             })
             
         })
 
-        const departPosts = await firebase.firestore().collection('departments').doc(department_id).collection('posts')
+        const departPosts = firebase.firestore().collection('departments').doc(department_id).collection('posts')
         await departPosts.orderBy('postTime','desc').get().then((snapshot1)=>{
             snapshot1.forEach(doc => {
                 const postItem = doc.data()  
                 postItem.id = doc.id;
+                postItem.path = departPosts
                 allPosts.push(postItem) 
             });
         })
         
         
         setHomePosts(allPosts)
-        
-
-
         //   --------------------------------------------- //
     }
   
@@ -159,14 +153,15 @@ const HomeScreen = ({navigation}) => {
                     }
                     renderItem={({item})=>(
                         <Card
+                            id = {item.id}
+                            path = {item.path}
                             postTitle={item.title}
                             content={item.description}
                             postContents={item.postContents}
                             username={item.userInfo.username}
                             userImg={item.userInfo.profilePic}
                             postTime= {item.postTime}
-                            liked={false}
-                            likesCount={item.likesCount}
+                            likers = {item.peopleWhoLiked}
                             comments={item.comments}
                             commentsCount={item.comments.length}
                             onPressComment={()=> navigation.navigate('Comments', {comments: item.comments})}

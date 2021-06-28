@@ -10,16 +10,23 @@ import {MaterialCommunityIcons} from '@expo/vector-icons'
 const ItemWidth = Dimensions.get('window').width / 2 -20;
 
 const Card = ({
+    id,
+    path,
     postTitle, 
     content,
     postContents,
     username,
     userImg,
     postTime,
-    liked,
-    likesCount,
+    likers,
     comments,
     commentsCount, onPressComment}) => {
+
+        const handleLikePress = () =>{
+            console.log('Fkuu');
+            console.log(path, id);
+        }
+
 
         const video = React.useRef(null);
         const [status, setStatus] = React.useState({});
@@ -60,7 +67,8 @@ const Card = ({
             );
           }
 
-        const [isLiked, setIsLiked] = useState(liked)
+          
+        const [isLiked, setIsLiked] = useState(false)
         const [modalVisible, setModalVisible] = useState(false);
         const [modalUri, setModalUri] = useState()
     return (
@@ -168,9 +176,9 @@ const Card = ({
                    />
             
                 <View style={styles.interactionWrapper}>
-                    <TouchableOpacity style={styles.interaction} onPress={()=>setIsLiked(!isLiked)}>
+                    <TouchableOpacity style={styles.interaction} onPress={handleLikePress}>
                         {isLiked?<MaterialCommunityIcons size={25} name="heart-multiple" color={colors.primary}/>:<MaterialCommunityIcons size={25} name="heart-outline" color="black" />}
-                        {isLiked?<Text style={styles.interationText}> {likesCount + 1} Likes</Text>: <Text style={styles.interationText}>{likesCount} Likes</Text>}
+                        {isLiked?<Text style={styles.interationText}> 0 Likes</Text>: <Text style={styles.interationText}>0 Likes</Text>}
                     </TouchableOpacity>
                         
                     <TouchableOpacity style={styles.interaction}  onPress={()=>onPressComment()}>

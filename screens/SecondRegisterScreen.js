@@ -17,7 +17,8 @@ const validationSecondRegisterScreen = Yup.object().shape({
     age: Yup.string().required().min(1).max(2).label("Age"),
     department: Yup.object().required().nullable().label("Department"),
     bio: Yup.string().min(1).label("Bio"),
-    batch:  Yup.string().required().min(4).label("Batch")
+    batch:  Yup.string().required().min(4).label("Batch"),
+    profileImage: Yup.string().nullable()
 });
 
 import departments from '../components/Departments'
@@ -30,9 +31,9 @@ const SecondRegisterScreen = ({navigation}) => {
 
     const handleSubmit = async (values)=>{
 
-        const departMembers = firebase.firestore().collection('departments').doc(values.department.value).collection('members');
-
-        const random_id = uuidv4();
+        
+    if(values.profileImage!=='')
+        {const random_id = uuidv4();
         const extension = values.profileImage.split('.').pop();
 
         const blob = await new Promise((resolve,reject)=>{
@@ -73,11 +74,15 @@ const SecondRegisterScreen = ({navigation}) => {
                 setUploading(false)                  
             })
         }
-        );
+        );}
+        else{
+            finalSubmit(values)
+        }
 
     }
 
     const finalSubmit = async (values) =>{
+        const departMembers = firebase.firestore().collection('departments').doc(values.department.value).collection('members');
         try {
             const userID = firebase.auth().currentUser.uid;
             console.log(userID);
