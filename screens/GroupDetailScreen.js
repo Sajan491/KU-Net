@@ -70,7 +70,7 @@ const GroupDetailScreen = ({route, navigation}) => {
     }
 
     const updateData = () => {
-        setGroupData([...groupData, {id: group.id}])
+        setGroupData([...groupData, {...group}])
         console.log(groupData, "join");
 
        
