@@ -23,6 +23,7 @@ const usersCollection = firebase.firestore().collection("users_extended")
 
 const SecondRegisterScreen = ({navigation}) => {
     const user = useContext(AuthContext);
+    
     const handleSubmit=(values)=>{
 
         const departMembers = firebase.firestore().collection('departments').doc(values.department.value).collection('members')
@@ -51,7 +52,7 @@ const SecondRegisterScreen = ({navigation}) => {
             <AppText style={styles.header}>Profile Details</AppText>
 
             <AppForm
-                initialValues={{username:'', age:'',  department:null, bio:'', batch:''}}
+                // initialValues={{username:'', age:'',  department:null, bio:'', batch:''}}
                 onSubmit={handleSubmit}
                 validationSchema={validationSecondRegisterScreen}
             >

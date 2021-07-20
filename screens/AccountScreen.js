@@ -7,8 +7,6 @@ import ItemSeperator from '../components/ItemSeperator';
 import MyIcon from "../components/MyIcon";
 import {AuthContext} from "../context/AuthProvider"
 import Header from '../components/Header';
-
-
 const menuItems = [
     {
         title:"My Posts",

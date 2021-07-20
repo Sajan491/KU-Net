@@ -4,7 +4,6 @@ import Header from '../components/Header'
 import colors from '../config/colors'
 import {messages} from "../data/messages";
 import ItemSeparator from "../components/ItemSeperator";
-import AppText from "../components/AppText";
 import {Container, Card, UserInfo, UserImageWrapper, UserImage, TextSection, UserInfoText, MessageText, UserName, MessageTime} from "../styles/MessagesStyles";
 
 const MessagesScreen = ({navigation}) => {
