@@ -1,6 +1,7 @@
 import React, {useState, useContext, useEffect} from 'react'
-import { StyleSheet, View, Image, Button, FlatList, TouchableOpacity, Alert } from 'react-native'
+import { StyleSheet, View, Image, Button, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native'
 import AppText from '../components/AppText';
+import AppButton from "../components/AppButton"
 import {windowHeight, windowWidth} from "../config/Dimensions";
 import {Caption} from "react-native-paper";
 import {AuthContext} from "../context/AuthProvider";
@@ -12,14 +13,16 @@ import Loading from "../components/Loading";
 
 const GroupDetailScreen = ({route, navigation}) => {
     const group = route.params
-    const [isAMember, setIsAMember] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [isAMember, setIsAMember] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [joining, setJoining] = useState(false);
     const [groupData, setGroupData] = useState([]);
     const [membersData, setMembersData] = useState("")
     const {user} = useContext(AuthContext);
     const userID = firebase.auth().currentUser.uid;
     const usersDB = firebase.firestore().collection("users_extended")
     const groupsDB = firebase.firestore().collection("groups");
+    
     useEffect(  () => {
         const subscriber = usersDB
                             .doc(userID)
@@ -29,13 +32,14 @@ const GroupDetailScreen = ({route, navigation}) => {
         getGroups();
         getMembers();
 
+    
+
         return () => subscriber();
  
     }, [userID, isAMember])
     
     const getGroups = async () => {
         await usersDB.doc(userID).get().then((doc) => {
-           setLoading(false);  
            if(doc.data()['groups'] !== undefined) {
                const groupArr = doc.data()['groups']
                setGroupData(groupArr)
@@ -58,8 +62,10 @@ const GroupDetailScreen = ({route, navigation}) => {
                 if (doc.data().id === userID) {
                     setIsAMember(true);
                     console.log(isAMember, "IS A MEMBER!");
+                    setLoading(false);
                 }
             })
+            setLoading(false);
         })
     }
 
@@ -72,11 +78,14 @@ const GroupDetailScreen = ({route, navigation}) => {
             console.log(membersData, "join");
         } 
 
-
     const joinGroupHandler =  () => {
+
+        setJoining(true);
+
         updateData();
+
          usersDB.doc(userID).update({
-            groups: groupData
+            groups: [...groupData, {...group}]
         }).then(()=> {
             console.log("Group", group.title ," added to the database");
         }).catch((err) => {
@@ -86,11 +95,14 @@ const GroupDetailScreen = ({route, navigation}) => {
         groupsDB.doc(group.id).collection("members").add({
           id: userID
         }).then(() => {
+        setJoining(false);
+        setIsAMember(true)
             console.log("Members added to the database");
         }).catch((err) => {
             console.log("Error adding members to the database: ", err.message);
         })
     }
+
 
     // const joinGroupHandler =   () => {
     //             try{
@@ -129,11 +141,12 @@ const GroupDetailScreen = ({route, navigation}) => {
         setMemberSelected(true);
     }
 
-    if (loading) {
-        return <Loading />
-    }
-    return (
-        <View style = {styles.groupContainer}>
+    // if (loading) {
+    //     return <Loading />
+    // }
+    return  !loading ?    
+     (  
+     <View style = {styles.groupContainer}>
             <View style = {styles.groupContent}>
             <FlatList 
                     ListHeaderComponent = {
@@ -143,11 +156,13 @@ const GroupDetailScreen = ({route, navigation}) => {
                                 <Image source = {group.image} style = {styles.detailImage} resizeMode = {'contain'} />
                                 <AppText> {group.title} </AppText>
                                 <Caption> {group.about} </Caption>
+                                
                                 { isAMember
                                     ? <Caption> Hello {user.displayName}!</Caption> 
-                                    :<TouchableOpacity onPress = {joinGroupHandler}> 
-                                        <AppText> Join</AppText>
-                                     </TouchableOpacity>
+                                    // :<AppButton onPress = {() => {setJoining((prev => !prev))}} title={joining? "Joining" : "Join"} >
+                                    :<AppButton onPress = {joinGroupHandler} title={joining? "Joining" : "Join"} >
+                                        {joining &&  <ActivityIndicator size="small" color ="#fff" />}    
+                                     </AppButton> 
                                 }
                             </View>
                             <View style = {styles.switchTab}>
@@ -186,7 +201,7 @@ const GroupDetailScreen = ({route, navigation}) => {
             </View>
 
         </View>
-    )
+    ) : <Loading/>;
 }
 
 export default GroupDetailScreen
