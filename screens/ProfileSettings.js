@@ -99,7 +99,7 @@ const ProfileSettings = ({navigation}) => {
 
                     if(values.department !== null) {
                         db.update({
-                            department: values.department.label
+                            department: values.department
                         })
                         console.log(("Department updated!"));
                     }

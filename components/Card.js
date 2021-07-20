@@ -11,7 +11,8 @@ const ItemWidth = Dimensions.get('window').width / 2 -20;
 
 const Card = ({
     id,
-    path,
+    deptId,
+    grpId,
     postTitle, 
     content,
     postContents,
@@ -24,7 +25,23 @@ const Card = ({
 
         const handleLikePress = () =>{
             console.log('Fkuu');
-            console.log(path, id);
+            if(deptId!==''){
+                const departPost = firebase.firestore().collection('departments').doc(deptId).collection('posts').doc(id)
+              
+                departPost.get().then(doc=>{
+                    doc.data()['likesCount'] = doc.data()['likesCount']
+                    console.log(doc.data()['likesCount']);
+                })
+            }
+            
+            else if(grpId!==''){
+                const groupPost = firebase.firestore().collection('groups').doc(grpId).collection('posts').doc(id)
+                
+                groupPost.get().then(doc=>{
+                    console.log(doc.data()['likesCount']);
+                })
+            }
+            
         }
 
 

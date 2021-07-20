@@ -72,15 +72,16 @@ const HomeScreen = ({navigation}) => {
         })
 
         // -----------fetching posts---------------------//
-        await groupIds.forEach((doc)=>{
-            const groupPosts = firebase.firestore().collection('groups').doc(doc).collection('posts')
+        await groupIds.forEach((doc1)=>{
+            const groupPosts = firebase.firestore().collection('groups').doc(doc1).collection('posts')
             
             groupPosts.orderBy('postTime','desc').get().then((snapshot2)=>{
                 snapshot2.forEach(doc=>{
                     
                     const postItem = doc.data()
                     postItem.id = doc.id;
-                    postItem.path = groupPosts
+                    postItem.grpId = doc1;
+                    postItem.deptId=''
                     allPosts.push(postItem)
                 })
             })
@@ -92,7 +93,8 @@ const HomeScreen = ({navigation}) => {
             snapshot1.forEach(doc => {
                 const postItem = doc.data()  
                 postItem.id = doc.id;
-                postItem.path = departPosts
+                postItem.deptId = department_id
+                postItem.grpId = ''
                 allPosts.push(postItem) 
             });
         })
@@ -154,6 +156,8 @@ const HomeScreen = ({navigation}) => {
                     renderItem={({item})=>(
                         <Card
                             id = {item.id}
+                            grpId={item.grpId}
+                            deptId = {item.deptId}
                             path = {item.path}
                             postTitle={item.title}
                             content={item.description}
