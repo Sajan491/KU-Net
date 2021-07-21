@@ -168,7 +168,7 @@ const HomeScreen = ({navigation}) => {
                             likers = {item.peopleWhoLiked}
                             comments={item.comments}
                             commentsCount={item.comments.length}
-                            onPressComment={()=> navigation.navigate('Comments', {comments: item.comments})}
+                            
                         />
                     )}
 

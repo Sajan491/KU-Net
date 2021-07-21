@@ -27,7 +27,7 @@ const FeedNavigator=()=>(
             <Stack.Screen name="Post Detail" component={PostDetailScreen}/>
             <Stack.Screen name="Notifications" component={NotificationsScreen}/>
               <Stack.Screen name="GroupDetails" component={GroupDetailScreen}/>
-            <Stack.Screen name="Comments" component={CommentsScreen}/>
+            
             
         </Stack.Navigator>
 

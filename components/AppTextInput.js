@@ -20,11 +20,13 @@ const styles = StyleSheet.create({
         borderRadius:25,
         flexDirection:'row',
         width:"100%",
-        padding:14,
+        paddingVertical:14,
+        paddingHorizontal:20,
         marginVertical:10
     },
     inputText:{
-        fontSize:18
+        fontSize:18,
+        width:"100%"
     },
     icon:{
         marginRight:10

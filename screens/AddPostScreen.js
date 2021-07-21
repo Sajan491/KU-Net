@@ -166,7 +166,7 @@ const AddPostScreen = ({navigation}) => {
             <ScrollView>
                 <View  style={styles.formContainer}>
                 <Formik
-                    initialValues={{title:'', description:'',page:null, postContents:[], peopleWhoLiked:{}, images:[], userInfo:{}, likesCount:0, comments:{}, postTime:firebase.firestore.FieldValue.serverTimestamp()}}
+                    initialValues={{title:'', description:'',page:null, postContents:[], peopleWhoLiked:[], images:[], userInfo:{}, likesCount:0, comments:[], postTime:firebase.firestore.FieldValue.serverTimestamp()}}
                     onSubmit={(values, {resetForm})=>{
                         
                         handleSubmit(values)
