@@ -1,12 +1,13 @@
 import React, {useState, useContext, useEffect} from 'react'
-import { StyleSheet, Text, View, FlatList } from 'react-native'
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image } from 'react-native'
 import Header from '../components/Header'
 import colors from '../config/colors'
-import {messages} from "../data/messages";
+import {channels} from "../data/channels";
 import ItemSeparator from "../components/ItemSeperator";
 import {Container, Card, UserInfo, UserImageWrapper, UserImage, TextSection, UserInfoText, MessageText, UserName, MessageTime} from "../styles/MessagesStyles";
 import { AuthContext } from '../context/AuthProvider';
 import firebase from "../config/firebase";
+import AppText from "../components/AppText"
 
 const MessagesScreen = ({navigation}) => {
     const {user} = useContext(AuthContext);
@@ -25,33 +26,23 @@ const MessagesScreen = ({navigation}) => {
         console.log(uID, "user id");
     }, [])
     return (
-        <Container>
+        <View style= {styles.container}>
             <Header headerText="Chat" />
             <Text>Messages Screen</Text>
             <FlatList 
-                data = {messages}
-                keyExtractor = {item => item.id}
+                data = {channels}
+                keyExtractor = {item => item.cID}
                 ItemSeparatorComponent = {ItemSeparator}
                 renderItem = {({item}) => (
-                    <Card onPress = {() => navigation.navigate("Chat", item)}>
-                        <UserInfo>
-                            <UserImageWrapper>
-                                <UserImage source= {item.userImage} />  
-                            </UserImageWrapper>
-
-                            <TextSection>
-                                <UserInfoText>
-                                    <UserName> {item.userName}</UserName>
-                                    <MessageTime> {item.messageTime} </MessageTime>
-                                </UserInfoText>
-                                <MessageText> {item.messageText} </MessageText>
-                                
-                            </TextSection>
-                        </UserInfo>
-                    </Card>
+                    <TouchableOpacity onPress = {() => navigation.navigate("Chat", item)}>
+                            <View style = {styles.content}>
+                                <Image source = {item.cImage} style = {styles.channelImage} />
+                                <AppText style = {styles.channelName}>{item.cName}</AppText>
+                            </View>
+                        </TouchableOpacity>
                 )}
-            />
-        </Container>
+                />
+            </View>
     )
 }
 
@@ -64,5 +55,22 @@ const styles = StyleSheet.create({
         paddingTop:20,
         flex:1,
         marginTop:-10
-    }
+    },
+    channelImage: {
+        height: 60,
+        width: 60,
+        borderRadius: 50,
+        marginTop: 25,
+        marginBottom: 10
+    },
+   content: {
+       display: "flex",
+       flexDirection: "row",
+       borderBottomWidth: 1,
+       borderColor: colors.secondary,
+   },
+   channelName: {
+       marginTop: 45,
+       marginLeft: 20
+   }
 })
