@@ -8,8 +8,16 @@ import AddPostScreen from "../screens/AddPostScreen";
 import colors from "../config/colors";
 import ChatNavigator from "./ChatNavigator";
 import GroupNavigator from "./GroupNavigator";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/core";
 
 const Tab = createBottomTabNavigator();
+
+const getTabBarVisibility = (route) => {
+    const routeName = getFocusedRouteNameFromRoute(route);
+    const hideOnScreens = ["Chat"]
+    if(hideOnScreens.indexOf(routeName) > -1) return false;
+    return true;
+}
 
 const AppNavigator=()=>(
 
@@ -42,9 +50,10 @@ const AppNavigator=()=>(
         <Tab.Screen 
             name="Chat" 
             component={ChatNavigator} 
-            options={{
+            options={({route}) => ({
+                tabBarVisible: getTabBarVisibility(route),
                 tabBarIcon:({color, size})=><Entypo name="chat" size={32} color={color} />
-            }}
+            })}
         />
         <Tab.Screen 
             name="Account" 

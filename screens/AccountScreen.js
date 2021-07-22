@@ -9,7 +9,6 @@ import {AuthContext} from "../context/AuthProvider"
 import Header from '../components/Header';
 import firebase from "../config/firebase";
 
-
 const menuItems = [
     {
         title:"My Posts",

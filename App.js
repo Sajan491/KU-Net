@@ -8,6 +8,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import {AuthProvider} from "./context/AuthProvider"
 import Providers from "./navigation"
 import { LogBox } from 'react-native';
+import ThirdRegisterScreen from './screens/ThirdRegisterScreen';
 
 LogBox.ignoreLogs(['Setting a timer']);
 // const Stack = createStackNavigator();
