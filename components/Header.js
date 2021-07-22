@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         paddingLeft:10,
         paddingBottom:6,
-        marginTop:5,
+        marginTop:8,
     }
     ,
     headerText:{

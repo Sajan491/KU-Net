@@ -10,6 +10,7 @@ import firebase from "../config/firebase";
 import AppText from "../components/AppText"
 import Loading from "../components/Loading";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { groupStyles as styles } from '../styles/globalStyles';
 
 const MessagesScreen = ({navigation}) => {
     const [groups, setGroups] = useState(null);
@@ -40,7 +41,7 @@ const MessagesScreen = ({navigation}) => {
     return (
         <View style= {styles.container}>
             <Header headerText="Chat" />
-            <AppText style={{color: colors.secondary}}> Channels</AppText>
+            <AppText style={{color: colors.secondary, textAlign: "center", marginBottom: 5}}> Tap on the channel to join the chat!</AppText>
             <FlatList 
                 data = {groups}
                 keyExtractor = {item => item.id}
@@ -60,27 +61,3 @@ const MessagesScreen = ({navigation}) => {
 }
 
 export default MessagesScreen
-
-const styles = StyleSheet.create({
-    container:{
-        backgroundColor:colors.light,
-        paddingHorizontal:17,
-        paddingTop:20,
-        flex:1,
-        marginTop:-10
-    },
-    channelImage: {
-        marginTop: 35,
-        marginBottom: 10
-    },
-   content: {
-       display: "flex",
-       flexDirection: "row",
-       borderBottomWidth: 1,
-       borderColor: colors.secondary,
-   },
-   channelName: {
-       marginTop: 45,
-       marginLeft: 20,
-   }
-})

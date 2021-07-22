@@ -12,6 +12,9 @@ const GroupNavigator=()=>(
             <Stack.Screen 
                 name="Group" 
                 component={GroupsScreen} 
+                options ={{
+                    headerShown: false
+                }}
             />
             <Stack.Screen name = "GroupDetails" component = {GroupDetailScreen} options = {({route}) => ({
                 headerTitle: route.params.title
