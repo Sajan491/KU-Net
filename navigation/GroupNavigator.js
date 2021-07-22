@@ -17,7 +17,8 @@ const GroupNavigator=()=>(
                 }}
             />
             <Stack.Screen name = "GroupDetails" component = {GroupDetailScreen} options = {({route}) => ({
-                headerTitle: route.params.title
+                title: route.params.title,
+                headerTitleAlign: "center"
             })}/>
             <Stack.Screen name="Comments" component={CommentsScreen}/>
             

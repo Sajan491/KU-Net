@@ -41,7 +41,7 @@ const GroupsScreen = ({navigation}) => {
                 keyExtractor = {item => item.id}
                 ItemSeparatorComponent = {ItemSeparator}
                 renderItem = {({item}) => (
-                    <TouchableOpacity onPress = {() => navigation.navigate("Chat", item)}>
+                    <TouchableOpacity onPress = {() => navigation.navigate("GroupDetails", item)}>
                             <View style = {styles.content}>
                                 <MaterialCommunityIcons name = {item.icon} size={35} style = {styles.channelImage} />
                                 {/* <Image source = {item.icon} style = {styles.channelImage} /> */}
