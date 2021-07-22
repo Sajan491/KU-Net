@@ -19,7 +19,10 @@ const ListItem = (props) => {
                         <AppText style={styles.title} numberOfLines={1}>{props.title}</AppText>
                         {props.subTitle && <AppText style={styles.subTitle} numberOfLines={2}>{props.subTitle}</AppText>}
                     </View>
-                    <MaterialCommunityIcons name="chevron-right" size={25} />
+                  {props.icon
+                    ?  <MaterialCommunityIcons name= {props.icon} size={25} />
+                    :  <MaterialCommunityIcons name="chevron-right" size={25} />
+                  }
                 </View>
             </TouchableHighlight>
         </Swipeable>

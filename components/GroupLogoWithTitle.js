@@ -1,13 +1,13 @@
 import React from 'react'
 import { StyleSheet, Text, View, Button, Image } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-
-const GroupLogoWithTitle = ({title, image, onPress}) => {
+import {MaterialCommunityIcons} from "@expo/vector-icons";
+const GroupLogoWithTitle = ({title, icon, onPress}) => {
     return (
             <View>
                 <TouchableOpacity onPress = {onPress} style = {styles.logoContainer}>
-                    <View style = {styles.bgContainer}>
-                        <Image source = {image} style = {styles.logo} resizeMode = {'contain'}/>
+                    <View style = {styles.container}>
+                        <MaterialCommunityIcons name = {icon} size = {45} > </MaterialCommunityIcons>
                     </View>
                     <Text style = {styles.text}> {title} </Text>
                 </TouchableOpacity>
@@ -18,6 +18,10 @@ const GroupLogoWithTitle = ({title, image, onPress}) => {
 export default GroupLogoWithTitle
 
 const styles = StyleSheet.create({
+    container: {
+        justifyContent: "center",
+        alignItems: "center"
+    },
     logo: {
         height: 50,
         width: 50,
@@ -26,7 +30,8 @@ const styles = StyleSheet.create({
     logoContainer: {
         height: 70,
         marginHorizontal: 12,
-        marginVertical: 6
+        marginVertical: 6,
+        alignContent: "center"
     },
     text: {
     fontSize: 12,
