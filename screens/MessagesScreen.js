@@ -22,14 +22,14 @@ const MessagesScreen = ({navigation}) => {
     }, [])
     
     const getGroups = () => {
-        const groupsArr = []
-        firebase.firestore().collection("groups").onSnapshot((snapshot) => {
-            snapshot.docs.map((doc) => {
-                groupsArr.push(doc.data())
+        firebase.firestore().collection("groups").get().then((docs)=> {
+            const groupsArray = []
+            docs.forEach((doc) => {
+                groupsArray.push({ ...doc.data()})
             })
+            setGroups(groupsArray);
+            setLoading(false);
         })
-        setGroups(groupsArr);
-        setLoading(false);
     }
 
 

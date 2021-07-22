@@ -2,11 +2,10 @@ import React, {useState, useLayoutEffect, useContext, useEffect} from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import Header from '../components/Header'
 import colors from '../config/colors'
-import {GiftedChat} from "react-native-gifted-chat";
+import {GiftedChat, Bubble} from "react-native-gifted-chat";
 import { FontAwesome } from '@expo/vector-icons';
 import {AuthContext} from "../context/AuthProvider";
 import firebase from "../config/firebase";
-
 const ChatScreen = ({route}) => {
     const {id,abbr} = route.params;
     const {user} = useContext(AuthContext);
@@ -14,7 +13,10 @@ const ChatScreen = ({route}) => {
    const docID = abbr+"-"+id
 
     useLayoutEffect(() => {
-      const unsubscribe = firebase.firestore().collection('chats').doc(docID).collection("messages").orderBy("createdAt", "desc").onSnapshot(snapshot => setMessages(
+      const unsubscribe = firebase.firestore().collection('chats').doc(docID)
+          .collection("messages")
+          .orderBy("createdAt", "desc")
+          .onSnapshot(snapshot => setMessages(
       snapshot.docs.map(doc => ({
       _id: doc.data()._id,
       createdAt: doc.data().createdAt.toDate(),
@@ -64,9 +66,11 @@ const ChatScreen = ({route}) => {
             <FontAwesome name = "angle-double-down" size = {22} color = "#333" />
         )
     }
+    
     return (
-      <GiftedChat
+       <GiftedChat
         messages={messages}
+        // showAvatarForEveryMessage = {true}
         onSend={messages => onSend(messages)}
         alwaysShowSend
         scrollToBottom
@@ -75,8 +79,21 @@ const ChatScreen = ({route}) => {
           _id: user?.uid,
           name: user?.displayName
         }}
+        renderBubble = {props => {
+          return <Bubble 
+            {...props}
+            wrapperStyle = {{
+              right: {
+                backgroundColor: colors.secondary
+              },
+              left: {
+                backgroundColor: "#fff"
+              }
+            }}
+          />
+        }}
       />
-    )
+      ) 
 }
 
 export default ChatScreen
