@@ -1,41 +1,65 @@
-import React, {useState, useEffect, useCallback} from 'react'
+import React, {useState, useLayoutEffect, useContext} from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import Header from '../components/Header'
 import colors from '../config/colors'
 import {GiftedChat} from "react-native-gifted-chat";
 import { FontAwesome } from '@expo/vector-icons';
+import {AuthContext} from "../context/AuthProvider";
+import firebase from "../config/firebase";
+import firestore from "@react-native-firebase/firestore";
 
 const ChatScreen = ({route}) => {
+    const {uID} = route.params;
+    const {user} = useContext(AuthContext);
     const [messages, setMessages] = useState([]);
+    //chat doc id chai duitai user ko id concatenate garera hunxa
+    const docID = uID > user.uid ? user.uid+"-"+uID : uID+"-"+user.uid 
 
-    useEffect(() => {
-      setMessages([
-        {
-          _id: 1,
-          text: 'Hello wa',
-          createdAt: new Date(),
-          user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: require("../assets/sajan.png"),
-          },
-        },
-        {
-          _id: 2,
-          text: 'Aloha',
-          createdAt: new Date(),
-          user: {
-            _id: 1,
-            name: 'React Native',
-            avatar: 'https://placeimg.com/140/140/any',
-          },
-        },
-      ])
-    }, [])
+    useLayoutEffect(() => {
+      const unsubscribe = firebase.firestore().collection('chats').doc(docID).collection("messages").onSnapshot(snapshot => setMessages(
+      snapshot.docs.map(doc => ({
+      _id: doc.data()._id,
+      createdAt: doc.data().createdAt.toDate(),
+      text: doc.data().text,
+      user: doc.data().user,
+      }))
+      ));
+      return unsubscribe;
+      }, [])
+
+    const getAllMessages = async () => {
+      const querySnap = await firebase.firestore().collection("chats")
+        .doc(docID)
+        .collection(messages)
+        .orderBy("createdAt", "dsc")
+        .get()
+      
+      
+        const allMsgs = querySnap.docs.map(doc =>{
+          return{
+            ...doc.data(),
+            createdAt: doc.data().createdAt.toDate()
+          }
+        })
   
-    const onSend = useCallback((messages = []) => {
-      setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
-    }, [])
+        setMessages(allMsgs)
+    }
+  
+    const onSend = (messageArray) => {
+      const msg = messageArray[0]
+      const myMsg = {
+        ...msg,
+        sentBy: user.uid,
+        sentTo: uID, //jasko message ma thichyo tesko id ma pathaune message
+        createdAt: new Date()
+      }
+      setMessages(previousMessages => GiftedChat.append(previousMessages, myMsg));
+      
+      firebase.firestore().collection("chats")
+        .doc(docID)
+        .collection("messages")
+        .add(myMsg)
+    }
     
     const scrollToBottomComponent = () => {
         return(
@@ -50,7 +74,8 @@ const ChatScreen = ({route}) => {
         scrollToBottom
         scrollToBottomComponent = {scrollToBottomComponent}
         user={{
-          _id: 1,
+          _id: user?.uid,
+          name: user?.displayName
         }}
       />
     )
