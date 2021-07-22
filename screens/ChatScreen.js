@@ -8,10 +8,10 @@ import {AuthContext} from "../context/AuthProvider";
 import firebase from "../config/firebase";
 
 const ChatScreen = ({route}) => {
-    const {cID,cName} = route.params;
+    const {id,abbr} = route.params;
     const {user} = useContext(AuthContext);
     const [messages, setMessages] = useState([]);
-   const docID = cName+"-"+cID
+   const docID = abbr+"-"+id
 
     useLayoutEffect(() => {
       const unsubscribe = firebase.firestore().collection('chats').doc(docID).collection("messages").orderBy("createdAt", "desc").onSnapshot(snapshot => setMessages(
@@ -48,7 +48,7 @@ const ChatScreen = ({route}) => {
       const myMsg = {
         ...msg,
         sentBy: user.uid,
-        sentTo: cID,
+        sentTo: id,
         createdAt: new Date()
       }
       setMessages(previousMessages => GiftedChat.append(previousMessages, myMsg));
