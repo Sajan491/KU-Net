@@ -11,20 +11,29 @@ import AppText from "../../components/AppText";
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../../config/colors';
 import {groups} from "../../data/groups";
+
 const DrawerContent = (props) => {
     const {user, signOut} = useContext(AuthContext);
     const [username, setUsername] = useState("")
     useEffect(() => {
-        
-       console.log(user.displayName, " name")
-            
+        getEnrolledGroups();
     }, [])
+
     const nameChangeHandler = () => {
         firebase.auth().currentUser.updateProfile({
             displayName: username
         })
         console.log("Username updated");
     }
+
+    const getEnrolledGroups = () => {
+        firebase.firestore().collection("groups").get().then((docs) => {
+            docs.forEach((doc) => {
+                console.log(doc.data());
+            })
+        })
+    }
+
     return (
         <View style = {{flex: 1}}>
             <DrawerContentScrollView {...props}>

@@ -1,7 +1,7 @@
 import React, { createContext, useState } from 'react';
 import firebase from "../config/firebase";
 
-const usersCollection = firebase.firestore().collection('users');
+const usersCollection = firebase.firestore().collection('users_extended');
 
 export const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
@@ -31,22 +31,23 @@ export const AuthProvider = ({ children }) => {
           signUp: async (email, password) => {
             try {
                 await firebase.auth().createUserWithEmailAndPassword(email, password).then(cred => {
-                  console.log(cred.user.uid);
-                  console.log(cred.additionalUserInfo);
                   {cred.additionalUserInfo.isNewUser ? setIsANewUser(true) : setIsANewUser(false)}
-                  usersCollection
+
+                  cred.user.sendEmailVerification()
+
+                  usersCollection 
                     .doc(cred.user.uid)
                     .set({
                       email: email,
                       uid: cred.user.uid
                     })
+                   cred.user.reauthenticateWithCredential(email)
                   
                 })
             } catch (e) {
-              console.log(e);
-              console.log(email);
               setError(e.message)
             }
+            const user = firebase.auth().currentUser
           },
         
           signOut: async () => {
@@ -56,7 +57,14 @@ export const AuthProvider = ({ children }) => {
               console.error(e);
               setError(e.message)
             }
+          },
+          passwordReset : email => {
+            try {
+              firebase.auth().sendPasswordResetEmail(email)
+          } catch (err) {
+            setError(e.message)
           }
+        }
         }}
       >
         {children}

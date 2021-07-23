@@ -41,8 +41,7 @@ const HomeScreen = ({navigation}) => {
                 groupsArr.push({id: doc.id, ...doc.data()})
             })
             setGroups(groupsArr);
-            setLoading(false);
-            console.log(groups);
+            setLoading(false)
         })
     }, [])
 

@@ -52,7 +52,7 @@ const SecondRegisterScreen = ({navigation}) => {
             <AppText style={styles.header}>Profile Details</AppText>
 
             <AppForm
-                // initialValues={{username:'', age:'',  department:null, bio:'', batch:''}}
+                initialValues={{username:'', age:'',  department:null, bio:'', batch:''}}
                 onSubmit={handleSubmit}
                 validationSchema={validationSecondRegisterScreen}
             >

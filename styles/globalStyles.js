@@ -21,7 +21,7 @@ export const groupStyles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 20,
         marginBottom: 5,
-        backgroundColor: colors.lightBlue
+        backgroundColor: colors.white
     },
    channelName: {
        marginTop: 30,

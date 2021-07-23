@@ -40,6 +40,7 @@ const GroupsScreen = ({navigation}) => {
                 data = {groups}
                 keyExtractor = {item => item.id}
                 ItemSeparatorComponent = {ItemSeparator}
+                showsVerticalScrollIndicator={false}
                 renderItem = {({item}) => (
                     <TouchableOpacity onPress = {() => navigation.navigate("GroupDetails", item)}>
                             <View style = {styles.content}>

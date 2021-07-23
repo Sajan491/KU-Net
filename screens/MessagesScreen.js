@@ -46,6 +46,7 @@ const MessagesScreen = ({navigation}) => {
                 data = {groups}
                 keyExtractor = {item => item.id}
                 ItemSeparatorComponent = {ItemSeparator}
+                showsVerticalScrollIndicator={false}
                 renderItem = {({item}) => (
                     <TouchableOpacity onPress = {() => navigation.navigate("Chat", item)}>
                             <View style = {styles.content}>

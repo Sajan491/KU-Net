@@ -26,7 +26,10 @@ const FeedNavigator=()=>(
             />
             <Stack.Screen name="Post Detail" component={PostDetailScreen}/>
             <Stack.Screen name="Notifications" component={NotificationsScreen}/>
-              <Stack.Screen name="GroupDetails" component={GroupDetailScreen}/>
+              <Stack.Screen name="GroupDetails" component={GroupDetailScreen} options= {({route}) => ({
+                  title: route.params.abbr,
+                  headerTitleAlign: "center"
+              })}/>
             <Stack.Screen name="Comments" component={CommentsScreen}/>
             
         </Stack.Navigator>
