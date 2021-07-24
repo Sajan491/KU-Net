@@ -295,6 +295,23 @@ const Card = ({
         const handleEditPost = () =>{
         }
         const handleDeletePost = () =>{
+            //delete from saved posts
+            // const allUsers = firebase.firestore().collection("users_extended")
+            // allUsers.get().then(docss=>{
+            //     docss.forEach(docss=>{
+
+            //     })
+            // })
+
+            //delete from posts database
+            if(deptId!==''){
+                const departPost = firebase.firestore().collection('departments').doc(deptId).collection('posts').doc(id)
+                departPost.delete()
+            }
+            else if(grpId!==''){
+                const groupPost = firebase.firestore().collection('groups').doc(grpId).collection('posts').doc(id)
+                groupPost.delete()
+            }
         }
         const handleUnsavePost = () =>{
             const savedPosts = firebase.firestore().collection("users_extended").doc(uid).collection("savedPosts")

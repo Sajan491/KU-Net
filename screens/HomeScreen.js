@@ -53,7 +53,6 @@ const HomeScreen = ({navigation}) => {
     const [loading, setLoading] = useState(false)
     const [homePosts, setHomePosts] = useState([])
     const [refreshing, setRefreshing] = useState(false);
- 
     const getPosts = async ()=>{
         
         const userID = firebase.auth().currentUser.uid;
@@ -103,10 +102,11 @@ const HomeScreen = ({navigation}) => {
         setHomePosts(allPosts)
         //   --------------------------------------------- //
     }
-  
     useEffect(() => {
         
-        (async () => getPosts())();
+        getPosts();
+        const getDataEvery10s = setInterval(getPosts,1000000000)
+        return ()=> clearInterval(getDataEvery10s);
         
     }, [])
 
