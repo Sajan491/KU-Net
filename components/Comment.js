@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image } from 'react-native'
 import ReadMore from 'react-native-read-more-text';
+import colors from '../config/colors';
 
 const Comment = ({item}) => {
     
@@ -31,11 +32,12 @@ const Comment = ({item}) => {
 
     return (
         <View style={styles.commentBlock}>
-            <Image style={styles.userImage} source={{uri:item.profilePic}} />
-            <View style={styles.userInfoText}>
-                
-                <Text style={styles.username}>{item.username}</Text>
-                    <Text style={styles.date}>{formatted_date}</Text>
+                <Image style={styles.userImage} source={{uri:item.profilePic}} />
+                <View style={styles.cBlock}>
+                    <View style={styles.userInfoDate}>
+                        <Text style={styles.username}>{item.username}</Text>
+                        <Text style={styles.date}>{formatted_date}</Text> 
+                    </View>
                     <View style={styles.maincomment}>
                         <ReadMore
                             numberOfLines={2}
@@ -48,10 +50,12 @@ const Comment = ({item}) => {
                         </ReadMore>
                     
                     </View>
+                </View>
+            
                         
                 
                 
-            </View>
+            
         </View>
     )
 }
@@ -62,20 +66,29 @@ const styles = StyleSheet.create({
     maincomment:{
         marginTop:4,
     },
+    
+    cBlock:{
+        flex:1,
+        flexDirection:'column',
+        paddingLeft:13,
+        width:'100%',
+        
+    },  
+    
     comment:{
         color:'#000',
         
     },
     commentBlock:{
-        flexDirection:"row",
         paddingVertical:10,
-        marginLeft:14,
+        marginLeft:8,
         marginRight:14,
-        marginBottom:10,
-        paddingRight:65,
+        marginBottom:8,
+        paddingRight:15,
         paddingLeft:10,
         // backgroundColor:colors.primary,
-
+        flex:1,
+        flexDirection:'row',
         borderBottomWidth:0.2,
         borderBottomColor:'rgba(0,0,0,0.1)',
     },
@@ -86,22 +99,20 @@ const styles = StyleSheet.create({
     }, 
     username:{
         fontSize:16,
-        fontWeight: "bold",
-        
+        fontWeight: "bold",   
     },
-    userInfoText:{
-        flexDirection:'column',
-        justifyContent:'center',
-        marginLeft:5,
-        paddingLeft:10,
-        paddingRight:10,
+    userInfoDate:{
+        flex:-1,
+        flexDirection:'row',
+        justifyContent:'space-between',
         backgroundColor:'white',
-        borderRadius:5
+        flexWrap: 'wrap',
+        width:'100%',
+        resizeMode:'cover'
     },
-   
     date:{
-        fontSize:12,
         color:'#666',
-        fontSize:11
+        fontSize:11,
+        marginTop:3
     }
 })

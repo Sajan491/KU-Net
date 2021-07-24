@@ -2,6 +2,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React from "react"
 import AccountScreen from "../screens/AccountScreen";
 import MessagesScreen from "../screens/MessagesScreen";
+import SavedPostsScreen from "../screens/SavedPostsScreen";
 import SettingsNavigator from "./SettingsNavigator";
 const Stack = createStackNavigator();
 
@@ -12,6 +13,7 @@ const AccountNavigator=()=>(
             }}/>
         <Stack.Screen name="Messages" component={MessagesScreen}/>
         <Stack.Screen name = "Settings" component = {SettingsNavigator} options = {{headerShown: false }}/>
+        <Stack.Screen name = "SavedPosts" component = {SavedPostsScreen} options = {{headerShown: false }}/>
     </Stack.Navigator>
 )
 

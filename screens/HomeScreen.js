@@ -158,7 +158,6 @@ const HomeScreen = ({navigation}) => {
                             id = {item.id}
                             grpId={item.grpId}
                             deptId = {item.deptId}
-                            path = {item.path}
                             postTitle={item.title}
                             content={item.description}
                             postContents={item.postContents}
@@ -168,7 +167,8 @@ const HomeScreen = ({navigation}) => {
                             likers = {item.peopleWhoLiked}
                             comments={item.comments}
                             commentsCount={item.comments.length}
-                            
+                            page={item.page}
+                            screen = 'home'
                         />
                     )}
 

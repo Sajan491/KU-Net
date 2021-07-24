@@ -1,10 +1,10 @@
 import React,{useState, useEffect} from 'react'
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View, Dimensions, Modal, Button, TouchableWithoutFeedback, TextInput } from 'react-native'
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View, Dimensions, Modal, Button, TouchableWithoutFeedback, TextInput, Alert } from 'react-native'
 import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
 import firebase from "../config/firebase";
 import { Video } from 'expo-av';
 import { v4 as uuidv4 } from 'uuid';
-
+import { Octicons } from '@expo/vector-icons';
 import colors from '../config/colors'
 import ReadMore from 'react-native-read-more-text';
 import {MaterialCommunityIcons} from '@expo/vector-icons'
@@ -21,28 +21,41 @@ const Card = ({
     username,
     userImg,
     postTime,
-    likers,
-    comments,
-    commentsCount}) => {
+    page,
+    screen
+    }) => {
 
-        
+        const [uid, setUid] = useState('')
         const [isLiked, setIsLiked] = useState(false)
+        const [isSaved, setIsSaved] = useState(false)
+
         const [userName, setUserName] = useState('')
         const [userPpic, setUserPpic] = useState('')
         const usersCollection = firebase.firestore().collection("users_extended")
         const [likesCount, setLikesCount] = useState(0)
         const [likersModalVisible, setLikersModalVisible] = useState(false)
         const [likersList, setLikersList] = useState([])
-        const [commentModalVisible, setCommentModalVisible] = useState(false)          
+        const [commentModalVisible, setCommentModalVisible] = useState(false) 
+        const [kebabModalVisible, setKebabModalVisible] = useState(false)          
         const [modalVisible, setModalVisible] = useState(false);
         const [modalUri, setModalUri] = useState({})
         const [comment, setComment] = useState('')
         const [allComments, setAllComments] = useState([])
+        const [commentsCount, setcommentsCount] = useState(0)
+        const [postUser, setPostUser] = useState('')
+        const [sameUser, setSameUser] = useState(false)
+        const [homeScreen, setHomeScreen] = useState(false)
         // const [unreadComments, setUnreadComments] = useState(false)
 
         useEffect(() => {
+
+            if(screen==='home'){
+                setHomeScreen(true)
+            }
+            
             const fetchData=()=>{
                 const userID = firebase.auth().currentUser.uid;
+                setUid(userID)
                 var username;
                 usersCollection.doc(userID).get().then((usr)=>{
                     
@@ -57,9 +70,12 @@ const Card = ({
                 if(deptId!==''){
                     const departPost = firebase.firestore().collection('departments').doc(deptId).collection('posts').doc(id)
                     departPost.get().then(post=>{
-                        setLikesCount(post.data()['likesCount'])
                         let postLikers = post.data()['peopleWhoLiked']
+ 
                         let tempComments = post.data()['comments']
+                        setPostUser(post.data()['userInfo'].username)
+                        
+                        setcommentsCount(tempComments.length)
                         // console.log(tempComments, "temp");c
                         // console.log(allComments, "all");
                         // setAllComments(tempComments) 
@@ -71,12 +87,17 @@ const Card = ({
                             return tempComments;
                         }) 
                        
-                    
                         if(postLikers.length>0){
                             postLikers.some((liker)=>{
                                 if(liker.username==username) setIsLiked(true)
+                                else setIsLiked(false)
                             })
                         }
+                        else{
+                            setIsLiked(false)
+                        }
+                        
+                        setLikesCount(postLikers.length)
                         setLikersList(postLikers)
                         
                     })
@@ -84,9 +105,9 @@ const Card = ({
                 else if(grpId!==''){
                     const groupPost = firebase.firestore().collection('groups').doc(grpId).collection('posts').doc(id)
                     groupPost.get().then(post=>{
-                        setLikesCount(post.data()['likesCount'])
                         let postLikers = post.data()['peopleWhoLiked']
                         let tempComments = post.data()['comments']
+                        setPostUser(post.data()['username'])
                         setAllComments((prev) => {
                             return tempComments;
                         }) 
@@ -96,16 +117,17 @@ const Card = ({
                             })
                         }
                         setLikersList(postLikers)
+                        setLikesCount(postLikers.length)
                     })
                 }
             }
-            const getDataEvery1s = setInterval(fetchData,1000)
+            fetchData()
+            const getDataEvery1s = setInterval(fetchData,300000000)
             return ()=> clearInterval(getDataEvery1s);
         }, [])
      
         const handleLikePress = () =>{
-            var likeCount;
-            setIsLiked(!isLiked)
+            setIsLiked(prev=>!prev)
             
             if(!isLiked) setLikesCount(likesCount + 1)
             else setLikesCount(likesCount - 1)
@@ -113,24 +135,22 @@ const Card = ({
             if(deptId!==''){
                 const departPost = firebase.firestore().collection('departments').doc(deptId).collection('posts').doc(id)
                 departPost.get().then(doc=>{
-                    likeCount = doc.data()['likesCount']
                     if(isLiked){
                         //delete user from peopleWhoLiked
                         var likers = doc.data()['peopleWhoLiked']
-                        var updatedLikers = likers.filter(item=>item.username!=userName)
+                        var updatedLikers = likers.filter(item=>item.id!=uid)
                         setLikersList(updatedLikers)
                         departPost.update({peopleWhoLiked: updatedLikers})
-                        likeCount--;
+                       
                     }
                     else{
                         //add user to peopleWhoLiked
                         var likers = doc.data()['peopleWhoLiked']
-                        likers.push({username: userName, profilePic: userPpic})
+                        likers.push({id: uid, username: userName, profilePic: userPpic})
                         setLikersList(likers)
                         departPost.update({peopleWhoLiked: likers})
-                        likeCount++;
+                        
                     }
-                    departPost.update({likesCount:likeCount})
                 })  
             }
             
@@ -138,24 +158,20 @@ const Card = ({
                 const groupPost = firebase.firestore().collection('groups').doc(grpId).collection('posts').doc(id)
                 console.log(grpId);
                 groupPost.get().then(doc=>{
-                    likeCount = doc.data()['likesCount']
                     if(isLiked){
                         //delete user from peopleWhoLiked
                         var likers = doc.data()['peopleWhoLiked']
-                        var updatedLikers = likers.filter(item=>item.username!=userName)
+                        var updatedLikers = likers.filter(item=>item.id!=uid)
                         setLikersList(updatedLikers)
                         groupPost.update({peopleWhoLiked: updatedLikers})
-                        likeCount--;
                     }
                     else{
                         //add user to peopleWhoLiked
                         var likers = doc.data()['peopleWhoLiked']
-                        likers.push({username: userName, profilePic: userPpic})
+                        likers.push({id:uid, username: userName, profilePic: userPpic})
                         setLikersList(likers)
                         groupPost.update({peopleWhoLiked: likers})
-                        likeCount++;
                     }
-                    groupPost.update({likesCount:likeCount})
                 })
             }
             
@@ -212,10 +228,10 @@ const Card = ({
 
         const computeColumns=()=>{
             if (postContents.length == 1){
-                return {numCol:1, imgWidth: "100%", imgHeight:200};
+                return {numCol:1, imgWidth: "100%", imgHeight:300};
             }
             else {
-                return {numCol:2, imgWidth: ItemWidth, imgHeight:120};
+                return {numCol:2, imgWidth: ItemWidth, imgHeight:150};
             }
         }
 
@@ -237,6 +253,87 @@ const Card = ({
             );
           }
 
+        const handleKebabPress = () =>{
+        
+            if(userName === postUser ) {
+                setSameUser(true)
+            }
+            setKebabModalVisible(true)
+        }
+
+        const handleSavePost = () =>{
+
+            // setIsSaved(prev=>!prev)
+
+            // if(deptId!==''){
+            //     const departPost = firebase.firestore().collection('departments').doc(deptId).collection('posts').doc(id)
+            //     departPost.get().then(doc=>{
+            //         if(isSaved){
+            //             //delete post from savedPosts
+            //             var likers = doc.data()['peopleWhoLiked']
+            //             var updatedLikers = likers.filter(item=>item.id!=uid)
+            //             setLikersList(updatedLikers)
+            //             departPost.update({peopleWhoLiked: updatedLikers})
+                       
+            //         }
+            //         else{
+            //             //add post to savedPosts
+            //             var likers = doc.data()['peopleWhoLiked']
+            //             likers.push({id: uid, username: userName, profilePic: userPpic})
+            //             setLikersList(likers)
+            //             departPost.update({peopleWhoLiked: likers})
+                        
+            //         }
+            //     })  
+            // }
+            
+            // else if(grpId!==''){
+            //     const groupPost = firebase.firestore().collection('groups').doc(grpId).collection('posts').doc(id)
+            //     console.log(grpId);
+            //     groupPost.get().then(doc=>{
+            //         if(isLiked){
+            //             //delete user from peopleWhoLiked
+            //             var likers = doc.data()['peopleWhoLiked']
+            //             var updatedLikers = likers.filter(item=>item.id!=uid)
+            //             setLikersList(updatedLikers)
+            //             groupPost.update({peopleWhoLiked: updatedLikers})
+            //         }
+            //         else{
+            //             //add user to peopleWhoLiked
+            //             var likers = doc.data()['peopleWhoLiked']
+            //             likers.push({id:uid, username: userName, profilePic: userPpic})
+            //             setLikersList(likers)
+            //             groupPost.update({peopleWhoLiked: likers})
+            //         }
+            //     })
+            // }
+
+
+            const savedPosts = firebase.firestore().collection("users_extended").doc(uid).collection("savedPosts")
+            savedPosts.add({
+                id:id,
+                description:content,
+                username: username,
+                userImg: userImg,
+                postTime: postTime,
+                title: postTitle,
+                postContents: postContents,
+                page:page,
+                deptId: deptId,
+                grpId: grpId,
+
+
+            }).then(()=>{
+                Alert.alert('Success!','Post Saved Successfully',[
+                    {text: 'Continue', onPress: () => console.log('post saved')},
+                ])
+                setKebabModalVisible(false)
+            })
+        }
+        const handleEditPost = () =>{
+        }
+        const handleDeletePost = () =>{
+        }
 
     return (
         <>
@@ -296,6 +393,19 @@ const Card = ({
                 </View>   
             </Modal>
 
+            {/* Kebab background */}
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={kebabModalVisible} 
+                onRequestClose={() => {
+                setLikersModalVisible(false);
+            }}>
+                
+                <View style={styles.likersBack}>
+                </View>   
+            </Modal>
+
             {/* Likes Modal */}
             <Modal
                 animationType="slide"
@@ -316,7 +426,7 @@ const Card = ({
                     <FlatList 
                         data={likersList}
                         numColumns={1}
-                        keyExtractor={(item)=>{return item.username}}
+                        keyExtractor={(item)=>{return item.id}}
                         renderItem={({item})=>{
                             return (
                                 <View style={styles.oneLiker}> 
@@ -332,6 +442,48 @@ const Card = ({
                 </View>   
                 </View>   
             </Modal>   
+
+            {/* kebab modal */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={kebabModalVisible} 
+                onRequestClose={() => {
+                setLikersModalVisible(false);
+            }}>
+                
+                <View style={styles.kebabModalView}>
+                    <View style={styles.kebabContainer}>
+
+                        <View style={styles.modalButton}>
+                            <Button title='X' onPress={()=>setKebabModalVisible(false)} />
+                        </View>
+                        <TouchableOpacity style={styles.kebabOneItem} onPress={handleSavePost}>
+                            <MaterialCommunityIcons name="content-save" size={30} color="black" />
+                            <View style={styles.kebabText}>
+                                <Text style={styles.kebabTitle}>Save</Text>
+                                <Text style={styles.kebabDetail}>Add this post to your saved items.</Text>
+                            </View> 
+                        </TouchableOpacity>
+                        {sameUser && <>
+                        <TouchableOpacity style={styles.kebabOneItem} onPress={handleEditPost}>
+                            <MaterialCommunityIcons name="square-edit-outline" size={30} color="black" />
+                            <View style={styles.kebabText}>
+                                <Text style={styles.kebabTitle}>Edit</Text>
+                                <Text style={styles.kebabDetail}>Make changes to the current post.</Text>
+                            </View> 
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.kebabOneItem} onPress={handleDeletePost}>
+                            <MaterialCommunityIcons name="delete-forever" size={30} color="black" />
+                            <View style={styles.kebabText}>
+                                <Text style={styles.kebabTitle}>Delete</Text>
+                                <Text style={styles.kebabDetail}>Delete this post.</Text>
+                            </View> 
+                        </TouchableOpacity></>}
+                        
+                    </View>
+                </View>   
+            </Modal>
             {/* comment modal  */}
             <Modal
                 animationType="slide"
@@ -366,7 +518,7 @@ const Card = ({
                             
                             value = {comment} 
                             style={styles.addCommentText} 
-                            multiline 
+                             
                             placeholder="Add a comment..."
                         />
                         <TouchableOpacity style={styles.submitCommentButton} onPress={()=>{
@@ -383,9 +535,15 @@ const Card = ({
         <View style={styles.card}> 
             <View style={styles.userInfo}>
                 {userImg? <Image style={styles.userImage} source={{uri:userImg}} /> : <Image style={styles.userImage} source={require("../assets/sajan.png")} />}
-                <View style={styles.userInfoText}>
-                    <Text style={styles.username}>{username}</Text>
-                    <Text style={styles.time}>{formatted_date}</Text>
+                <View style={styles.editButtonGap}>
+                    <View style={styles.userInfoText}>
+                        <Text style={styles.username}>{username}</Text>
+                        <Text style={styles.time}>{formatted_date}</Text>
+                    </View>
+                    {homeScreen && <TouchableOpacity style={styles.kebab} onPress={handleKebabPress}>
+                        <Octicons name="kebab-vertical" size={20} color={colors.primary} />
+                    </TouchableOpacity>}
+
                 </View>
             </View>
             
@@ -464,6 +622,55 @@ const Card = ({
 export default Card
 
 const styles = StyleSheet.create({
+    kebab:{
+        marginTop:5,
+        width:10
+    },
+    kebabModalView:{
+        width:'100%',
+        height:'100%',
+        display:"flex",
+        flexDirection:'row',
+        alignItems:'flex-end',
+        backgroundColor: 'transparent'
+    },
+    kebabContainer:{
+        minHeight:'10%',
+        maxHeight:'25%',
+        width:'100%',
+        paddingTop:7,
+        borderRadius:20,
+        backgroundColor: '#fff',
+        flex:1,
+        flexDirection:'column'
+    },
+    kebabOneItem:{
+        flex:1,
+        flexDirection:'row',
+        paddingLeft:20,
+        borderBottomColor:'rgba(0,0,0,0.4)',
+        borderBottomWidth:0.2,
+        padding:15,
+        paddingTop: 17
+    },
+    kebabText:{
+        marginLeft:15,
+        marginTop:-3
+    },
+    kebabTitle:{
+        fontSize:16,
+        fontWeight:'bold'
+    },
+    kebabDetail:{
+        fontSize:12,
+        color:'rgba(0,0,0,0.7)',
+
+    },
+    editButtonGap:{
+        flex:1,
+        flexDirection:'row',
+        justifyContent:'space-between'
+    },
     postComment:{
         flexDirection:'row',
         justifyContent:'space-around',
@@ -478,7 +685,6 @@ const styles = StyleSheet.create({
         bottom:0,
         position:'absolute',
         width:'100%',
-        
                 
     },
     submitCommentButton:{
@@ -486,7 +692,7 @@ const styles = StyleSheet.create({
     },
     addCommentText:{
         fontSize:18,
-        width:'100%',
+        width:'90%',
     },
     userInfoText:{
         flexDirection:'column',
@@ -502,7 +708,7 @@ const styles = StyleSheet.create({
     commentsModalView:{
         paddingTop:20,
         height:'100%',
-        borderRadius:25,
+        borderRadius:20,
         backgroundColor:'white'
         
     },
@@ -595,7 +801,7 @@ const styles = StyleSheet.create({
         borderRadius:23
     }, 
     likersBack: {
-        backgroundColor: 'rgba(0,0,0,0.35)',
+        backgroundColor: 'rgba(0,0,0,0.55)',
         width:'100%',
         height:'100%',
     },
@@ -613,7 +819,7 @@ const styles = StyleSheet.create({
         height:'70%',
         width:'100%',
         paddingTop:25,
-        borderRadius:25,
+        borderRadius:20,
 
         backgroundColor: '#fff'
         
@@ -658,7 +864,8 @@ const styles = StyleSheet.create({
     },
     userInfoText:{
         flexDirection:'column',
-        justifyContent:'center',
-        marginLeft:10
+        justifyContent:'flex-start',
+        marginLeft:10,
+        marginTop:3
     }
 })

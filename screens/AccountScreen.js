@@ -26,6 +26,14 @@ const menuItems = [
             backgroundColor: colors.secondary
         },
         targetScreen: "Settings"
+    },
+    {
+        title: "Saved Posts",
+        icon: {
+            name: "content-save",
+            backgroundColor: colors.secondary
+        },
+        targetScreen: "SavedPosts"
     }
 ]
 
