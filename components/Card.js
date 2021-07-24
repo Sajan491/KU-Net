@@ -27,8 +27,6 @@ const Card = ({
 
         const [uid, setUid] = useState('')
         const [isLiked, setIsLiked] = useState(false)
-        const [isSaved, setIsSaved] = useState(false)
-
         const [userName, setUserName] = useState('')
         const [userPpic, setUserPpic] = useState('')
         const usersCollection = firebase.firestore().collection("users_extended")
@@ -262,77 +260,52 @@ const Card = ({
         }
 
         const handleSavePost = () =>{
-
-            // setIsSaved(prev=>!prev)
-
-            // if(deptId!==''){
-            //     const departPost = firebase.firestore().collection('departments').doc(deptId).collection('posts').doc(id)
-            //     departPost.get().then(doc=>{
-            //         if(isSaved){
-            //             //delete post from savedPosts
-            //             var likers = doc.data()['peopleWhoLiked']
-            //             var updatedLikers = likers.filter(item=>item.id!=uid)
-            //             setLikersList(updatedLikers)
-            //             departPost.update({peopleWhoLiked: updatedLikers})
-                       
-            //         }
-            //         else{
-            //             //add post to savedPosts
-            //             var likers = doc.data()['peopleWhoLiked']
-            //             likers.push({id: uid, username: userName, profilePic: userPpic})
-            //             setLikersList(likers)
-            //             departPost.update({peopleWhoLiked: likers})
-                        
-            //         }
-            //     })  
-            // }
-            
-            // else if(grpId!==''){
-            //     const groupPost = firebase.firestore().collection('groups').doc(grpId).collection('posts').doc(id)
-            //     console.log(grpId);
-            //     groupPost.get().then(doc=>{
-            //         if(isLiked){
-            //             //delete user from peopleWhoLiked
-            //             var likers = doc.data()['peopleWhoLiked']
-            //             var updatedLikers = likers.filter(item=>item.id!=uid)
-            //             setLikersList(updatedLikers)
-            //             groupPost.update({peopleWhoLiked: updatedLikers})
-            //         }
-            //         else{
-            //             //add user to peopleWhoLiked
-            //             var likers = doc.data()['peopleWhoLiked']
-            //             likers.push({id:uid, username: userName, profilePic: userPpic})
-            //             setLikersList(likers)
-            //             groupPost.update({peopleWhoLiked: likers})
-            //         }
-            //     })
-            // }
-
-
+            var alreadySaved = false;
             const savedPosts = firebase.firestore().collection("users_extended").doc(uid).collection("savedPosts")
-            savedPosts.add({
-                id:id,
-                description:content,
-                username: username,
-                userImg: userImg,
-                postTime: postTime,
-                title: postTitle,
-                postContents: postContents,
-                page:page,
-                deptId: deptId,
-                grpId: grpId,
+            savedPosts.get().then(docs=>{
+                docs.forEach((doc)=>{
+                    if(doc.data()['id']===id) alreadySaved=true
+                }) 
+               
+                if(!alreadySaved){
+                    savedPosts.add({
+                    id:id,
+                    description:content,
+                    username: username,
+                    userImg: userImg,
+                    postTime: postTime,
+                    title: postTitle,
+                    postContents: postContents,
+                    page:page,
+                    deptId: deptId,
+                    grpId: grpId,
+                    }).then(()=>{
+                        Alert.alert('Success!','Post Saved Successfully')
+                        setKebabModalVisible(false)
+                    })
+                }
+                else{
+                    Alert.alert('Post Already Saved!')
+                    setKebabModalVisible(false)
+                }
 
-
-            }).then(()=>{
-                Alert.alert('Success!','Post Saved Successfully',[
-                    {text: 'Continue', onPress: () => console.log('post saved')},
-                ])
-                setKebabModalVisible(false)
             })
+            
         }
         const handleEditPost = () =>{
         }
         const handleDeletePost = () =>{
+        }
+        const handleUnsavePost = () =>{
+            const savedPosts = firebase.firestore().collection("users_extended").doc(uid).collection("savedPosts")
+            savedPosts.get().then(docs=>{
+                docs.forEach(doc=>{
+                    if(id===doc.data()['id']){
+                        savedPosts.doc(doc.id).delete()
+                    }
+                })
+            })
+            setKebabModalVisible(false)
         }
 
     return (
@@ -458,28 +431,38 @@ const Card = ({
                         <View style={styles.modalButton}>
                             <Button title='X' onPress={()=>setKebabModalVisible(false)} />
                         </View>
-                        <TouchableOpacity style={styles.kebabOneItem} onPress={handleSavePost}>
-                            <MaterialCommunityIcons name="content-save" size={30} color="black" />
-                            <View style={styles.kebabText}>
-                                <Text style={styles.kebabTitle}>Save</Text>
-                                <Text style={styles.kebabDetail}>Add this post to your saved items.</Text>
-                            </View> 
-                        </TouchableOpacity>
-                        {sameUser && <>
-                        <TouchableOpacity style={styles.kebabOneItem} onPress={handleEditPost}>
-                            <MaterialCommunityIcons name="square-edit-outline" size={30} color="black" />
-                            <View style={styles.kebabText}>
-                                <Text style={styles.kebabTitle}>Edit</Text>
-                                <Text style={styles.kebabDetail}>Make changes to the current post.</Text>
-                            </View> 
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.kebabOneItem} onPress={handleDeletePost}>
+                        {homeScreen? <>
+                            <TouchableOpacity style={styles.kebabOneItem} onPress={handleSavePost}>
+                                <MaterialCommunityIcons name="content-save" size={30} color="black" />
+                                <View style={styles.kebabText}>
+                                    <Text style={styles.kebabTitle}>Save</Text>
+                                    <Text style={styles.kebabDetail}>Add this post to your saved items.</Text>
+                                </View> 
+                            </TouchableOpacity>
+                            {sameUser && <>
+                            <TouchableOpacity style={styles.kebabOneItem} onPress={handleEditPost}>
+                                <MaterialCommunityIcons name="square-edit-outline" size={30} color="black" />
+                                <View style={styles.kebabText}>
+                                    <Text style={styles.kebabTitle}>Edit</Text>
+                                    <Text style={styles.kebabDetail}>Make changes to the current post.</Text>
+                                </View> 
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.kebabOneItem} onPress={handleDeletePost}>
+                                <MaterialCommunityIcons name="delete-forever" size={30} color="black" />
+                                <View style={styles.kebabText}>
+                                    <Text style={styles.kebabTitle}>Delete</Text>
+                                    <Text style={styles.kebabDetail}>Delete this post.</Text>
+                                </View> 
+                            </TouchableOpacity></>}
+                        </>:
+                            <TouchableOpacity style={styles.kebabOneItem} onPress={handleUnsavePost}>
                             <MaterialCommunityIcons name="delete-forever" size={30} color="black" />
                             <View style={styles.kebabText}>
-                                <Text style={styles.kebabTitle}>Delete</Text>
-                                <Text style={styles.kebabDetail}>Delete this post.</Text>
+                                <Text style={styles.kebabTitle}>Unsave</Text>
+                                <Text style={styles.kebabDetail}>Unsave this post.</Text>
                             </View> 
-                        </TouchableOpacity></>}
+                            </TouchableOpacity>
+                        }
                         
                     </View>
                 </View>   
@@ -540,9 +523,9 @@ const Card = ({
                         <Text style={styles.username}>{username}</Text>
                         <Text style={styles.time}>{formatted_date}</Text>
                     </View>
-                    {homeScreen && <TouchableOpacity style={styles.kebab} onPress={handleKebabPress}>
+                    <TouchableOpacity style={styles.kebab} onPress={handleKebabPress}>
                         <Octicons name="kebab-vertical" size={20} color={colors.primary} />
-                    </TouchableOpacity>}
+                    </TouchableOpacity>
 
                 </View>
             </View>

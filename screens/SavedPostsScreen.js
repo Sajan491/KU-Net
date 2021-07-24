@@ -10,20 +10,23 @@ import firebase from "../config/firebase";
 const SavedPostsScreen = () => {
     const [savedPosts, setsavedPosts] = useState([])
 
-    const getPosts= async ()=>{
-        const userID = firebase.auth().currentUser.uid;
-        const postsToPush =[];
-        const posts = firebase.firestore().collection("users_extended").doc(userID).collection("savedPosts")
-        await posts.orderBy('postTime','desc').get().then((doc)=>{
-            doc.forEach((oneDoc)=>{
-                postsToPush.push(oneDoc.data())
-                
-            })
-        })
-        setsavedPosts(postsToPush)
-    }
     useEffect(() => {
-       (async () => getPosts())();
+        const fetchPosts= async ()=>{
+            const userID = firebase.auth().currentUser.uid;
+            const postsToPush =[];
+            const posts = firebase.firestore().collection("users_extended").doc(userID).collection("savedPosts")
+            await posts.orderBy('postTime','desc').get().then((doc)=>{
+                doc.forEach((oneDoc)=>{
+                    postsToPush.push(oneDoc.data())
+                    
+                })
+            })
+            setsavedPosts(postsToPush)
+        }
+        fetchPosts();
+        const getDataEvery2s = setInterval(fetchPosts,200000000)
+        return ()=> clearInterval(getDataEvery2s);
+       
     }, [])
     return (
         <Screen style={styles.screen}>
