@@ -3,9 +3,9 @@ import React from 'react'
 import { Button, StyleSheet, Text, View, ImageBackground, Image, TouchableOpacity } from 'react-native'
 const SplashScreen = ({navigation}) => {
     return (
-        <ImageBackground blurRadius={5} style={styles.background} source={require('../assets/background.png')} >
+        <ImageBackground blurRadius={5} style={styles.background}  >
             <View style={styles.logoContainer}>
-                <Image style={styles.logo} source={require('../assets/logoo.png')} />
+                <Image style={styles.logo} source={require('../assets/appLogo.png')} />
                 <Text style={styles.title}>Welcome To KU-Net!</Text>
                 </View>
             <View style={styles.buttonContainer}>
@@ -36,14 +36,14 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     
-    logo:{
-        width:280,
-        height:280,
-    },
+    // logo:{
+    //     width:280,
+    //     height:280,
+    // },
     title:{
         fontSize:25,
         fontWeight:"bold",
-        color: colors.light
+        color: colors.secondary
     },
     button:{
         borderRadius: 25,

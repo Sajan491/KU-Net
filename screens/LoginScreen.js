@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import {AuthContext} from "../context/AuthProvider";
 import {Container} from "native-base"
 import colors from '../config/colors';
@@ -48,6 +48,7 @@ const LoginScreen = ({navigation}) => {
     return (
         <>
             <Container style={styles.container}>
+                <Image style={styles.logo} source={require('../assets/appLogo.png')} />
                 <AppText style = {styles.headerText}> Login </AppText>
                 <AppForm 
                     initialValues = {{email: "", password: "",}}
@@ -82,11 +83,11 @@ const LoginScreen = ({navigation}) => {
                     }
                 </AppForm>
     
-            <TouchableOpacity style={styles.navBtn} onPress={pressHandlerRegister}> 
-                <Text style={styles.navBtnText}> Don't have an account? Sign up.</Text>
-            </TouchableOpacity>
             <TouchableOpacity style={styles.navBtn} onPress={() => navigation.navigate("ForgotPassword")}> 
                 <Text style={styles.forgotText}> Forgot Password?</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.navBtn} onPress={pressHandlerRegister}> 
+                <Text style={styles.navBtnText}> Create New Account</Text>
             </TouchableOpacity>
             </Container>
             
@@ -135,6 +136,10 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-evenly",
-        }
+        },
+    logo: {
+        alignSelf: "center",
+        marginTop: -40,
+    }
 })
 export default LoginScreen

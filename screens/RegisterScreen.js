@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect} from 'react';
-import { View, Button, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Button, Text, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import {AuthContext} from "../context/AuthProvider";
 import {Container} from "native-base"
 import colors from '../config/colors';
@@ -47,6 +47,7 @@ const RegisterScreen = ({navigation}) => {
     return (
         <>
             <Container style={styles.container}>
+                <Image style={styles.logo} source={require('../assets/appLogo.png')} />
                 <AppText style = {styles.headerText}> Register </AppText>
                 <AppForm 
                     initialValues = {{email: "", password: "", confirmPassword: ""}}
@@ -109,6 +110,10 @@ const styles = StyleSheet.create({
         color: "red",
         marginTop: 10,
         textAlign: "center"
+    },
+    logo: {
+        marginTop: -40,
+        alignSelf: "center",
     }
 })
 export default RegisterScreen
