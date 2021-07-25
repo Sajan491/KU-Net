@@ -4,12 +4,25 @@ import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/R
 import firebase from "../config/firebase";
 import { Video } from 'expo-av';
 import { v4 as uuidv4 } from 'uuid';
+import * as Yup from 'yup';
+import {Formik} from 'formik'
+import {Label} from "native-base";
 import { Octicons } from '@expo/vector-icons';
 import colors from '../config/colors'
 import ReadMore from 'react-native-read-more-text';
 import {MaterialCommunityIcons} from '@expo/vector-icons'
 import Comment from './Comment';
+import Header from './Header';
+import { AppFormField, SubmitButton } from './form';
+import AppFormImagePicker from './form/AppFormImagePicker';
 const ItemWidth = Dimensions.get('window').width / 2 -20;
+
+const validationSchema = Yup.object().shape({
+    title: Yup.string().min(1).label("Title"),
+    description: Yup.string().label("Description"),
+    // page: Yup.object().required().nullable().label("Page"),
+    // images: Yup.array().max(4, "Maximum images allowed: 4")
+});
 
 const Card = ({
     id,
@@ -43,6 +56,7 @@ const Card = ({
         const [postUser, setPostUser] = useState('')
         const [sameUser, setSameUser] = useState(false)
         const [homeScreen, setHomeScreen] = useState(false)
+        const [editModalVisible, setEditModalVisible] = useState(false)
         // const [unreadComments, setUnreadComments] = useState(false)
 
         useEffect(() => {
@@ -293,17 +307,25 @@ const Card = ({
             
         }
         const handleEditPost = () =>{
+            setEditModalVisible(true)
+            setKebabModalVisible(false)
+            
         }
-        const handleDeletePost = () =>{
-            //delete from saved posts
-            // const allUsers = firebase.firestore().collection("users_extended")
-            // allUsers.get().then(docss=>{
-            //     docss.forEach(docss=>{
+        const handleDeletePost = async () =>{
+            // delete from saved posts 
+            const allUsers = firebase.firestore().collection("users_extended")
+            await allUsers.get().then((docss)=>{
+                docss.forEach(docss=>{
+                    const savedPosts = allUsers.doc(docss.id).collection("savedPosts")
+                    savedPosts.get().then(docss=>{
+                        docss.forEach(doc=>{
+                            if(doc.data()['id']===id) savedPosts.doc(doc.id).delete()
+                        })
+                    })
+                })
+            })
 
-            //     })
-            // })
-
-            //delete from posts database
+            // delete from posts database
             if(deptId!==''){
                 const departPost = firebase.firestore().collection('departments').doc(deptId).collection('posts').doc(id)
                 departPost.delete()
@@ -312,6 +334,7 @@ const Card = ({
                 const groupPost = firebase.firestore().collection('groups').doc(grpId).collection('posts').doc(id)
                 groupPost.delete()
             }
+            setKebabModalVisible(false)
         }
         const handleUnsavePost = () =>{
             const savedPosts = firebase.firestore().collection("users_extended").doc(uid).collection("savedPosts")
@@ -323,6 +346,28 @@ const Card = ({
                 })
             })
             setKebabModalVisible(false)
+        }
+
+        // edit form submission
+        const handleSubmit = async (values)=>{
+            if(deptId!==''){
+                const departPost = firebase.firestore().collection('departments').doc(deptId).collection('posts').doc(id)
+                if(values.title!==''){
+                    departPost.update({title:values.title})
+                }
+                if(values.description!==''){
+                    departPost.update({description:values.description})
+                }
+            }
+            else if(grpId!==''){
+                const groupPost = firebase.firestore().collection('groups').doc(grpId).collection('posts').doc(id)
+                if(values.title!==''){
+                    groupPost.update({title:values.title})
+                }
+                if(values.description!==''){
+                    groupPost.update({description:values.description})
+                }
+            }
         }
 
     return (
@@ -484,6 +529,55 @@ const Card = ({
                     </View>
                 </View>   
             </Modal>
+
+            {/* edit modal */}
+            <Modal
+                animationType="fade"
+                transparent={false}
+                visible={editModalVisible} 
+                onRequestClose={() => {
+                setEditModalVisible(false);
+            }}>
+                    <View style={styles.modalButton}>
+                        <Button title='X' onPress={()=>setEditModalVisible(false)} />
+                    </View>
+                    <View style={styles.editModalContainer}>
+                        <Header headerText="Edit Post" />
+                        <View style={styles.editForm}>
+                            <Formik
+                                initialValues={{title:'', description:'', postContents:[], images:[]}}
+                                onSubmit={(values)=>{
+                                    handleSubmit(values)
+                                }}
+                                validationSchema={validationSchema}
+                            >
+                                {({values})=><>
+                                    
+                                    <AppFormImagePicker name="images" />
+                                    <Label style = {styles.label}> Title</Label>
+                                    <AppFormField 
+                                        maxLength = {255}
+                                        defaultValue={postTitle}
+                                        name="title"
+                                    />
+                                    <Label style = {styles.label}> Description</Label>
+                                    <AppFormField 
+                                        maxLength={255}
+                                        multiline
+                                        numberOfLines={4}
+                                        name="description"
+                                        defaultValue={content}
+                                    />
+                                    <SubmitButton title="Update"/>
+                                </>}
+                                
+                                
+                            </Formik>
+                        </View>
+                    </View>
+            </Modal>
+
+
             {/* comment modal  */}
             <Modal
                 animationType="slide"
@@ -622,6 +716,18 @@ const Card = ({
 export default Card
 
 const styles = StyleSheet.create({
+    label: {
+        fontSize: 15,
+        paddingTop: 5,
+        paddingLeft: 18
+    },
+    editModalContainer:{
+        paddingHorizontal:20,
+        backgroundColor:colors.white,
+        height:'100%',
+        marginTop:-12,
+    },  
+   
     kebab:{
         marginTop:5,
         width:10
@@ -639,7 +745,7 @@ const styles = StyleSheet.create({
         maxHeight:'25%',
         width:'100%',
         paddingTop:7,
-        borderRadius:20,
+        borderTopEndRadius:20,
         backgroundColor: '#fff',
         flex:1,
         flexDirection:'column'
@@ -708,7 +814,7 @@ const styles = StyleSheet.create({
     commentsModalView:{
         paddingTop:20,
         height:'100%',
-        borderRadius:20,
+        borderTopEndRadius:20,
         backgroundColor:'white'
         
     },
@@ -819,7 +925,7 @@ const styles = StyleSheet.create({
         height:'70%',
         width:'100%',
         paddingTop:25,
-        borderRadius:20,
+        borderTopEndRadius:20,
 
         backgroundColor: '#fff'
         
