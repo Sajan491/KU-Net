@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from 'react'
-import { StyleSheet, Text, ScrollView, View, ActivityIndicator, Alert } from 'react-native'
+import { StyleSheet, Text, ScrollView, View, ActivityIndicator, Alert, TouchableOpacity } from 'react-native'
 import * as Yup from 'yup';
 import { AppForm, AppFormField, SubmitButton } from '../components/form'
 import AppFormImagePicker from '../components/form/AppFormImagePicker';
@@ -11,6 +11,7 @@ import Header from '../components/Header';
 import {Formik} from 'formik'
 import { v4 as uuidv4 } from 'uuid';
 var storageRef = firebase.storage().ref();
+import {MaterialCommunityIcons} from '@expo/vector-icons'
 
 const validationSchema = Yup.object().shape({
     title: Yup.string().required().min(1).label("Title"),
@@ -27,7 +28,7 @@ const AddPostScreen = ({navigation}) => {
     const [clubs, setClubs] = useState([])
     const [userName, setUserName] = useState('')
     const [userPpic, setUserPpic] = useState('')
-
+    const [infoVisible, setInfoVisible] = useState(false)
     useEffect(() => {
         const userID = firebase.auth().currentUser.uid;
 
@@ -160,6 +161,10 @@ const AddPostScreen = ({navigation}) => {
         
     }
 
+    const handleContainerVisibility = () =>{
+        setInfoVisible(!infoVisible)
+    }
+
     return (
         <Screen style={styles.container}>
             <Header headerText="Add a Post" />
@@ -176,7 +181,13 @@ const AddPostScreen = ({navigation}) => {
                     validationSchema={validationSchema}
                 >
                     {({values})=><>
-                        <AppFormImagePicker name="images" />
+                        <TouchableOpacity style={{marginLeft:5, marginBottom:10}} onPress={handleContainerVisibility}>
+                            <MaterialCommunityIcons name="information-outline" size={24} color="#999999" />
+                        </TouchableOpacity>
+                        {infoVisible && <View style={styles.infoContainer}>
+                            <Text style={styles.editNote}>Note: The maximum number of images/videos you can add is 4.</Text>
+                        </View>}
+                        <AppFormImagePicker name="images"/>
                         <AppFormField 
                             maxLength = {255}
                             placeholder="Title"
@@ -199,7 +210,7 @@ const AddPostScreen = ({navigation}) => {
                         />
                         {!uploading? <SubmitButton 
                             title="Post"
-                        />: <ActivityIndicator size={40} color="#000" /> }
+                        />: <ActivityIndicator size={40} color={colors.primary} /> }
                     </>}
                 
                 </Formik>
@@ -212,6 +223,11 @@ const AddPostScreen = ({navigation}) => {
 export default AddPostScreen
 
 const styles = StyleSheet.create({
+    editNote:{
+        marginBottom:20,
+        color: '#999999',
+        marginLeft:6
+    },
     formContainer:{
         backgroundColor:'white',
         paddingHorizontal:12,

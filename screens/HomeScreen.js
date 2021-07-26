@@ -123,11 +123,11 @@ const HomeScreen = ({navigation}) => {
             <View style={styles.container}>
                 <View  style={styles.header} >
                     <Text style={styles.headerText}>Home</Text>
-                    <NotifButton style={styles.notifButton} onPress={()=>navigation.navigate("Notifications")}/>
+                    {/* <NotifButton style={styles.notifButton} onPress={()=>navigation.navigate("Notifications")}/> */}
                 </View>
-                <View  style={styles.notifCount}>
+                {/* <View  style={styles.notifCount}>
                     <Text style={styles.notifCountText}>1</Text>
-                </View>
+                </View> */}
 
                 <FlatList 
                     ListHeaderComponent = {
