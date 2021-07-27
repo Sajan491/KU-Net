@@ -10,13 +10,14 @@ import firebase from "firebase";
 import TestNavigator from './TestNavigator';
 
 const Routes = () => {
-    const {user, setUser, isANewUser} = useContext(AuthContext);
+    const {user, setUser, isANewUser, isEmailVerified} = useContext(AuthContext);
     console.log("New user?", isANewUser);
     const [loading, setLoading] = useState(true);
     const [initializing, setInitialize] = useState(true);
 
     const onAuthStateChanged = (user) => {
         setUser(user);
+        console.log(isEmailVerified);
         if (initializing) setInitialize(false);
         setLoading(false);
     }

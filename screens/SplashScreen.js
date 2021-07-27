@@ -3,7 +3,7 @@ import React from 'react'
 import { Button, StyleSheet, Text, View, ImageBackground, Image, TouchableOpacity } from 'react-native'
 const SplashScreen = ({navigation}) => {
     return (
-        <ImageBackground blurRadius={5} style={styles.background}  >
+        <ImageBackground blurRadius={5} style={styles.background}   >
             <View style={styles.logoContainer}>
                 <Image style={styles.logo} source={require('../assets/appLogo.png')} />
                 <Text style={styles.title}>Welcome To KU-Net!</Text>

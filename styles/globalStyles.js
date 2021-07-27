@@ -16,10 +16,10 @@ export const groupStyles = StyleSheet.create({
     content: {
         display: "flex",
         flexDirection: "row",
-        borderBottomWidth: 1,
+        borderBottomWidth: 0.7,
         borderColor: colors.secondary,
-        borderWidth: 1,
-        borderRadius: 20,
+        borderWidth: 0.5,
+        // borderRadius: 20,
         marginBottom: 5,
         backgroundColor: colors.white
     },

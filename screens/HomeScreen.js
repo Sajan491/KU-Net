@@ -43,6 +43,8 @@ const HomeScreen = ({navigation}) => {
             setGroups(groupsArr);
             setLoading(false)
         })
+
+        console.log(firebase.auth().currentUser, "huh");
     }, [])
 
     return (

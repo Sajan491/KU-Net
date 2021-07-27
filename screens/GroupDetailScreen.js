@@ -153,7 +153,7 @@ const GroupDetailScreen = ({route, navigation}) => {
                         <>
                         <View style>
                             <View style = {styles.groupInfo}>
-                                <Image source = {group.image} style = {styles.detailImage} resizeMode = {'contain'} />
+                                <Image source = {require("../assets/groups/ku.png")} style = {styles.detailImage} resizeMode = {'contain'} />
                                 <AppText> {group.title} </AppText>
                                 <Caption> {group.about} </Caption>
                                 

@@ -8,7 +8,8 @@ const GroupLogoWithTitle = ({title, icon, onPress}) => {
             <View>
                 <TouchableOpacity onPress = {onPress} style = {styles.logoContainer}>
                     <View style = {styles.container}>
-                        <MaterialCommunityIcons name = {icon} size = {45} style={styles.logo}/> 
+                        {/* <MaterialCommunityIcons name = {icon} size = {45} style={styles.logo}/>  */}
+                        <Image source ={require("../assets/groups/ku.png")} style = {styles.logo} />
                     </View>
                     <Text style = {styles.text}> {title} </Text>
                 </TouchableOpacity>
@@ -26,16 +27,16 @@ const styles = StyleSheet.create({
     logo: {
         height: 50,
         width: 50,
-        borderRadius: 50,
+        // borderRadius: 50,
         marginLeft: 5,
-        color: colors.dark
+        // color: colors.dark
     },
     logoContainer: {
         height: 70,
         marginHorizontal: 12,
         marginVertical: 6,
         alignContent: "center",
-        backgroundColor: colors.white,
+        // backgroundColor: colors.white,
         borderRadius: 10
     },
     text: {
@@ -43,8 +44,8 @@ const styles = StyleSheet.create({
     textAlign: "center"        
     },
     bgContainer: {
-        borderRadius: 50,
-        backgroundColor: "white"
+        // borderRadius: 50,
+        // backgroundColor: "white"
 
     }
 })

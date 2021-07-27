@@ -8,6 +8,7 @@ import AppText from '../components/AppText';
 import firebase from "../config/firebase";
 import {Label} from "native-base";
 import departments from "../components/Departments";
+import Loading from '../components/Loading';
 
 const validationSecondRegisterScreen = Yup.object().shape({
     username: Yup.string().min(1).nullable().label("Username"),
@@ -25,6 +26,7 @@ const ProfileSettings = ({navigation}) => {
     const [department, setDepartment] = useState({});
     const [bio, setBio] = useState("")
     const [age, setAge] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [batch, setBatch] = useState(null);
     const userID = firebase.auth().currentUser.uid;
     const db = usersCollection.doc(userID)
@@ -47,6 +49,7 @@ const ProfileSettings = ({navigation}) => {
             }).catch ((err) => {
                 console.log("Error receiving data from the database", err);
             })
+            setLoading(false);
     }
 
     const handleSubmit=(values)=>{
@@ -98,6 +101,8 @@ const ProfileSettings = ({navigation}) => {
         navigation.navigate("Settings")      
     }
 
+    if(loading){
+        return <Loading/>}
 
     return (
         <Screen style={styles.container}>

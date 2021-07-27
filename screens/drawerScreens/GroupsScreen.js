@@ -35,7 +35,7 @@ const GroupsScreen = ({navigation}) => {
         <View style= {styles.container}>
             <Header headerText="Groups" />
            
-            <AppText style={{color: colors.secondary, textAlign: "center", marginBottom: 5}}> Tap on the group to join!</AppText>
+            <AppText style={{color: colors.secondary, textAlign: "center", marginBottom: 5}}> Tap on the group & join!</AppText>
             <FlatList 
                 data = {groups}
                 keyExtractor = {item => item.id}

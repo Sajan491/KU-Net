@@ -10,11 +10,16 @@ import firebase from "../../config/firebase";
 import AppText from "../../components/AppText";
 import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../../config/colors';
-import {groups} from "../../data/groups";
+import Loading from '../../components/Loading';
 
 const DrawerContent = (props) => {
+    const usersDB = firebase.firestore().collection("users_extended")
+    const userID = firebase.auth().currentUser.uid;
+    const [groups, setGroups] = useState([])
     const {user, signOut} = useContext(AuthContext);
-    const [username, setUsername] = useState("")
+    const [username, setUsername] = useState("");
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
         getEnrolledGroups();
     }, [])
@@ -26,15 +31,22 @@ const DrawerContent = (props) => {
         console.log("Username updated");
     }
 
-    const getEnrolledGroups = () => {
-        firebase.firestore().collection("groups").get().then((docs) => {
-            docs.forEach((doc) => {
-                console.log(doc.data());
-            })
+    const getEnrolledGroups =  () => {
+         usersDB.doc(userID).get().then((doc) => {
+           if(doc.data()['groups'] !== undefined) {
+               const groupArr = doc.data()['groups']
+               setGroups(groupArr)
+            } else{
+                usersDB.doc(userID).update({
+                    groups: []
+                })
+            }
+        }).catch(err => {
+            console.log("Error fetching users data", err);
         })
+        setLoading(false)
     }
-
-    return (
+    return !loading ? (
         <View style = {{flex: 1}}>
             <DrawerContentScrollView {...props}>
                 <View style = {styles.drawerContent}>
@@ -47,9 +59,9 @@ const DrawerContent = (props) => {
                                 />
                             </TouchableOpacity>
                             <View style = {{marginLeft: 15, flexDirection: "column"}}>
-                                <Title style = {{fontSize: 16, fontWeight: "bold"}}> Sabin Thapa </Title>
+                                <Title style = {{fontSize: 16, fontWeight: "bold"}}> @{user.displayName} </Title>
                                 {user.displayName !== null 
-                                ? <Caption> @{user.displayName} </Caption> 
+                                ? <Caption> {user.email} </Caption> 
                                 : (
                                     <View style = {{display: "flex", flexDirection: "row", alignItems: "center", marginHorizontal: 5}}>
                                         <TextInput placeholder = "Enter Username.." value = {username} onChangeText = {(un) => setUsername(un)} />
@@ -63,7 +75,7 @@ const DrawerContent = (props) => {
                         </View>
                     </View>
                 
-                        <View style = {styles.row}>
+                        {/* <View style = {styles.row}>
                             <View style = {styles.followerSection}>
                                 <Paragraph style = {styles.count}> 80 </Paragraph>
                                 <Caption> Following </Caption>
@@ -72,7 +84,7 @@ const DrawerContent = (props) => {
                                 <Paragraph style = {styles.count}> 80 </Paragraph>
                                 <Caption> Followers </Caption>
                             </View>
-                        </View>
+                        </View> */}
                 </View>
 
                <Drawer.Section style = {styles.topDdrawerSection}>
@@ -146,6 +158,7 @@ const DrawerContent = (props) => {
             </Drawer.Section>
         </View>
     )
+    : <Loading />
 }
 
 export default DrawerContent

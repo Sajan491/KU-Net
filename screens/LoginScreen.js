@@ -39,6 +39,7 @@ const LoginScreen = ({navigation}) => {
 
     useEffect(() => {
        setError(null)
+       console.log("sup");
     }, [])
 
     const showPasswordHandler = () => {
