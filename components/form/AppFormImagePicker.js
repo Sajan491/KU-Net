@@ -4,10 +4,10 @@ import ErrorMessage from './ErrorMessage'
 import {useFormik, useFormikContext} from 'formik';
 import {StyleSheet, View} from 'react-native'
 
-
-const AppFormImagePicker = ({name}) => {
+const AppFormImagePicker = ({name} ) => {
     const {errors, setFieldValue, touched, values} = useFormikContext();
     const imageUris = values[name]
+    
     const handleAdd=(uri)=>{
         setFieldValue(name,[...imageUris, uri]);
     }

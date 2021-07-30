@@ -1,5 +1,5 @@
 import React,{useState, useEffect} from 'react'
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View, Dimensions, Modal, Button, TouchableWithoutFeedback, TextInput, Alert } from 'react-native'
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View, Dimensions, Modal, Button, TouchableWithoutFeedback, TextInput, Alert, ActivityIndicator } from 'react-native'
 import ReactNativeZoomableView from '@dudigital/react-native-zoomable-view/src/ReactNativeZoomableView';
 import firebase from "../config/firebase";
 import { Video } from 'expo-av';
@@ -16,6 +16,7 @@ import Header from './Header';
 import { AppFormField, SubmitButton } from './form';
 import AppFormImagePicker from './form/AppFormImagePicker';
 const ItemWidth = Dimensions.get('window').width / 2 -20;
+var storageRef = firebase.storage().ref();
 
 const validationSchema = Yup.object().shape({
     title: Yup.string().min(1).label("Title"),
@@ -37,7 +38,7 @@ const Card = ({
     page,
     screen
     }) => {
-
+        const [isUpdating, setIsUpdating] = useState(false)
         const [uid, setUid] = useState('')
         const [isLiked, setIsLiked] = useState(false)
         const [userName, setUserName] = useState('')
@@ -57,6 +58,7 @@ const Card = ({
         const [sameUser, setSameUser] = useState(false)
         const [homeScreen, setHomeScreen] = useState(false)
         const [editModalVisible, setEditModalVisible] = useState(false)
+        const [infoVisible, setInfoVisible] = useState(false)
         // const [unreadComments, setUnreadComments] = useState(false)
 
         useEffect(() => {
@@ -119,7 +121,7 @@ const Card = ({
                     groupPost.get().then(post=>{
                         let postLikers = post.data()['peopleWhoLiked']
                         let tempComments = post.data()['comments']
-                        setPostUser(post.data()['username'])
+                        setPostUser(post.data()['userInfo'].username)
                         setAllComments((prev) => {
                             return tempComments;
                         }) 
@@ -240,14 +242,14 @@ const Card = ({
 
         const computeColumns=()=>{
             if (postContents.length == 1){
-                return {numCol:1, imgWidth: "100%", imgHeight:300};
+                return {numCol:1, imgWidth: "100%", imgHeight:300, keyy:"one"};
             }
             else {
-                return {numCol:2, imgWidth: ItemWidth, imgHeight:150};
+                return {numCol:2, imgWidth: ItemWidth, imgHeight:150, keyy:"two"};
             }
         }
 
-        const {numCol, imgWidth, imgHeight} = computeColumns()
+        const {numCol, imgWidth, imgHeight, keyy} = computeColumns()
 
         const renderTruncatedFooter = (handlePress) => {
             return (
@@ -311,6 +313,9 @@ const Card = ({
             setKebabModalVisible(false)
             
         }
+
+        
+
         const handleDeletePost = async () =>{
             // delete from saved posts 
             const allUsers = firebase.firestore().collection("users_extended")
@@ -336,6 +341,12 @@ const Card = ({
             }
             setKebabModalVisible(false)
         }
+        const onPressDelete=()=>{
+            Alert.alert('Confirm Delete?','Are you sure you want to delete the post',[
+                {text:'Confirm', onPress:()=>{handleDeletePost()}},
+                {text:'Cancel'}
+            ])
+        }
         const handleUnsavePost = () =>{
             const savedPosts = firebase.firestore().collection("users_extended").doc(uid).collection("savedPosts")
             savedPosts.get().then(docs=>{
@@ -350,6 +361,8 @@ const Card = ({
 
         // edit form submission
         const handleSubmit = async (values)=>{
+
+            //update from real posts
             if(deptId!==''){
                 const departPost = firebase.firestore().collection('departments').doc(deptId).collection('posts').doc(id)
                 if(values.title!==''){
@@ -357,6 +370,15 @@ const Card = ({
                 }
                 if(values.description!==''){
                     departPost.update({description:values.description})
+                }
+                if(values.images.length>0){
+                    uploadImage(values)
+                }
+                if(values.images.length===0){
+                    setEditModalVisible(false)
+                    if(values.title!=='' || values.description!==''){
+                        Alert.alert('Success!', 'Post Successfully Updated!')
+                    }   
                 }
             }
             else if(grpId!==''){
@@ -367,7 +389,130 @@ const Card = ({
                 if(values.description!==''){
                     groupPost.update({description:values.description})
                 }
+                if(values.images.length>0){
+                    uploadImage(values)
+                }
+                if(values.images.length===0){
+                    setEditModalVisible(false)
+                    if(values.title!=='' || values.description!==''){
+                        Alert.alert('Success!', 'Post Successfully Updated!')
+                    }   
+                }
             }
+            updateInSavedPosts(values);
+        }
+
+        const updateInSavedPosts = async (values, updatedPostContents) =>{
+            // update from saved posts 
+            const allUsers = firebase.firestore().collection("users_extended")
+            await allUsers.get().then((docss)=>{
+                docss.forEach(docss=>{
+                    const savedPosts = allUsers.doc(docss.id).collection("savedPosts")
+                    savedPosts.get().then(docss=>{
+                        docss.forEach(doc=>{
+                            if(doc.data()['id']===id) {
+                                if(values.title!==''){
+                                    savedPosts.doc(doc.id).update({title:values.title})
+                                }
+                                if(values.description!==''){
+                                    savedPosts.doc(doc.id).update({description:values.description})
+                                }
+                                if(values.images.length>0){
+                                    if(updatedPostContents){
+                                        savedPosts.doc(doc.id).update({postContents:updatedPostContents})
+                                    }
+                                }
+                                
+                            }
+                        })
+                    })  
+                })
+            })
+        }
+
+    
+
+        // image uploader from edit modal
+        const uploadImage= async (values)=>{
+            // ----------uploading to storage-----------     
+            var uris = []
+            var count = 0;
+            var limit = values.images.length;
+            if(limit + postContents.length >4){
+                Alert.alert('Error!','A post cannot have more than 4 images/videos.')
+            }
+            else{
+                await values.images.forEach( async (img)=>{
+                    
+                    const random_id = uuidv4();
+                    const extension = img.split('.').pop();
+                    
+                    const blob = await new Promise((resolve,reject)=>{
+                        const xhr = new XMLHttpRequest();
+                        xhr.onload = function(){
+                            resolve(xhr.response);
+                        };
+                        xhr.onerror = function(){
+                            reject(new TypeError('Network request failed'));
+                        };
+                        xhr.responseType = 'blob';
+                        xhr.open('GET', img, true);
+                        xhr.send(null);
+        
+                    });
+                   
+                    const picRef = storageRef.child(`posts/${random_id+'.'+extension}`)
+                    const snapshot = picRef.put(blob)
+                    snapshot.on(firebase.storage.TaskEvent.STATE_CHANGED, 
+                        (snapshot)=>{
+                        console.log(snapshot.state);
+                        console.log('progress:' + (snapshot.bytesTransferred / snapshot.totalBytes)*100);
+                        setIsUpdating(true)
+                    },
+                    (error)=>{
+                        setIsUpdating(false)
+                        console.log(error);
+                        blob.close()
+                        return
+                    },
+                    ()=>{
+                        picRef.getDownloadURL().then((downloadUrl)=>{
+                            count= count+1;
+                            blob.close();
+                            let extensions = ['jpg', 'png', 'jpeg', 'gif', 'webp','bmp', 'svg']
+                            if (extensions.includes(extension)){
+                                uris.push({uri:downloadUrl, id:random_id, type:'image'})
+                            }
+                            else{
+                                uris.push({uri:downloadUrl, id:random_id, type:'video'})
+                            }
+                            
+                            if (count === limit){ 
+                                
+                                const updatedPostContents = postContents.concat(uris)
+                                if(deptId!==''){
+                                    const departPost = firebase.firestore().collection('departments').doc(deptId).collection('posts').doc(id)
+                                    departPost.update({postContents:updatedPostContents})
+                                }
+                                else if(grpId!==''){
+                                    const groupPost = firebase.firestore().collection('groups').doc(grpId).collection('posts').doc(id)
+                                    groupPost.update({postContents:updatedPostContents})
+                                }  
+                                updateInSavedPosts(values, updatedPostContents)
+                                
+                                setIsUpdating(false) 
+                                setEditModalVisible(false)  
+                                Alert.alert('Success!', 'Post Successfully Updated!')
+                            }
+                        })
+                    }
+                    );
+                })
+            }
+        }
+
+        const handleContainerVisibility = () =>{
+            setInfoVisible(!infoVisible)
         }
 
     return (
@@ -509,7 +654,7 @@ const Card = ({
                                     <Text style={styles.kebabDetail}>Make changes to the current post.</Text>
                                 </View> 
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.kebabOneItem} onPress={handleDeletePost}>
+                            <TouchableOpacity style={styles.kebabOneItem} onPress={onPressDelete}>
                                 <MaterialCommunityIcons name="delete-forever" size={30} color="black" />
                                 <View style={styles.kebabText}>
                                     <Text style={styles.kebabTitle}>Delete</Text>
@@ -545,15 +690,21 @@ const Card = ({
                         <Header headerText="Edit Post" />
                         <View style={styles.editForm}>
                             <Formik
-                                initialValues={{title:'', description:'', postContents:[], images:[]}}
+                                initialValues={{title:'', description:'', postContents:postContents, images:[]}}
                                 onSubmit={(values)=>{
                                     handleSubmit(values)
                                 }}
                                 validationSchema={validationSchema}
                             >
                                 {({values})=><>
+                                    <TouchableOpacity style={{marginLeft:5, marginBottom:10}} onPress={handleContainerVisibility}>
+                                        <MaterialCommunityIcons name="information-outline" size={24} color="#999999" />
+                                    </TouchableOpacity>
+                                    {infoVisible && <View style={styles.infoContainer}>
+                                        <Text style={styles.editNote}>Note: You can only add images/videos from here and cannot delete existing ones. Also, maximum number of images/ videos per post is 4.</Text>
+                                    </View>}
                                     
-                                    <AppFormImagePicker name="images" />
+                                    <AppFormImagePicker name="images"/>
                                     <Label style = {styles.label}> Title</Label>
                                     <AppFormField 
                                         maxLength = {255}
@@ -568,7 +719,7 @@ const Card = ({
                                         name="description"
                                         defaultValue={content}
                                     />
-                                    <SubmitButton title="Update"/>
+                                    {!isUpdating? <SubmitButton title="Update"/>: <ActivityIndicator size={40} color="#000" />}
                                 </>}
                                 
                                 
@@ -658,6 +809,7 @@ const Card = ({
                 </View>
 
                    <FlatList 
+                        key={keyy}
                         data={postContents}
                         numColumns={numCol}
                         keyExtractor={(item)=>{return item.id}}
@@ -716,9 +868,15 @@ const Card = ({
 export default Card
 
 const styles = StyleSheet.create({
+   
+    editNote:{
+        marginBottom:20,
+        color: '#999999',
+        marginLeft:6
+    },
     label: {
         fontSize: 15,
-        paddingTop: 5,
+        paddingTop: 8,
         paddingLeft: 18
     },
     editModalContainer:{
