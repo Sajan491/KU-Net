@@ -145,6 +145,7 @@ const AddPostScreen = ({navigation}) => {
                       ])
                 })
             }
+
             
         }  
     }
@@ -171,7 +172,6 @@ const AddPostScreen = ({navigation}) => {
                         
                         handleSubmit(values)
                         resetForm({});
-                        
                     }}
                     validationSchema={validationSchema}
                 >

@@ -18,11 +18,11 @@ export default Header
 
 const styles = StyleSheet.create({
     header:{
-        paddingTop: Constants.statusBarHeight,
+        // paddingTop: Constants.statusBarHeight,
         flexDirection:'row',
         paddingLeft:10,
         paddingBottom:6,
-        marginTop:10,
+        marginTop:8,
     }
     ,
     headerText:{
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     separator:{
         height:1,
         backgroundColor:"#fff",
-        marginBottom: 15
+        marginBottom: 5
     }
     
 })

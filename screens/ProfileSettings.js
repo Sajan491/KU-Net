@@ -7,6 +7,8 @@ import ItemPicker from '../components/ItemPicker';
 import AppText from '../components/AppText';
 import firebase from "../config/firebase";
 import {Label} from "native-base";
+import departments from "../components/Departments";
+import Loading from '../components/Loading';
 
 const validationSecondRegisterScreen = Yup.object().shape({
     username: Yup.string().min(1).nullable().label("Username"),
@@ -16,44 +18,30 @@ const validationSecondRegisterScreen = Yup.object().shape({
     batch:  Yup.string().min(4).label("Batch")
 });
 
-
-const departments = [
-    {label: "Computer Science and Engineering", value:1, icon:"laptop"},
-    {label: "Civil Engineering", value:2, icon:"account-hard-hat"},
-    {label: "Chemical Engineering", value:3, icon:"chemical-weapon"},
-    {label: "Electrical and Electronics", value:4, icon:"electric-switch"},
-    {label: "Gemoatics Engineering", value:5, icon:"ruler"},
-    {label: "Biotechnology", value:6, icon:"microscope"},
-    {label: "Environmental Science and Engineering", value:7, icon:"tree"},
-    {label: "Architecture", value:8, icon:"lead-pencil"},
-    {label: "Mechanical Engineering", value:9, icon:"car"},
-    {label: "Pharmacy", value:10, icon:"hospital-box"},
-    {label: "Mathematics", value:11, icon:"math-compass"},
-    {label: "Applied Science", value:12, icon:"black-mesa"},
-];
 const usersCollection = firebase.firestore().collection("users_extended")
 
 
 const ProfileSettings = ({navigation}) => {
     const [userName, setUserName] = useState("");
-    const [department, setDepartment] = useState("");
+    const [department, setDepartment] = useState({});
     const [bio, setBio] = useState("")
     const [age, setAge] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [batch, setBatch] = useState(null);
     const userID = firebase.auth().currentUser.uid;
     const db = usersCollection.doc(userID)
 
     useEffect(() => {
         getData();
+        console.log(department.label, "I ama LABEL");
     }, [])
 
     const getData =  () => {
         db.get()
         .then((doc) => { 
-            console.log("Data from the colelction: ", doc.data());
               setUserName(doc.data()['username'])
               const dept = doc.data()['department']
-              console.log("Department: ", dept);
+              console.log(dept, "heheh");
               setDepartment(dept)
               setAge(doc.data()['age'])
               setBio(doc.data()['bio'])
@@ -61,10 +49,11 @@ const ProfileSettings = ({navigation}) => {
             }).catch ((err) => {
                 console.log("Error receiving data from the database", err);
             })
+            setLoading(false);
     }
 
     const handleSubmit=(values)=>{
-        console.log(userName);
+        console.log(values, "jn");
         try {            
             console.log("User ID: ", userID);
             db.get()
@@ -112,6 +101,8 @@ const ProfileSettings = ({navigation}) => {
         navigation.navigate("Settings")      
     }
 
+    if(loading){
+        return <Loading/>}
 
     return (
         <Screen style={styles.container}>
@@ -121,7 +112,7 @@ const ProfileSettings = ({navigation}) => {
             <AppText style={styles.header}>Profile Details</AppText>
 
             <AppForm
-                initialValues={{username: "", age:'',  department:null, bio:'', batch:''}}
+                initialValues={{username: "", age:'',  department: null, bio:'', batch:''}}
                 onSubmit={handleSubmit}
                 validationSchema={validationSecondRegisterScreen}
             >
@@ -143,9 +134,9 @@ const ProfileSettings = ({navigation}) => {
                 <Label style = {styles.label}>Department</Label>
                 <ItemPicker
                     items={departments}
-                    name="department"
+                    name= "department"
                     numberOfColumns={1}
-                    placeholder= {department}
+                    placeholder= {department.label}
                 />
 
                 <Label style = {styles.label}> Bio </Label>

@@ -1,52 +1,15 @@
 import React, {useContext, useEffect, useState, useCallback} from 'react'
 import { FlatList, StyleSheet, Text, View, ScrollView, RefreshControl, ActivityIndicator } from 'react-native'
+
 import Card from '../components/Card';
 import colors from "../config/colors";
 
 import GroupLogoWithTitle from '../components/GroupLogoWithTitle';
 import NotifButton from '../navigation/NotifButton';
-import Constants from 'expo-constants';
+import Constants from 'expo-constants'
+import {posts} from "../data/posts"
 import firebase from "../config/firebase";
 
-
-
-const groups = [
-    {
-        id: 1,
-        title: "KUCC",
-        image:require("../assets/groups/kucc.png")
-    },
-    {
-        id: 2,
-        title: "AIESEC",
-        image:require("../assets/groups/aiesec.png")
-    },
-    {
-        id: 3,
-        title: "KUSWC",
-        image:require("../assets/groups/ku.png")
-    },
-    {
-        id: 4,
-        title: "ALUMNI",
-        image:require("../assets/django.jpg"),
-    },
-    {
-        id: 5,
-        title: "KURCS",
-        image:require("../assets/groups/redcross.png"),
-    },
-    {
-        id: 6,
-        title: "KUCS",
-        image:require("../assets/django.jpg"),
-    },
-    {
-        id: 7,
-        title: "KUCE",
-        image:require("../assets/groups/itmeet.png"),
-    },
-]
 const usersCollection = firebase.firestore().collection("users_extended")
 
 const HomeScreen = ({navigation}) => {
@@ -102,21 +65,25 @@ const HomeScreen = ({navigation}) => {
         setHomePosts(allPosts)
         //   --------------------------------------------- //
     }
-    useEffect(() => {
-        
-        getPosts();
-        const getDataEvery10s = setInterval(getPosts,1000000000)
-        return ()=> clearInterval(getDataEvery10s);
-        
-    }, [])
 
-    const onRefresh = useCallback(async () => {
+    useEffect(()=> {
+       const onRefresh = useCallback(async () => {
         setRefreshing(true);
         await getPosts()
         setRefreshing(false)
+        groupsDB.get().then((docs)=> {
+            const groupsArr = []
+            docs.forEach((doc) => {
+                groupsArr.push({id: doc.id, ...doc.data()})
+            })
+            setGroups(groupsArr);
+            setLoading(false)
+        })
+
+        console.log(firebase.auth().currentUser, "huh");
     }, [])
 
-   
+
     return (
                 
 
@@ -138,7 +105,7 @@ const HomeScreen = ({navigation}) => {
                                 data = {groups}
                                 keyExtractor = {(item) => item.id.toString()}
                                 renderItem = {({item}) => (
-                                    <GroupLogoWithTitle title = {item.title} image = {item.image} onPress = {() => navigation.navigate("GroupDetails", item)} />
+                                    <GroupLogoWithTitle title = {item.abbr} icon = {item.icon}  onPress = {() => navigation.navigate("GroupDetails", item)} />
                                 )}
                             />
                         </>

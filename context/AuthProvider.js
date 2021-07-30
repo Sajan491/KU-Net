@@ -1,19 +1,23 @@
 import React, { createContext, useState } from 'react';
+import { Alert } from 'react-native';
 import firebase from "../config/firebase";
 
-const usersCollection = firebase.firestore().collection('users');
+const usersCollection = firebase.firestore().collection('users_extended');
 
 export const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [error, setError] = useState("");
     const [isANewUser, setIsANewUser] = useState(false);
+    const [isEmailVerified, setIsEmailVerified] = useState(false);
     return (
       <AuthContext.Provider
         value={{
           user,
           setUser,
           isANewUser,
+          isEmailVerified,
+          setIsEmailVerified,
           error,
           setError,
           signIn: async (email, password) => {
@@ -31,22 +35,28 @@ export const AuthProvider = ({ children }) => {
           signUp: async (email, password) => {
             try {
                 await firebase.auth().createUserWithEmailAndPassword(email, password).then(cred => {
-                  console.log(cred.user.uid);
-                  console.log(cred.additionalUserInfo);
                   {cred.additionalUserInfo.isNewUser ? setIsANewUser(true) : setIsANewUser(false)}
-                  usersCollection
-                    .doc(cred.user.uid)
+
+                  cred.user.sendEmailVerification().then(() => {
+                    Alert.alert("You can now check your email and verify your student email!");
+                  }).catch((err) => {
+                    Alert.alert(err.message)
+                  })
+                  
+                  usersCollection 
+                  .doc(cred.user.uid)
                     .set({
                       email: email,
                       uid: cred.user.uid
                     })
+                    // cred.user.reauthenticateWithCredential(email)
+                    // {cred.user.emailVerified === true ? setIsEmailVerified(true) : setIsEmailVerified(false) }
                   
                 })
             } catch (e) {
-              console.log(e);
-              console.log(email);
               setError(e.message)
             }
+            const user = firebase.auth().currentUser
           },
         
           signOut: async () => {
@@ -56,7 +66,14 @@ export const AuthProvider = ({ children }) => {
               console.error(e);
               setError(e.message)
             }
+          },
+          passwordReset : email => {
+            try {
+              firebase.auth().sendPasswordResetEmail(email)
+          } catch (err) {
+            setError(e.message)
           }
+        }
         }}
       >
         {children}

@@ -27,6 +27,7 @@ const usersCollection = firebase.firestore().collection("users_extended")
 
 const SecondRegisterScreen = ({navigation}) => {
     const user = useContext(AuthContext);
+
     const [uploading, setUploading] = useState(false)
 
     const handleSubmit = async (values)=>{

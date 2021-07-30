@@ -12,7 +12,9 @@ const TestNavigator = () => {
     const {isANewUser} = useContext(AuthContext)
     return (
       <Stack.Navigator>
-         {isANewUser ? <Stack.Screen name = "SecondRegister" component = {SecondRegisterScreen} /> : null }
+         {isANewUser ? <Stack.Screen name = "SecondRegister" component = {SecondRegisterScreen} options = {{
+           headerShown:false
+         }} /> : null }
          {isANewUser ? <Stack.Screen name = "ThirdRegister" component = {ThirdRegisterScreen} options={({})=>({
                     headerShown: false,
                     
