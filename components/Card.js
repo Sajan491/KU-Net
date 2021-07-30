@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as Yup from 'yup';
 import {Formik} from 'formik'
 import {Label} from "native-base";
-import { createIconSetFromFontello, Octicons } from '@expo/vector-icons';
+import { Octicons } from '@expo/vector-icons';
 import colors from '../config/colors'
 import ReadMore from 'react-native-read-more-text';
 import {MaterialCommunityIcons} from '@expo/vector-icons'
