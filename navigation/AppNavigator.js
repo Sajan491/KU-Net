@@ -24,7 +24,9 @@ const AppNavigator=()=>(
     <Tab.Navigator tabBarOptions={{activeTintColor: colors.primary,
     inactiveTintColor: 'gray',
         style:{height:70, paddingBottom:10, paddingHorizontal:10}
-      }}>
+
+      }
+      }>
         <Tab.Screen 
             name="Feed" 
             component={FeedNavigator}

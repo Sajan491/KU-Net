@@ -35,7 +35,8 @@ const ProfileImagePicker = ({name}) => {
         try{
             const result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                quality: 0.5
+                allowsEditing: true,
+                quality: 0.8
             });
             if(!result.cancelled){
                 setImageUri(result.uri);

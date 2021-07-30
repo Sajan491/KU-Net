@@ -1,40 +1,76 @@
-import React, {useContext, useState, useEffect} from 'react'
-import { FlatList, StyleSheet, Text, View, ScrollView } from 'react-native'
+import React, {useContext, useEffect, useState, useCallback} from 'react'
+import { FlatList, StyleSheet, Text, View, ScrollView, RefreshControl, ActivityIndicator } from 'react-native'
+
 import Card from '../components/Card';
 import colors from "../config/colors";
-import Screen from '../components/Screen'
-import {AuthContext} from "../context/AuthProvider";
-import {MaterialCommunityIcons} from "@expo/vector-icons";
+
 import GroupLogoWithTitle from '../components/GroupLogoWithTitle';
 import NotifButton from '../navigation/NotifButton';
 import Constants from 'expo-constants'
 import {posts} from "../data/posts"
 import firebase from "../config/firebase";
-const HomeScreen = ({navigation}) => {
-    const [groups, setGroups] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const groupsDB = firebase.firestore().collection("groups")
-    // useEffect(() => {
-    //     const fetchPosts =()=>{
-    //         try {
-    //             const list = []
-    //             firebase.firestore().collection('posts').get().then((querySnapshot)=>{
-    //                 console.log("total posts", querySnapshot.size)
-    //                 querySnapshot.forEach(doc=>{
-    //                     const {} = doc.data();
-    //                     list.push({
 
-    //                     });
-    //                 })
-    //             })
-    //         } catch (error) {
-    //             console.log(error)
-    //         }
-    //     }
-    //     fetchPosts()
-    // }, [])
+const usersCollection = firebase.firestore().collection("users_extended")
+
+const HomeScreen = ({navigation}) => {
+    const [loading, setLoading] = useState(false)
+    const [homePosts, setHomePosts] = useState([])
+    const [refreshing, setRefreshing] = useState(false);
+    const getPosts = async ()=>{
+        
+        const userID = firebase.auth().currentUser.uid;
+        let department_id;
+        let allPosts = []
+        let groupIds=[]
+        
+        await usersCollection.doc(userID).get().then((usr)=>{
+            department_id = usr.data()['department'].value
+            let groups = usr.data()['groups']
+            groups.forEach(function(grp){
+                groupIds.push(grp.id)
+            })
+        }).catch((error)=>{
+            console.log(error)
+        })
+
+        // -----------fetching posts---------------------//
+        await groupIds.forEach((doc1)=>{
+            const groupPosts = firebase.firestore().collection('groups').doc(doc1).collection('posts')
+            
+            groupPosts.orderBy('postTime','desc').get().then((snapshot2)=>{
+                snapshot2.forEach(doc=>{
+                    
+                    const postItem = doc.data()
+                    postItem.id = doc.id;
+                    postItem.grpId = doc1;
+                    postItem.deptId=''
+                    allPosts.push(postItem)
+                })
+            })
+            
+        })
+
+        const departPosts = firebase.firestore().collection('departments').doc(department_id).collection('posts')
+        await departPosts.orderBy('postTime','desc').get().then((snapshot1)=>{
+            snapshot1.forEach(doc => {
+                const postItem = doc.data()  
+                postItem.id = doc.id;
+                postItem.deptId = department_id
+                postItem.grpId = ''
+                allPosts.push(postItem) 
+            });
+        })
+        
+        
+        setHomePosts(allPosts)
+        //   --------------------------------------------- //
+    }
 
     useEffect(()=> {
+       const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        await getPosts()
+        setRefreshing(false)
         groupsDB.get().then((docs)=> {
             const groupsArr = []
             docs.forEach((doc) => {
@@ -47,6 +83,7 @@ const HomeScreen = ({navigation}) => {
         console.log(firebase.auth().currentUser, "huh");
     }, [])
 
+
     return (
                 
 
@@ -58,23 +95,7 @@ const HomeScreen = ({navigation}) => {
                 <View  style={styles.notifCount}>
                     <Text style={styles.notifCountText}>1</Text>
                 </View>
-              {/* <ScrollView>
-                <ScrollView 
-                    horizontal
-                    showsHorizontalScrollIndicator = {false}
-                    showsVerticalScrollIndicator = {false}
-                    style = {styles.scrollView}
-                >
-                    <FlatList
-                        horizontal 
-                        data = {groups}
-                        keyExtractor = {(item) => item.id.toString()}
-                        renderItem = {({item}) => (
-                            <GroupLogoWithTitle title = {item.title} image = {item.image} onPress = {() => navigation.navigate("GroupDetails", item)} />
-                        )}
-                    />
 
-                </ScrollView> */}
                 <FlatList 
                     ListHeaderComponent = {
                         <>
@@ -91,26 +112,34 @@ const HomeScreen = ({navigation}) => {
                     }
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
-                    data={posts}
+                    data={homePosts}
                     keyExtractor={(item)=>item.id.toString()}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                        />
+                    }
                     renderItem={({item})=>(
                         <Card
-                            postTitle={item.postTitle}
-                            content={item.content}
-                            postImgs={item.postImgs}
-                            username={item.username}
-                            userImg={item.userImg}
+                            id = {item.id}
+                            grpId={item.grpId}
+                            deptId = {item.deptId}
+                            postTitle={item.title}
+                            content={item.description}
+                            postContents={item.postContents}
+                            username={item.userInfo.username}
+                            userImg={item.userInfo.profilePic}
                             postTime= {item.postTime}
-                            liked={item.liked}
-                            likesCount={item.likesCount}
+                            likers = {item.peopleWhoLiked}
                             comments={item.comments}
                             commentsCount={item.comments.length}
-                            onPressComment={()=> navigation.navigate('Comments', {comments: item.comments})}
+                            page={item.page}
+                            screen = 'home'
                         />
                     )}
 
                 />
-                {/* </ScrollView> */}
             </View>
     )
 }

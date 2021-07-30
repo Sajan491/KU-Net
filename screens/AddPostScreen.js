@@ -6,11 +6,11 @@ import AppFormImagePicker from '../components/form/AppFormImagePicker';
 import Screen from '../components/Screen'
 import firebase from "../config/firebase";
 import ItemPicker from '../components/ItemPicker';
-
 import colors from '../config/colors'
 import Header from '../components/Header';
 import {Formik} from 'formik'
-
+import { v4 as uuidv4 } from 'uuid';
+var storageRef = firebase.storage().ref();
 
 const validationSchema = Yup.object().shape({
     title: Yup.string().required().min(1).label("Title"),
@@ -22,30 +22,102 @@ const validationSchema = Yup.object().shape({
 const usersCollection = firebase.firestore().collection("users_extended")
 
 const AddPostScreen = ({navigation}) => {
-    const [dept, setDept] = useState("")
+    const [dept, setDept] = useState({})
     const [uploading, setUploading] = useState(false)
     const [clubs, setClubs] = useState([])
+    const [userName, setUserName] = useState('')
+    const [userPpic, setUserPpic] = useState('')
+
     useEffect(() => {
         const userID = firebase.auth().currentUser.uid;
 
-
-        usersCollection.doc(userID).get().then((abc)=>{
-            setDept(abc.data()['department'])
-            let data=[{label: "My Department", value:dept.value, icon:dept.icon}]
-            let joinedClubs = abc.data()['groups'];
-            joinedClubs.forEach(function(doc){
+        usersCollection.doc(userID).get().then((usr)=>{
+            let dep = usr.data()['department']
+            setDept(dep)
+            let data=[{label:'My Department', value:dep.value, icon:dep.icon}]
+            let groups = usr.data()['groups']
+            groups.forEach(function(doc){
                 data.push({label: doc.title, value:doc.id, icon:doc.icon})
             })
             setClubs(data)
-
+            setUserName(usr.data()['username'])
+            if(usr.data()['profilePic']){
+                setUserPpic(usr.data()['profilePic'])
+            }
+            
+            
         }).catch((error)=>{
             console.log(error)
         })
     }, [])
+
     
+    
+    const uploadImage= async (values)=>{
+       
+        // ----------uploading to storage-----------
+        
+        var uris = []
+        var count = 0;
+        var limit = values.images.length;
+        await values.images.forEach( async (img)=>{
+            
+            const random_id = uuidv4();
+            const extension = img.split('.').pop();
+            
+            const blob = await new Promise((resolve,reject)=>{
+                const xhr = new XMLHttpRequest();
+                xhr.onload = function(){
+                    resolve(xhr.response);
+                };
+                xhr.onerror = function(){
+                    reject(new TypeError('Network request failed'));
+                };
+                xhr.responseType = 'blob';
+                xhr.open('GET', img, true);
+                xhr.send(null);
 
+            });
+           
+            const picRef = storageRef.child(`posts/${random_id+'.'+extension}`)
+            const snapshot = picRef.put(blob)
+            snapshot.on(firebase.storage.TaskEvent.STATE_CHANGED, 
+                (snapshot)=>{
+                console.log(snapshot.state);
+                console.log('progress:' + (snapshot.bytesTransferred / snapshot.totalBytes)*100);
+                setUploading(true);
+            },
+            (error)=>{
+                setUploading(false)
+                console.log(error);
+                blob.close()
+                return
+            },
+            ()=>{
+                picRef.getDownloadURL().then((downloadUrl)=>{
+                    count= count+1;
+                    blob.close();
+                    let extensions = ['jpg', 'png', 'jpeg', 'gif', 'webp','bmp', 'svg']
+                    if (extensions.includes(extension)){
+                        uris.push({uri:downloadUrl, id:random_id, type:'image'})
+                    }
+                    else{
+                        uris.push({uri:downloadUrl, id:random_id, type:'video'})
+                    }
+                    
+                    if (count === limit){ 
+                        delete values.images
+                        values.postContents = uris
+                        finalSubmit(values)
+                        setUploading(false)                  
+                    }
+                })
+            }
+            );
+        })
+    }
 
-    const handleSubmit= async (values) =>{
+    const finalSubmit= async (values)=>{
         const groupPosts = firebase.firestore().collection('groups').doc(values.page['value']).collection('posts')
         const departPosts = firebase.firestore().collection('departments').doc(dept.value).collection('posts')
 
@@ -55,29 +127,38 @@ const AddPostScreen = ({navigation}) => {
         else{  
             if(values.page['label'] === 'My Department') {
                 values.page = dept.label;
+                values.userInfo = {username: userName, profilePic: userPpic};
                 departPosts.add(values).then(()=>{
-                    console.log("Post successfully added to department!")
-                    Alert.alert('Success!','Post Added Successfully')
+                    Alert.alert('Success!','Post Added Successfully',[
+                        {text: 'Continue', onPress: () => navigation.jumpTo('Feed')},
+                      ])
                 })
+                
             }
             else{
                 values.page=values.page['label']
+                values.userInfo = {username: userName, profilePic: userPpic};
                 groupPosts.add(values).then(()=>{
-                    console.log("Post successfully added to group!")
-                    Alert.alert('Success!','Post Added Successfully')
+                    
+                    Alert.alert('Success!','Post Added Successfully',[
+                        {text: 'Continue', onPress: () => navigation.jumpTo('Feed')},
+                      ])
                 })
             }
-            console.log(values)
 
-            
-            posts.add(values).then((doc)=>{
-                console.log(doc.id);
-                console.log("Post successfully added!")
-                Alert.alert('Success!','Post Added Successfully')
-
-            })
             
         }  
+    }
+
+    const handleSubmit= async (values) =>{
+        if(values.images.length>0){
+            await uploadImage(values);
+        }
+        else{
+            finalSubmit(values)
+        }
+        
+        
     }
 
     return (
@@ -86,9 +167,9 @@ const AddPostScreen = ({navigation}) => {
             <ScrollView>
                 <View  style={styles.formContainer}>
                 <Formik
-                    initialValues={{title:'', description:'',page:null, images:[], userid:firebase.auth().currentUser.uid, likesCount:0, comments:{}, postTime:firebase.firestore.Timestamp.fromDate(new Date())}}
+                    initialValues={{title:'', description:'',page:null, postContents:[], peopleWhoLiked:[], images:[], userInfo:{}, likesCount:0, comments:[], postTime:firebase.firestore.FieldValue.serverTimestamp()}}
                     onSubmit={(values, {resetForm})=>{
-                        setUploading(true)
+                        
                         handleSubmit(values)
                         resetForm({});
                     }}
