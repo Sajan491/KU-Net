@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
         paddingHorizontal:17,
         paddingTop:20,
         flex:1,
-        marginTop:-10
+     
     },
     text: {
         textAlign: 'center'
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         paddingLeft:10,
         paddingBottom:13,
-        marginTop:12,
+        
         justifyContent:'space-between',
     }
     ,
