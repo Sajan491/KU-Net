@@ -15,7 +15,7 @@ const Tab = createBottomTabNavigator();
 const getTabBarVisibility = (route) => {
     const routeName = getFocusedRouteNameFromRoute(route);
     const hideOnScreens = ["Chat"]
-    if(hideOnScreens.indexOf(routeName) > -1) return false;
+    if(hideOnScreens.indexOf(routeName) >-1) return false;
     return true;
 }
 

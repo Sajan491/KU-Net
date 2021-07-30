@@ -5,6 +5,8 @@ const Stack = createStackNavigator();
 import GroupDetailScreen from "../screens/GroupDetailScreen";
 import CommentsScreen from "../screens/CommentsScreen";
 import {GroupProvider} from "../context/GroupProvider"
+import ChatScreen from "../screens/ChatScreen";
+
 const GroupNavigator=()=>(
     <GroupProvider>
         <Stack.Navigator mode="modal">
@@ -21,6 +23,14 @@ const GroupNavigator=()=>(
                 headerTitleAlign: "center"
             })}/>
             <Stack.Screen name="Comments" component={CommentsScreen}/>
+            <Stack.Screen 
+                name="Chat" 
+                component={ChatScreen} 
+                options={({route})=>({
+                    title: route.params.abbr,
+                    headerTitleAlign: "center"
+                })}
+            />
             
         </Stack.Navigator>
        </GroupProvider>

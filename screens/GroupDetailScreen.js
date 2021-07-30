@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect} from 'react'
-import { StyleSheet, View, Image, Button, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { StyleSheet, View, Image, Button, FlatList, TouchableOpacity, ActivityIndicator, Modal, Alert } from 'react-native'
 import AppText from '../components/AppText';
 import AppButton from "../components/AppButton"
 import {windowHeight, windowWidth} from "../config/Dimensions";
@@ -10,6 +10,8 @@ import Card from "../components/Card";
 import colors from '../config/colors';
 import firebase from "../config/firebase";
 import Loading from "../components/Loading";
+import { SimpleLineIcons } from '@expo/vector-icons';
+import Screen from "../components/Screen";
 
 const GroupDetailScreen = ({route, navigation}) => {
     const group = route.params
@@ -17,22 +19,22 @@ const GroupDetailScreen = ({route, navigation}) => {
     const [loading, setLoading] = useState(true);
     const [joining, setJoining] = useState(false);
     const [groupData, setGroupData] = useState([]);
-    const [membersData, setMembersData] = useState("")
+    const [membersData, setMembersData] = useState(null)
     const {user} = useContext(AuthContext);
     const userID = firebase.auth().currentUser.uid;
     const usersDB = firebase.firestore().collection("users_extended")
     const groupsDB = firebase.firestore().collection("groups");
-    
+    const [modalOpen, setModalOpen] = useState(false)
+
     useEffect(  () => {
         const subscriber = usersDB
                             .doc(userID)
                             .onSnapshot((docs) => {
-                                console.log(docs.data(), "-----updated----------");
+                                // console.log(docs.data(), "-----updated----------");
                                           })
         getGroups();
         getMembers();
-
-    
+        // console.log(membersData, " sa");
 
         return () => subscriber();
  
@@ -43,7 +45,7 @@ const GroupDetailScreen = ({route, navigation}) => {
            if(doc.data()['groups'] !== undefined) {
                const groupArr = doc.data()['groups']
                setGroupData(groupArr)
-               console.log(groupData, " is set");
+            //    console.log(groupData, " is set");
               } else{
                   usersDB.doc(userID).update({
                       groups: []
@@ -56,50 +58,70 @@ const GroupDetailScreen = ({route, navigation}) => {
 
     const getMembers =  () => {
         groupsDB.doc(group.id).collection("members").get().then((docs) => {
+            const membersArr= []
             docs.forEach((doc) => {
-                console.log(doc.data().id, "MEMBERS LIST");
-                console.log(userID, "Current user iD");
+                // console.log(doc.data().id, "MEMBERS LIST");
+                // console.log(userID, "Current user iD");
+                membersArr.push({id: doc.data().id})
                 if (doc.data().id === userID) {
                     setIsAMember(true);
-                    console.log(isAMember, "IS A MEMBER!");
+                    console.log(isAMember, "IS A MEMBERss!");
                     setLoading(false);
                 }
             })
+            setMembersData(membersArr)
+
             setLoading(false);
         })
     }
 
     const updateData = () => {
         setGroupData([...groupData, {...group}])
-        console.log(groupData, "join");
+        // console.log(groupData, "join");
 
        
             setMembersData({id: userID})
-            console.log(membersData, "join");
+            // console.log(membersData, "join");
         } 
 
     const joinGroupHandler =  () => {
-
         setJoining(true);
-
         updateData();
 
          usersDB.doc(userID).update({
             groups: [...groupData, {...group}]
         }).then(()=> {
-            console.log("Group", group.title ," added to the database");
+            // console.log("Group", group.title ," added to the database");
         }).catch((err) => {
             console.log("Error adding group to the database", err.message);
         })
 
-        groupsDB.doc(group.id).collection("members").add({
+        groupsDB.doc(group.id).collection("members").doc(userID).set({
           id: userID
         }).then(() => {
         setJoining(false);
         setIsAMember(true)
-            console.log("Members added to the database");
+            // console.log("Members added to the database");
         }).catch((err) => {
             console.log("Error adding members to the database: ", err.message);
+        })
+    }
+
+    const leaveGroupHandler = ( ) => {
+        console.log("left");
+        setIsAMember(false)
+        //code to remove data from firebase
+        
+        /* To remove group from group array in users database */
+        usersDB.doc(userID).update({
+            groups: groupData.filter(grp => grp.id !== group.id)
+        }).then(()=>{
+            console.log("Deleted group from users database");
+        })
+
+        /* To remove user from groups collection*/
+        groupsDB.doc(group.id).collection("members").doc(userID).delete().then(() => {
+            console.log("Deleted member from database");
         })
     }
 
@@ -135,18 +157,53 @@ const GroupDetailScreen = ({route, navigation}) => {
         
 
     const showtPostsHandler = () => {
-        setPostSelected(true);
     }
-    const showMembersHandler = () => {
-        setMemberSelected(true);
+    const openChatHandler = () => {
+        navigation.navigate("Chat", group)
     }
 
-    // if (loading) {
-    //     return <Loading />
-    // }
+    const showAlert = () => {
+        Alert.alert(
+            "Leave Group?",
+            "You can join anytime again.",
+            [
+              {
+                text: "Leave",
+                onPress: () => {
+                    leaveGroupHandler()
+                    Alert.alert("Group Left")
+                },
+                style: "cancel",
+              },
+              {
+                text: "cancel",
+                style: "ok",
+              },
+            ],
+            {
+              cancelable: true,
+            }
+          );
+    }
+
     return  !loading ?    
      (  
-     <View style = {styles.groupContainer}>
+        <Screen >
+            
+
+
+            <Modal
+                visible = {modalOpen}
+                transparent = {true}
+                onRequestClose = {() => setModalOpen(false)}
+
+            >
+                <TouchableOpacity>
+                    <AppText> Leave Group</AppText>
+                </TouchableOpacity>
+            </Modal>  
+            
+            <View style = {styles.groupContainer}>
             <View style = {styles.groupContent}>
             <FlatList 
                     ListHeaderComponent = {
@@ -158,28 +215,35 @@ const GroupDetailScreen = ({route, navigation}) => {
                                 <Caption> {group.about} </Caption>
                                 
                                 { isAMember
-                                    ? <Caption> Hello {user.displayName}!</Caption> 
+                                    ? (<View>
+                                            <Caption> Hello {user.displayName}!</Caption> 
+                                            <TouchableOpacity onPress = {showAlert}>
+                                                <Caption style = {{color: "red"}}> Leave group?</Caption>
+                                            </TouchableOpacity>
+                                        </View>
+                                        )
                                     // :<AppButton onPress = {() => {setJoining((prev => !prev))}} title={joining? "Joining" : "Join"} >
-                                    :<AppButton onPress = {joinGroupHandler} title={joining? "Joining" : "Join"} >
+                                    :(<AppButton onPress = {joinGroupHandler} title={joining? "Joining" : "Join"} >
                                         {joining &&  <ActivityIndicator size="small" color ="#fff" />}    
-                                     </AppButton> 
+                                     </AppButton> )
                                 }
                             </View>
                             <View style = {styles.switchTab}>
                                <TouchableOpacity onPress = {() => showtPostsHandler()}>
                                    <AppText style = {styles.appText}> Posts</AppText>
                                 </TouchableOpacity> 
-                               <TouchableOpacity onPress ={() => showMembersHandler()}>
-                                   <AppText style = {styles.appText}> Members</AppText>
+                               <TouchableOpacity onPress ={() => openChatHandler()}>
+                                   <AppText style = {styles.appText}> Group Chat</AppText>
                                 </TouchableOpacity> 
                             </View>
-                            <Caption style = {{alignSelf: "flex-start", padding: 4}}> Group Posts</Caption>
+                            {isAMember ? <Caption style = {{alignSelf: "flex-start", padding: 4}}> Group Posts</Caption>
+                                        : <Caption style = {{alignSelf: "center", padding: 100}}> Join to View Group Posts</Caption> }
                         </View>
                         </>
                     }
                     showsVerticalScrollIndicator={false}
                     showsHorizontalScrollIndicator={false}
-                    data={posts}
+                    data={isAMember ? posts : []}
                     keyExtractor={(item)=>item.id.toString()}
                     renderItem={({item})=>(
                         <Card
@@ -201,6 +265,8 @@ const GroupDetailScreen = ({route, navigation}) => {
             </View>
 
         </View>
+        </Screen>
+
     ) : <Loading/>;
 }
 
