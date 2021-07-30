@@ -16,6 +16,8 @@ const HomeScreen = ({navigation}) => {
     const [loading, setLoading] = useState(false)
     const [homePosts, setHomePosts] = useState([])
     const [refreshing, setRefreshing] = useState(false);
+    const [groups, setGroups] = useState(null)
+    const groupsDB = firebase.firestore().collection("groups")
     const getPosts = async ()=>{
         
         const userID = firebase.auth().currentUser.uid;
@@ -67,9 +69,8 @@ const HomeScreen = ({navigation}) => {
     }
 
     useEffect(()=> {
-       const onRefresh = useCallback(async () => {
-        setRefreshing(true);
-        await getPosts()
+
+        getPosts()
         setRefreshing(false)
         groupsDB.get().then((docs)=> {
             const groupsArr = []
@@ -81,7 +82,7 @@ const HomeScreen = ({navigation}) => {
         })
 
         console.log(firebase.auth().currentUser, "huh");
-    }, [])
+        }, [])
 
 
     return (
@@ -117,7 +118,7 @@ const HomeScreen = ({navigation}) => {
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
-                            onRefresh={onRefresh}
+                            // onRefresh={onRefresh}
                         />
                     }
                     renderItem={({item})=>(
