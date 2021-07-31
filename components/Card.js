@@ -206,7 +206,7 @@ const Card = ({
                 departPost.get().then(doc=>{
                     let coments = doc.data()['comments']
 
-                    coments.push({id:random_id ,username: userName, profilePic: userPpic, comment: comment, timePosted:firebase.firestore.Timestamp.now()})
+                    coments.push({id:random_id ,username: userName, userId:uid, profilePic: userPpic, comment: comment, timePosted:firebase.firestore.Timestamp.now()})
                     setAllComments(coments)
                     departPost.update({comments:coments})
                     setComment('')
@@ -217,7 +217,7 @@ const Card = ({
                 const groupPost = firebase.firestore().collection('groups').doc(grpId).collection('posts').doc(id)
                 groupPost.get().then(doc=>{
                     let coments = doc.data()['comments']
-                    coments.push({id:random_id, username: userName, profilePic: userPpic, comment: comment, timePosted:firebase.firestore.Timestamp.now()})
+                    coments.push({id:random_id, username: userName, userId:uid, profilePic: userPpic, comment: comment, timePosted:firebase.firestore.Timestamp.now()})
                     setAllComments(coments)
                     groupPost.update({comments:coments})
                     setComment('')
@@ -342,7 +342,7 @@ const Card = ({
             setKebabModalVisible(false)
         }
         const onPressDelete=()=>{
-            Alert.alert('Confirm Delete?','Are you sure you want to delete the post',[
+            Alert.alert('Confirm Delete?','Are you sure you want to delete the post?',[
                 {text:'Confirm', onPress:()=>{handleDeletePost()}},
                 {text:'Cancel'}
             ])
@@ -610,7 +610,8 @@ const Card = ({
                         renderItem={({item})=>{
                             return (
                                 <View style={styles.oneLiker}> 
-                                    <Image style={styles.likerImage} source={{uri:item.profilePic}} />
+                                {item.profilePic? <Image style={styles.userImage} source={{uri:item.profilePic}} /> : <Image style={styles.userImage} source={require("../assets/sajan.png")} />}
+                                    
                                     <Text style={styles.likerText}>
                                         {item.username}
                                     </Text>

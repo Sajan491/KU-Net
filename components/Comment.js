@@ -1,10 +1,23 @@
-import React from 'react'
-import { StyleSheet, Text, View, Image } from 'react-native'
+import React, {useState, useEffect} from 'react'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native'
 import ReadMore from 'react-native-read-more-text';
-import colors from '../config/colors';
+import { Entypo } from '@expo/vector-icons'; 
+import firebase from "../config/firebase";
 
 const Comment = ({item}) => {
-    
+    const userID = firebase.auth().currentUser.uid;
+    const [showDeleteBtn, setShowDeleteBtn] = useState(false)
+
+    useEffect(() => {
+        if(userID===item.userId){
+            setShowDeleteBtn(true)
+        }
+        else{
+            setShowDeleteBtn(false)
+        }
+        
+    }, [])
+
     let formatted_date;
         const computeDate=(time)=>{
             let a = time.toDate().toString();
@@ -30,13 +43,32 @@ const Comment = ({item}) => {
             );
           }
 
+          const handleDeleteComment=()=>{
+            console.log(userID);
+            console.log(item.userId);
+          }
+
+
+          const showConfirmationModal=()=>{
+            Alert.alert('Confirm Delete?','Are you sure you want to delete the comment?',[
+                {text:'Confirm', onPress:()=>{handleDeleteComment()}},
+                {text:'Cancel'}
+            ])
+          }
+
+         
+
     return (
         <View style={styles.commentBlock}>
+            {showDeleteBtn && <TouchableOpacity style={styles.deleteBtn} onPress={showConfirmationModal}>
+                <Entypo name="circle-with-cross" size={15} color="black" />
+            </TouchableOpacity>}
             {item.profilePic? <Image style={styles.userImage} source={{uri:item.profilePic}} /> : <Image style={styles.userImage} source={require("../assets/sajan.png")} />}
                 <View style={styles.cBlock}>
                     <View style={styles.userInfoDate}>
                         <Text style={styles.username}>{item.username}</Text>
                         <Text style={styles.date}>{formatted_date}</Text> 
+                        
                     </View>
                     <View style={styles.maincomment}>
                         <ReadMore
@@ -63,6 +95,12 @@ const Comment = ({item}) => {
 export default Comment
 
 const styles = StyleSheet.create({
+    deleteBtn:{
+        marginRight:-14,
+        zIndex:1,
+        marginTop:-5
+        
+    },
     maincomment:{
         marginTop:4,
     },
