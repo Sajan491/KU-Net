@@ -5,7 +5,6 @@ export const groupStyles = StyleSheet.create({
     container:{
         backgroundColor:colors.light,
         paddingHorizontal:17,
-        paddingTop:20,
         flex:1,
     },
     channelImage: {

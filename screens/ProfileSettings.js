@@ -19,8 +19,6 @@ const validationSecondRegisterScreen = Yup.object().shape({
 });
 
 const usersCollection = firebase.firestore().collection("users_extended")
-
-
 const ProfileSettings = ({navigation}) => {
     const [userName, setUserName] = useState("");
     const [department, setDepartment] = useState({});
