@@ -32,7 +32,7 @@ const Comment = ({item}) => {
 
     return (
         <View style={styles.commentBlock}>
-                <Image style={styles.userImage} source={{uri:item.profilePic}} />
+            {item.profilePic? <Image style={styles.userImage} source={{uri:item.profilePic}} /> : <Image style={styles.userImage} source={require("../assets/sajan.png")} />}
                 <View style={styles.cBlock}>
                     <View style={styles.userInfoDate}>
                         <Text style={styles.username}>{item.username}</Text>

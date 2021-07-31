@@ -25,8 +25,10 @@ const GroupDetailScreen = ({route, navigation}) => {
     const usersDB = firebase.firestore().collection("users_extended")
     const groupsDB = firebase.firestore().collection("groups");
     const [modalOpen, setModalOpen] = useState(false)
+    const [posts, setPosts] = useState([])
 
     useEffect(  () => {
+        console.log(group.id);
         const subscriber = usersDB
                             .doc(userID)
                             .onSnapshot((docs) => {
@@ -34,11 +36,28 @@ const GroupDetailScreen = ({route, navigation}) => {
                                           })
         getGroups();
         getMembers();
+        getPosts();
         // console.log(membersData, " sa");
 
         return () => subscriber();
  
     }, [userID, isAMember])
+
+    const getPosts= async ()=>{
+        const groupPosts = groupsDB.doc(group.id).collection('posts')
+        let postsArray=[]
+        await groupPosts.orderBy('postTime','desc').get().then((docs)=>{
+            docs.forEach(doc=>{
+                const postItem = doc.data()
+                postItem.grpId = group.id;
+                postItem.deptId=''
+                postItem.id = doc.id
+                postsArray.push(postItem)
+            })
+        })
+        setPosts(postsArray)
+        console.log(postsArray);
+    }
     
     const getGroups = async () => {
         await usersDB.doc(userID).get().then((doc) => {
@@ -162,6 +181,8 @@ const GroupDetailScreen = ({route, navigation}) => {
         navigation.navigate("Chat", group)
     }
 
+   
+
     const showAlert = () => {
         Alert.alert(
             "Leave Group?",
@@ -247,17 +268,20 @@ const GroupDetailScreen = ({route, navigation}) => {
                     keyExtractor={(item)=>item.id.toString()}
                     renderItem={({item})=>(
                         <Card
-                            postTitle={item.postTitle}
-                            content={item.content}
-                            postImgs={item.postImgs}
-                            username={item.username}
-                            userImg={item.userImg}
+                            id = {item.id}
+                            grpId={item.grpId}
+                            deptId = {item.deptId}
+                            postTitle={item.title}
+                            content={item.description}
+                            postContents={item.postContents}
+                            username={item.userInfo.username}
+                            userImg={item.userInfo.profilePic}
                             postTime= {item.postTime}
-                            liked={item.liked}
-                            likesCount={item.likesCount}
+                            likers = {item.peopleWhoLiked}
                             comments={item.comments}
                             commentsCount={item.comments.length}
-                            onPressComment={()=> navigation.navigate('Comments', {comments: item.comments})}
+                            page={item.page}
+                            screen = 'home'
                         />
                     )}
 

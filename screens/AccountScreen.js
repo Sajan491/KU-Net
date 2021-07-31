@@ -10,14 +10,7 @@ import Header from '../components/Header';
 import firebase from "../config/firebase";
 
 const menuItems = [
-    {
-        title:"My Posts",
-        icon:{
-            name:'format-list-bulleted',
-            backgroundColor: colors.secondary
-        },
-        targetScreen:"Messages"
-    },
+    
     
     {
         title: "Settings",

@@ -760,10 +760,8 @@ const Card = ({
                         <TextInput onChangeText={(e)=>{
                             setComment(e)
                             }}
-                            
                             value = {comment} 
-                            style={styles.addCommentText} 
-                             
+                            style={styles.addCommentText}         
                             placeholder="Add a comment..."
                         />
                         <TouchableOpacity style={styles.submitCommentButton} onPress={()=>{
