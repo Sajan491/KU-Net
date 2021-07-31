@@ -136,7 +136,7 @@ const Card = ({
                 }
             }
             fetchData()
-            const getDataEvery1s = setInterval(fetchData,300000000)
+            const getDataEvery1s = setInterval(fetchData,30000000000000)
             return ()=> clearInterval(getDataEvery1s);
         }, [])
      
@@ -515,6 +515,10 @@ const Card = ({
             setInfoVisible(!infoVisible)
         }
 
+        const handleCommentChange = (updatedComments) =>{
+            setAllComments(updatedComments)
+        }
+
     return (
         <>
             <Modal
@@ -751,7 +755,7 @@ const Card = ({
                             keyExtractor={(item)=>{return item.id.toString()}}
                             renderItem={({item})=>{
                                 return (
-                                        <Comment item={item} />
+                                        <Comment onChange={handleCommentChange} grpId={grpId} deptId={deptId} postId={id} item={item} />
                                         )
                             }}
                         />

@@ -4,10 +4,10 @@ import ReadMore from 'react-native-read-more-text';
 import { Entypo } from '@expo/vector-icons'; 
 import firebase from "../config/firebase";
 
-const Comment = ({item}) => {
+const Comment = ({onChange, grpId, deptId, postId, item}) => {
     const userID = firebase.auth().currentUser.uid;
     const [showDeleteBtn, setShowDeleteBtn] = useState(false)
-
+     
     useEffect(() => {
         if(userID===item.userId){
             setShowDeleteBtn(true)
@@ -15,6 +15,8 @@ const Comment = ({item}) => {
         else{
             setShowDeleteBtn(false)
         }
+
+
         
     }, [])
 
@@ -44,8 +46,24 @@ const Comment = ({item}) => {
           }
 
           const handleDeleteComment=()=>{
-            console.log(userID);
-            console.log(item.userId);
+            if(deptId!==''){
+                const departPost = firebase.firestore().collection('departments').doc(deptId).collection('posts').doc(postId)  
+                departPost.get().then(doc=>{
+                    const allComments = doc.data()['comments'];
+                    const updatedComments = allComments.filter(doc=>doc.id!=item.id)
+                    departPost.update({comments:updatedComments})
+                    onChange(updatedComments)
+                })
+            }
+            else if(grpId!==''){
+                const groupPost = firebase.firestore().collection('groups').doc(grpId).collection('posts').doc(postId) 
+                groupPost.get().then(doc=>{
+                    const allComments = doc.data()['comments'];
+                    const updatedComments = allComments.filter(doc=>doc.id!=item.id)
+                    groupPost.update({comments:updatedComments})
+                    onChange(updatedComments)
+                }) 
+            }
           }
 
 
@@ -96,8 +114,8 @@ export default Comment
 
 const styles = StyleSheet.create({
     deleteBtn:{
-        marginRight:-14,
-        zIndex:1,
+        marginRight:-9,
+        marginLeft:-5,
         marginTop:-5
         
     },

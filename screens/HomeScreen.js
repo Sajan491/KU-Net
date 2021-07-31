@@ -84,6 +84,12 @@ const HomeScreen = ({navigation}) => {
         console.log(firebase.auth().currentUser, "huh");
         }, [])
 
+        const onRefresh = useCallback(async () => {
+            setRefreshing(true);
+            await getPosts()
+            setRefreshing(false)
+        }, [])
+
 
     return (
                 
@@ -118,7 +124,7 @@ const HomeScreen = ({navigation}) => {
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
-                            // onRefresh={onRefresh}
+                            onRefresh={onRefresh}
                         />
                     }
                     renderItem={({item})=>(
