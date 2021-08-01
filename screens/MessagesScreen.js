@@ -13,25 +13,42 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { groupStyles as styles } from '../styles/globalStyles';
 
 const MessagesScreen = ({navigation}) => {
-    const [groups, setGroups] = useState(null);
+    const [groups, setGroups] = useState([]);
     const [loading, setLoading] = useState(true);
-    
+    const usersDB = firebase.firestore().collection("users_extended");
+    const userID = firebase.auth().currentUser.uid;
+
     useEffect( () => {
-        getGroups();
-        console.log(groups, "hehe");
-        console.log(loading, "loadings");
+        // getGroups();
+        getEnrolledGroups();
     }, [])
     
-    const getGroups = () => {
-        firebase.firestore().collection("groups").get().then((docs)=> {
-            const groupsArray = []
-            docs.forEach((doc) => {
-                groupsArray.push({ ...doc.data()})
-            })
-            setGroups(groupsArray);
-            setLoading(false);
-        })
-    }
+    // const getGroups = () => {
+    //     firebase.firestore().collection("groups").get().then((docs)=> {
+    //         const groupsArray = []
+    //         docs.forEach((doc) => {
+    //             groupsArray.push({ ...doc.data()})
+    //         })
+    //         setGroups(groupsArray);
+    //         setLoading(false);
+    //     })
+    // }
+
+    const getEnrolledGroups =  () => {
+        usersDB.doc(userID).get().then((doc) => {
+          if(doc.data()['groups'] !== undefined) {
+              const groupArr = doc.data()['groups']
+              setGroups(groupArr)
+              setLoading(false)
+           } else{
+               usersDB.doc(userID).update({
+                   groups: []
+               })
+           }
+       }).catch(err => {
+           console.log("Error fetching users data", err);
+       })
+   }
 
 
     
