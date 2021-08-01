@@ -69,7 +69,7 @@ const MessagesScreen = ({navigation}) => {
                             <View style = {styles.content}>
                                 <MaterialCommunityIcons name = {item.icon} size={35} style = {styles.channelImage} />
                                 {/* <Image source = {item.icon} style = {styles.channelImage} /> */}
-                                <AppText style = {styles.channelName}>{item.abbr}</AppText>
+                                <AppText style = {styles.channelName}>{item.title}</AppText>
                             </View>
                         </TouchableOpacity>
                 )}
