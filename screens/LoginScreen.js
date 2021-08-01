@@ -69,10 +69,10 @@ const LoginScreen = ({navigation}) => {
                         />
                         {hidePassword 
                             ?<TouchableOpacity onPress = {showPasswordHandler} style = {styles.showPassword}>
-                                <MaterialCommunityIcons name="eye" size = {20} />
+                                <Entypo name="eye-with-line" size = {20} />
                             </TouchableOpacity>
                             : <TouchableOpacity onPress = {showPasswordHandler} style = {styles.showPassword}>
-                                <Entypo name="eye-with-line" size = {20} />
+                                < MaterialCommunityIcons name="eye" size = {20} />
                             </TouchableOpacity>
                         }
                     </View>
