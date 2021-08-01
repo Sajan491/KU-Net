@@ -37,7 +37,7 @@ const GroupDetailScreen = ({route, navigation}) => {
         getGroups();
         getMembers();
         getPosts();
-        // console.log(membersData, " sa");
+        // console.log(userID, " sa");
 
         return () => subscriber();
  
