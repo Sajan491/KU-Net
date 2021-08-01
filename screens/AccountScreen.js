@@ -11,7 +11,14 @@ import firebase from "../config/firebase";
 
 const menuItems = [
     
-    
+    {
+        title: "Profile",
+        icon: {
+            name: "account",
+            backgroundColor: colors.secondary
+        },
+        targetScreen: "UserProfile"
+    },
     {
         title: "Settings",
         icon: {
@@ -27,7 +34,8 @@ const menuItems = [
             backgroundColor: colors.secondary
         },
         targetScreen: "SavedPosts"
-    }
+    },
+
 ]
 
 const delay = (timeout)  => {

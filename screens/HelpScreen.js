@@ -56,7 +56,7 @@ const HelpScreen = ({navigation, route}) => {
                {!fromHS 
                ? (<View>
                    <Text style={styles.welcome}>Welcome to KU-Net, {userName}</Text>
-                <Text style={styles.chooseText}>Since this is your first time logging into KU-Net, there are a few
+                    <Text style={styles.chooseText}>Since this is your first time logging into KU-Net, there are a few
                 things we'd like you to know.</Text>
                 </View>)
                 : (<View>
@@ -98,6 +98,11 @@ const styles = StyleSheet.create({
     },
     desc: {
         marginLeft: 15
+    },
+    chooseText:{
+        lineHeight:24,
+        borderBottomWidth: 0.7,
+        borderBottomColor: colors.secondary
     },
     img: {
         height: 150,

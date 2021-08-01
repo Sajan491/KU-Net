@@ -52,7 +52,7 @@ const DrawerContent = (props) => {
                 <View style = {styles.drawerContent}>
                     <View style = {styles.userInfoSection}>
                         <View style = {{flexDirection: "row", marginTop: 15}}>
-                            <TouchableOpacity onPress = {() => props.navigation.navigate("Profile")}>
+                            <TouchableOpacity onPress = {() => props.navigation.navigate("UserProfile")}>
                                 <Avatar.Image
                                     source = {require("../../assets/sajan.png")}
                                     size = {50}
@@ -60,17 +60,7 @@ const DrawerContent = (props) => {
                             </TouchableOpacity>
                             <View style = {{marginLeft: 15, flexDirection: "column"}}>
                                 <Title style = {{fontSize: 16, fontWeight: "bold"}}> @{user.displayName} </Title>
-                                {user.displayName !== null 
-                                ? <Caption> {user.email} </Caption> 
-                                : (
-                                    <View style = {{display: "flex", flexDirection: "row", alignItems: "center", marginHorizontal: 5}}>
-                                        <TextInput placeholder = "Enter Username.." value = {username} onChangeText = {(un) => setUsername(un)} />
-                                        <TouchableOpacity onPress = {() => nameChangeHandler()} style = {{marginLeft: 25}}> 
-                                            <AppText style = {{color: colors.secondary, fontSize: 14 }}> Update</AppText>    
-                                        </TouchableOpacity>
-                                    </View>
-                                )
-                               }
+                                <Caption> {user.email} </Caption> 
                             </View>
                         </View>
                     </View>
@@ -102,7 +92,7 @@ const DrawerContent = (props) => {
                             )
                         }
                         label = "Profile"
-                        onPress = {() => props.navigation.navigate("Profile")}
+                        onPress = {() => props.navigation.navigate("UserProfile")}
                     />
                     <DrawerItem 
                         icon = {({size}) => (
