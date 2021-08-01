@@ -8,6 +8,7 @@ import GroupNavigator from '../GroupNavigator';
 import { AuthContext } from '../../context/AuthProvider';
 import GroupDetailScreen from '../../screens/GroupDetailScreen';
 import { roundToNearestPixel } from 'react-native/Libraries/Utilities/PixelRatio';
+import HelpScreen from '../../screens/HelpScreen';
 
 const Drawer = createDrawerNavigator()
 
@@ -18,6 +19,7 @@ const DrawerNavigator = () => {
         <Drawer.Screen name="Home" component = {AppNavigator} />
         <Drawer.Screen name="About" component = {AboutScreen} options = {{headerShown: true}} />
         <Drawer.Screen name = "Profile" component = {AccountNavigator}/>
+        <Drawer.Screen name = "Help" component = {HelpScreen} options = {{ headerShown: false}} />
     </Drawer.Navigator>
     )
     }

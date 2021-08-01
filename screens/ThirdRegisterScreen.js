@@ -61,7 +61,7 @@ const ThirdRegisterScreen = ({navigation}) => {
         }).catch((error)=>{
             console.log(error)
         })
-        navigation.navigate("Drawer") 
+        navigation.navigate("Help") 
     }
 
     return (

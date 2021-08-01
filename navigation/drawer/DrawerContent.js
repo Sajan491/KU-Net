@@ -8,7 +8,7 @@ import { Drawer, Avatar, Title, Caption, Paragraph } from 'react-native-paper';
 import {AuthContext} from "../../context/AuthProvider";
 import firebase from "../../config/firebase";
 import AppText from "../../components/AppText";
-import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome, MaterialCommunityIcons, Entypo } from '@expo/vector-icons';
 import colors from '../../config/colors';
 import Loading from '../../components/Loading';
 
@@ -110,6 +110,13 @@ const DrawerContent = (props) => {
                         )}
                         label = "Groups"
                         onPress = {() => props.navigation.navigate("Group")}
+                    />
+                    <DrawerItem 
+                        icon = {({size}) => (
+                            <Entypo name="help-with-circle" size = {size/1.2} color = {colors.black}/>
+                        )}
+                        label = "Help"
+                        onPress = {() => props.navigation.navigate("Help", {homeScreen: "yes"})}
                     />
                     {/* <DrawerItem
                         icon = {({size, color}) => (

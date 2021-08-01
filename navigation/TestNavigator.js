@@ -6,6 +6,7 @@ import SecondRegisterScreen from "../screens/SecondRegisterScreen"
 import { AuthContext } from '../context/AuthProvider';
 import DrawerNavigator from "./drawer/DrawerNavigator";
 import ThirdRegisterScreen from '../screens/ThirdRegisterScreen';
+import HelpScreen from "../screens/HelpScreen";
 
 const Stack = createStackNavigator();
 const TestNavigator = () => {
@@ -19,6 +20,9 @@ const TestNavigator = () => {
                     headerShown: false,
                     
                 })} /> : null }
+                {isANewUser ? <Stack.Screen name = "Help" component = {HelpScreen} options = {{
+                  headerShown: false,
+                }} /> : null }
           <Stack.Screen name = "Drawer" component = {DrawerNavigator} options = {{headerShown: false}} />
           <Stack.Screen name = "App" component = {AppNavigator} options = {{headerShown: false}} />
           
