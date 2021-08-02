@@ -1,35 +1,34 @@
-import React,{useState, useEffect} from 'react'
-import { StyleSheet, Text, ScrollView, View, ActivityIndicator, Alert, TouchableOpacity } from 'react-native'
-import * as Yup from 'yup';
-import { AppForm, AppFormField, SubmitButton } from '../components/form'
-import AppFormImagePicker from '../components/form/AppFormImagePicker';
+import React, {useState, useEffect} from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, ScrollView, ActivityIndicator, TouchableOpacityBase, Alert } from 'react-native'
+import Header from '../components/Header'
 import Screen from '../components/Screen'
-import firebase from "../config/firebase";
-import ItemPicker from '../components/ItemPicker';
 import colors from '../config/colors'
-import Header from '../components/Header';
+import Constants from 'expo-constants'
+import {MaterialCommunityIcons} from '@expo/vector-icons'
 import {Formik} from 'formik'
+import { AppFormField, SubmitButton, AppFormFilePicker } from '../components/form'
+import ItemPicker from '../components/ItemPicker'
+import * as Yup from 'yup';
+import firebase from "../config/firebase";
 import { v4 as uuidv4 } from 'uuid';
 var storageRef = firebase.storage().ref();
-import {MaterialCommunityIcons} from '@expo/vector-icons'
-import Constants from 'expo-constants'
 
 const validationSchema = Yup.object().shape({
     title: Yup.string().required().min(1).label("Title"),
     description: Yup.string().label("Description"),
     page: Yup.object().required().nullable().label("Page"),
-    images: Yup.array().max(4, "Maximum images allowed: 4")
+    files: Yup.array().max(4, "Maximum files allowed: 4")
 });
-
 const usersCollection = firebase.firestore().collection("users_extended")
 
-const AddPostScreen = ({navigation}) => {
-    const [dept, setDept] = useState({})
+const AddFilesScreen = ({navigation}) => {
+    const [infoVisible, setInfoVisible] = useState(false)
     const [uploading, setUploading] = useState(false)
     const [clubs, setClubs] = useState([])
     const [userName, setUserName] = useState('')
     const [userPpic, setUserPpic] = useState('')
-    const [infoVisible, setInfoVisible] = useState(false)
+    const [dept, setDept] = useState({})
+
     useEffect(() => {
         const userID = firebase.auth().currentUser.uid;
 
@@ -53,19 +52,22 @@ const AddPostScreen = ({navigation}) => {
         })
     }, [])
 
-    
-    
-    const uploadImage= async (values)=>{
+
+    const handleContainerVisibility = () =>{
+        setInfoVisible(!infoVisible)
+    }
+
+
+    const uploadFile= async (values)=>{
        
         // ----------uploading to storage-----------
         
         var uris = []
         var count = 0;
-        var limit = values.images.length;
-        await values.images.forEach( async (img)=>{
-            
+        var limit = values.files.length;
+        await values.files.forEach( async (file)=>{
             const random_id = uuidv4();
-            const extension = img.split('.').pop();
+            const extension = file.split('.').pop();
             
             const blob = await new Promise((resolve,reject)=>{
                 const xhr = new XMLHttpRequest();
@@ -76,13 +78,13 @@ const AddPostScreen = ({navigation}) => {
                     reject(new TypeError('Network request failed'));
                 };
                 xhr.responseType = 'blob';
-                xhr.open('GET', img, true);
+                xhr.open('GET', file, true);
                 xhr.send(null);
 
             });
            
-            const picRef = storageRef.child(`posts/${random_id+'.'+extension}`)
-            const snapshot = picRef.put(blob)
+            const fileRef = storageRef.child(`files/${random_id+'.'+extension}`)
+            const snapshot = fileRef.put(blob)
             snapshot.on(firebase.storage.TaskEvent.STATE_CHANGED, 
                 (snapshot)=>{
                 console.log(snapshot.state);
@@ -96,19 +98,19 @@ const AddPostScreen = ({navigation}) => {
                 return
             },
             ()=>{
-                picRef.getDownloadURL().then((downloadUrl)=>{
+                fileRef.getDownloadURL().then((downloadUrl)=>{
                     count= count+1;
                     blob.close();
-                    let extensions = ['jpg', 'png', 'jpeg', 'gif', 'webp','bmp', 'svg']
+                    let extensions = ['pdf','docx','odt','rtf','txt','wpd','doc']
                     if (extensions.includes(extension)){
-                        uris.push({uri:downloadUrl, id:random_id, type:'image'})
+                        uris.push({uri:downloadUrl, id:random_id, type:'text'})
                     }
                     else{
-                        uris.push({uri:downloadUrl, id:random_id, type:'video'})
+                        uris.push({uri:downloadUrl, id:random_id, type:'others'})
                     }
                     
                     if (count === limit){ 
-                        delete values.images
+                        delete values.files
                         values.postContents = uris
                         finalSubmit(values)
                         setUploading(false)                  
@@ -119,9 +121,10 @@ const AddPostScreen = ({navigation}) => {
         })
     }
 
+
     const finalSubmit= async (values)=>{
-        const groupPosts = firebase.firestore().collection('groups').doc(values.page['value']).collection('posts')
-        const departPosts = firebase.firestore().collection('departments').doc(dept.value).collection('posts')
+        const groupFiles = firebase.firestore().collection('groups').doc(values.page['value']).collection('files')
+        const departFiles = firebase.firestore().collection('departments').doc(dept.value).collection('files')
 
         if(Object.keys(dept.label).length===0){
             console.log('try again')
@@ -130,8 +133,8 @@ const AddPostScreen = ({navigation}) => {
             if(values.page['label'] === 'My Department') {
                 values.page = dept.label;
                 values.userInfo = {username: userName, profilePic: userPpic};
-                departPosts.add(values).then(()=>{
-                    Alert.alert('Success!','Post Added Successfully',[
+                departFiles.add(values).then(()=>{
+                    Alert.alert('Success!','Files Added Successfully',[
                         {text: 'Continue', onPress: () => navigation.jumpTo('Feed')},
                       ])
                 })
@@ -140,42 +143,37 @@ const AddPostScreen = ({navigation}) => {
             else{
                 values.page=values.page['label']
                 values.userInfo = {username: userName, profilePic: userPpic};
-                groupPosts.add(values).then(()=>{
+                groupFiles.add(values).then(()=>{
                     
-                    Alert.alert('Success!','Post Added Successfully',[
+                    Alert.alert('Success!','Files Added Successfully',[
                         {text: 'Continue', onPress: () => navigation.jumpTo('Feed')},
                       ])
                 })
-            }
-
-            
+            }    
         }  
     }
 
     const handleSubmit= async (values) =>{
-        if(values.images.length>0){
-            await uploadImage(values);
+        if(values.files.length>0){
+            await uploadFile(values);
         }
         else{
             finalSubmit(values)
-        }   
-    }
-    const handleContainerVisibility = () =>{
-        setInfoVisible(!infoVisible)
+        }
     }
 
+    
     return (
-        <Screen style={styles.container}>
+        <Screen style={styles.screen}>
             <View style={styles.header}>
                 <TouchableOpacity style={styles.backBtn} onPress={()=>navigation.navigate('ChoiceScreen')}><MaterialCommunityIcons name="keyboard-backspace" size={24} color={colors.primary} /></TouchableOpacity>   
-
-                <Header headerText="Upload a Post" />
-               
+                <Header headerText="Upload a File" />
             </View>
+
             <ScrollView>
                 <View  style={styles.formContainer}>
                 <Formik
-                    initialValues={{title:'', description:'',page:null, postContents:[], peopleWhoLiked:[], images:[], userInfo:{}, likesCount:0, comments:[], postTime:firebase.firestore.FieldValue.serverTimestamp()}}
+                    initialValues={{title:'', description:'',page:null, postContents:[], files:[], peopleWhoLiked:[], userInfo:{}, comments:[], postTime:firebase.firestore.FieldValue.serverTimestamp()}}
                     onSubmit={(values, {resetForm})=>{
                         
                         handleSubmit(values)
@@ -188,9 +186,9 @@ const AddPostScreen = ({navigation}) => {
                             <MaterialCommunityIcons name="information-outline" size={24} color="#999999" />
                         </TouchableOpacity>
                         {infoVisible && <View style={styles.infoContainer}>
-                            <Text style={styles.editNote}>Note: The maximum number of images/videos you can add is 4.</Text>
+                            <Text style={styles.editNote}>Note: The maximum number of files you can add is 4.</Text>
                         </View>}
-                        <AppFormImagePicker name="images"/>
+                        <AppFormFilePicker name='files' />
                         <AppFormField 
                             maxLength = {255}
                             placeholder="Title"
@@ -223,10 +221,17 @@ const AddPostScreen = ({navigation}) => {
     )
 }
 
-export default AddPostScreen
+export default AddFilesScreen
 
 const styles = StyleSheet.create({
-    
+    screen:{
+        backgroundColor:colors.light,
+        paddingHorizontal:17,
+        paddingTop:20,
+        marginTop:-10,
+       
+    },
+   
     header:{
         flex:1,
         flexDirection:'row',
@@ -234,7 +239,6 @@ const styles = StyleSheet.create({
     },
     backBtn:{
         paddingTop: Constants.statusBarHeight + 8,
-        
     },
     editNote:{
         marginBottom:20,
@@ -255,5 +259,4 @@ const styles = StyleSheet.create({
         flex:1,
         marginTop:-10
     },
-    
 })

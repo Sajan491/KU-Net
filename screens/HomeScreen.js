@@ -38,7 +38,7 @@ const HomeScreen = ({navigation}) => {
         // -----------fetching posts---------------------//
         await groupIds.forEach((doc1)=>{
             const groupPosts = firebase.firestore().collection('groups').doc(doc1).collection('posts')
-            
+            const groupFiles = firebase.firestore().collection('groups').doc(doc1).collection('files')
             groupPosts.orderBy('postTime','desc').get().then((snapshot2)=>{
                 snapshot2.forEach(doc=>{
                     

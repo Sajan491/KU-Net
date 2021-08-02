@@ -19,7 +19,6 @@ export default Header
 const styles = StyleSheet.create({
     header:{
         paddingTop: Constants.statusBarHeight,
-        flexDirection:'row',
         paddingLeft:10,
         paddingBottom:6,
         marginTop:8,
