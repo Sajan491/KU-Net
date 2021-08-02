@@ -66,6 +66,7 @@ const AddFilesScreen = ({navigation}) => {
         var count = 0;
         var limit = values.files.length;
         await values.files.forEach( async (file)=>{
+            console.log(file);
             const random_id = uuidv4();
             const extension = file.split('.').pop();
             
@@ -123,8 +124,8 @@ const AddFilesScreen = ({navigation}) => {
 
 
     const finalSubmit= async (values)=>{
-        const groupFiles = firebase.firestore().collection('groups').doc(values.page['value']).collection('files')
-        const departFiles = firebase.firestore().collection('departments').doc(dept.value).collection('files')
+        const groupFiles = firebase.firestore().collection('groups').doc(values.page['value']).collection('posts')
+        const departFiles = firebase.firestore().collection('departments').doc(dept.value).collection('posts')
 
         if(Object.keys(dept.label).length===0){
             console.log('try again')
@@ -173,7 +174,7 @@ const AddFilesScreen = ({navigation}) => {
             <ScrollView>
                 <View  style={styles.formContainer}>
                 <Formik
-                    initialValues={{title:'', description:'',page:null, postContents:[], files:[], peopleWhoLiked:[], userInfo:{}, comments:[], postTime:firebase.firestore.FieldValue.serverTimestamp()}}
+                    initialValues={{title:'', description:'',page:null, type:'files', postContents:[], files:[], peopleWhoLiked:[], userInfo:{}, comments:[], postTime:firebase.firestore.FieldValue.serverTimestamp()}}
                     onSubmit={(values, {resetForm})=>{
                         
                         handleSubmit(values)

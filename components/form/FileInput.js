@@ -29,7 +29,7 @@ const FileInput = ({fileUri, onChangeFile}) => {
     }
     const selectFile = async () =>{
         try{
-            const result = await DocumentPicker.getDocumentAsync();
+            const result = await DocumentPicker.getDocumentAsync({type:'application/*'});
             if(result.type==='success'){
                 onChangeFile(result.uri)
             }

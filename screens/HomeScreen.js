@@ -5,9 +5,7 @@ import Card from '../components/Card';
 import colors from "../config/colors";
 
 import GroupLogoWithTitle from '../components/GroupLogoWithTitle';
-import NotifButton from '../navigation/NotifButton';
 import Constants from 'expo-constants'
-import {posts} from "../data/posts"
 import firebase from "../config/firebase";
 
 const usersCollection = firebase.firestore().collection("users_extended")
@@ -38,7 +36,6 @@ const HomeScreen = ({navigation}) => {
         // -----------fetching posts---------------------//
         await groupIds.forEach((doc1)=>{
             const groupPosts = firebase.firestore().collection('groups').doc(doc1).collection('posts')
-            const groupFiles = firebase.firestore().collection('groups').doc(doc1).collection('files')
             groupPosts.orderBy('postTime','desc').get().then((snapshot2)=>{
                 snapshot2.forEach(doc=>{
                     
@@ -62,7 +59,7 @@ const HomeScreen = ({navigation}) => {
                 allPosts.push(postItem) 
             });
         })
-        
+        //overall sort
         
         setHomePosts(allPosts)
         //   --------------------------------------------- //

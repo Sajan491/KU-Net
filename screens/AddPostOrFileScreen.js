@@ -3,21 +3,25 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Header from '../components/Header'
 import Screen from '../components/Screen'
 import colors from '../config/colors'
+import { MaterialIcons } from '@expo/vector-icons'; 
+import { FontAwesome } from '@expo/vector-icons'; 
 
 const AddPostOrFileScreen = ({navigation}) => {
 
     return (
         <Screen style={styles.screen}>
-            <Header headerText="Choose what you want to upload!" />
+            <Header headerText="Choose what you want to post!" />
             <View style={styles.container}>
                 <View>
                     <TouchableOpacity style={styles.cardContainer} onPress={()=>navigation.navigate('AddPost')}>
-                        <Text style={styles.text}>Add Photos/Videos</Text>
+                    <FontAwesome style={styles.icon} name="file-photo-o" size={45} color="black" />
+                        <Text style={styles.text}>Photos/Videos</Text>
                     </TouchableOpacity>
                 </View>
                 <View>
                     <TouchableOpacity style={styles.cardContainer} onPress={()=>navigation.navigate('AddFile')}>
-                        <Text style={styles.text}>Add File(s)</Text>
+                        <FontAwesome style={styles.icon} name="file-text" size={45} color="black" />
+                        <Text style={styles.text}>File(s)</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -29,12 +33,18 @@ const AddPostOrFileScreen = ({navigation}) => {
 export default AddPostOrFileScreen
 
 const styles = StyleSheet.create({
+    icon:{
+        position:'absolute',
+        alignSelf:'flex-start',
+        top:-20
+    },
     container:{
         alignItems:'center',
         flex:1,
         justifyContent:'center'
     },
     cardContainer:{
+        borderRadius:10,
         width:250,
         paddingVertical:30,
         paddingHorizontal:10,
@@ -53,8 +63,9 @@ const styles = StyleSheet.create({
         elevation: 13,
     },
     text:{
-        fontSize:30,
-        color:'#444'
+        fontSize:20,
+        color:'#444',
+        alignSelf:'center'
     },
     screen:{
         backgroundColor:colors.light,
