@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 import { Image, StyleSheet, Text, View, TouchableWithoutFeedback, Alert } from 'react-native'
-import colors from '../config/colors'
-import {MaterialCommunityIcons} from '@expo/vector-icons'
-import * as ImagePicker from 'expo-image-picker';
+import colors from '../../config/colors' 
+import * as DocumentPicker from 'expo-document-picker';
 import * as Permissions from 'expo-permissions'
 
+import { SimpleLineIcons } from '@expo/vector-icons'; 
 
 
-const ImageInput = ({imageUri, onChangeImage}) => {
+const FileInput = ({fileUri, onChangeFile}) => {
 
     const requestPermission =async() =>{
         const result = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
@@ -21,38 +21,34 @@ const ImageInput = ({imageUri, onChangeImage}) => {
     }, [])
     
     const handlePress=()=>{
-        if(!imageUri) selectImage();
-        else Alert.alert('Delete', 'Are you sure you want to remove this image?',[
-            {text:'Yes', onPress:()=>onChangeImage(null)},
+        if(!fileUri) selectFile();
+        else Alert.alert('Delete', 'Are you sure you want to remove this file?',[
+            {text:'Yes', onPress:()=>onChangeFile(null)},
             {text:'No'}
         ])
     }
-    const selectImage = async () =>{
+    const selectFile = async () =>{
         try{
-            const result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
-                allowsEditing: true,
-                quality: 0.5
-            });
-            if(!result.cancelled){
-                onChangeImage(result.uri)
+            const result = await DocumentPicker.getDocumentAsync({type:'application/*'});
+            if(result.type==='success'){
+                onChangeFile(result.uri)
             }
         } catch (error){
-            console.log('Error reading the Image!')
+            console.log('Error reading the File!')
         }     
     }
 
     return (
         <TouchableWithoutFeedback onPress={handlePress}>
             <View style={styles.container} >
-                {!imageUri && <MaterialCommunityIcons name="camera" size={40} color={colors.medium} /> }
-                {imageUri && <Image source={{uri:imageUri}} style={styles.image} /> }
+                {!fileUri && <SimpleLineIcons name="paper-clip" size={50} color={colors.medium} />}
+                {fileUri && <Image source={require('../../assets/file.png')} style={styles.file} /> }
             </View>
         </TouchableWithoutFeedback>
     )
 }
 
-export default ImageInput
+export default FileInput
 
 const styles = StyleSheet.create({
     container:{
@@ -65,7 +61,7 @@ const styles = StyleSheet.create({
         overflow:"hidden",
         
     },
-    image:{
+    file:{
         width:"100%",
         height:"100%"
     }

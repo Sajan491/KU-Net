@@ -9,6 +9,8 @@ import colors from "../config/colors";
 import ChatNavigator from "./ChatNavigator";
 import GroupNavigator from "./GroupNavigator";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/core";
+import AddPostOrFileScreen from "../screens/AddPostOrFileScreen";
+import AddPostNavigator from "./AddPostNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -42,10 +44,10 @@ const AppNavigator=()=>(
             }}
         />
         <Tab.Screen 
-            name="AddPost" 
-            component={AddPostScreen} 
+            name="AddPostOrFiles" 
+            component={AddPostNavigator} 
             options={({navigation})=>({
-                tabBarButton:()=> <AddButton onPress={()=>navigation.navigate("AddPost")} />,
+                tabBarButton:()=> <AddButton onPress={()=>navigation.navigate("AddPostOrFiles")} />,
                 tabBarIcon:({color, size})=><MaterialCommunityIcons name="plus-circle" size={32} color={color} />
             })}
         />

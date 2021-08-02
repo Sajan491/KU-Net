@@ -1,8 +1,8 @@
 import React, {useRef} from 'react'
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
-import ImageInput from './ImageInput'
+import FileInput from './FileInput'
 
-const ImageInputList = ({imageUris=[], onAddImage, onRemoveImage}) => {
+const FileInputList = ({fileUris=[], onAddFile, onRemoveFile}) => {
 
     const scrollView = useRef()
 
@@ -10,29 +10,28 @@ const ImageInputList = ({imageUris=[], onAddImage, onRemoveImage}) => {
         <View>
         <ScrollView showsHorizontalScrollIndicator={false} ref={scrollView} horizontal onContentSizeChange={()=>scrollView.current.scrollToEnd()}>
             <View style={styles.container}>
-                {imageUris.map((uri)=>(
-                    <View key={uri} style={styles.image}>
-                        <ImageInput 
-                            imageUri={uri}
-                            onChangeImage={()=>onRemoveImage(uri)} 
+                {fileUris.map((uri)=>(
+                    <View key={uri} style={styles.file}>
+                        <FileInput 
+                            fileUri={uri}
+                            onChangeFile={()=>onRemoveFile(uri)} 
                         />
                     </View>
                 ))}
-                {imageUris.length<4 && <ImageInput onChangeImage={(uri)=>onAddImage(uri)} />}
-                
+                {fileUris.length<4 && <FileInput onChangeFile={(uri)=>onAddFile(uri)} />}
             </View>
         </ScrollView>
         </View>
     )
 }
 
-export default ImageInputList
+export default FileInputList
 
 const styles = StyleSheet.create({
     container:{
         flexDirection:'row'
     },  
-    image:{
+    file:{
         marginRight:10
     }
 })
