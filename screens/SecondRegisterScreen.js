@@ -87,7 +87,7 @@ const SecondRegisterScreen = ({navigation}) => {
         try {
             const userID = firebase.auth().currentUser.uid;
             console.log(userID);
-            await usersCollection.doc(userID).set({ ...values, department: values.department
+            await usersCollection.doc(userID).update({ ...values, department: values.department
             })
             await departMembers.add({id:userID}).then(()=>{
                 console.log("member added in department")

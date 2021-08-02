@@ -1,16 +1,15 @@
 import React, {useState, useContext, useEffect} from 'react'
-import { StyleSheet, View, Image, Button, FlatList, TouchableOpacity, ActivityIndicator, Modal, Alert } from 'react-native'
+import { StyleSheet, View, Image, Button, FlatList, TouchableOpacity, ActivityIndicator, Modal, Alert, Text } from 'react-native'
 import AppText from '../components/AppText';
 import AppButton from "../components/AppButton"
 import {windowHeight, windowWidth} from "../config/Dimensions";
 import {Caption} from "react-native-paper";
 import {AuthContext} from "../context/AuthProvider";
-import {posts} from "../data/posts"
 import Card from "../components/Card";
 import colors from '../config/colors';
 import firebase from "../config/firebase";
 import Loading from "../components/Loading";
-import { SimpleLineIcons } from '@expo/vector-icons';
+import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
 import Screen from "../components/Screen";
 
 const GroupDetailScreen = ({route, navigation}) => {
@@ -129,6 +128,7 @@ const GroupDetailScreen = ({route, navigation}) => {
     const leaveGroupHandler = ( ) => {
         console.log("left");
         setIsAMember(false)
+        setModalOpen(false);
         //code to remove data from firebase
         
         /* To remove group from group array in users database */
@@ -175,12 +175,6 @@ const GroupDetailScreen = ({route, navigation}) => {
     //         }
         
 
-    const showtPostsHandler = () => {
-    }
-    const openChatHandler = () => {
-        navigation.navigate("Chat", group)
-    }
-
    
 
     const showAlert = () => {
@@ -210,23 +204,40 @@ const GroupDetailScreen = ({route, navigation}) => {
     return  !loading ?    
      (  
         <Screen >
-            
-
-
             <Modal
-                visible = {modalOpen}
-                transparent = {true}
-                onRequestClose = {() => setModalOpen(false)}
+                animationType = "slide"
+                    visible = {modalOpen}
+                    transparent = {true}
+                    onRequestClose = {() => setModalOpen(false)}
 
-            >
-                <TouchableOpacity>
-                    <AppText> Leave Group</AppText>
-                </TouchableOpacity>
-            </Modal>  
+                >
+                    <View style = {styles.kebabModalView}>
+                        <View style = {styles.kebabContainer}>
+                            <View style={styles.modalButton}>
+                                <Button title='X' onPress={()=>setModalOpen(false)} />
+                            </View>
+                            <TouchableOpacity style = {styles.kebabItem} onPress = {showAlert}>
+                                <Ionicons name = "exit-outline" size = {20} />
+                                    <View >
+                                        <Text style = {styles.leaveGroupText}> Leave Group</Text>
+                                        <Text style = {styles.leaveTextDetails}> Click to leave the group</Text>
+                                    </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+
             
             <View style = {styles.groupContainer}>
-            <View style = {styles.groupContent}>
-            <FlatList 
+               <View style = {styles.groupContent}>
+                
+                {isAMember?
+                (<TouchableOpacity onPress = {() => {setModalOpen(true)}}>
+                    <SimpleLineIcons name = "options-vertical" size = {20}  style = {{alignSelf: "flex-end", marginRight: 10}}/>
+                </TouchableOpacity>)
+                : null }
+
+                 <FlatList 
                     ListHeaderComponent = {
                         <>
                         <View style>
@@ -237,10 +248,7 @@ const GroupDetailScreen = ({route, navigation}) => {
                                 
                                 { isAMember
                                     ? (<View>
-                                            <Caption> Hello {user.displayName}!</Caption> 
-                                            <TouchableOpacity onPress = {showAlert}>
-                                                <Caption style = {{color: "red"}}> Leave group?</Caption>
-                                            </TouchableOpacity>
+                                            <Caption style = {{color: colors.secondary}}> Already a member!</Caption> 
                                         </View>
                                         )
                                     // :<AppButton onPress = {() => {setJoining((prev => !prev))}} title={joining? "Joining" : "Join"} >
@@ -249,14 +257,7 @@ const GroupDetailScreen = ({route, navigation}) => {
                                      </AppButton> )
                                 }
                             </View>
-                            <View style = {styles.switchTab}>
-                               <TouchableOpacity onPress = {() => showtPostsHandler()}>
-                                   <AppText style = {styles.appText}> Posts</AppText>
-                                </TouchableOpacity> 
-                               <TouchableOpacity onPress ={() => openChatHandler()}>
-                                   <AppText style = {styles.appText}> Group Chat</AppText>
-                                </TouchableOpacity> 
-                            </View>
+
                             {isAMember ? <Caption style = {{alignSelf: "flex-start", padding: 4}}> Group Posts</Caption>
                                         : <Caption style = {{alignSelf: "center", padding: 100}}> Join to View Group Posts</Caption> }
                         </View>
@@ -286,7 +287,7 @@ const GroupDetailScreen = ({route, navigation}) => {
                     )}
 
                 />
-            </View>
+              </View>
 
         </View>
         </Screen>
@@ -316,18 +317,52 @@ const styles = StyleSheet.create({
     groupContent: {
         marginTop: 10
     },
-    switchTab: {
-        marginTop: 5,
-        display: 'flex',
-        flexDirection: 'row',
-        marginLeft: windowWidth/8,
-        marginRight: windowWidth/8,
-        justifyContent: "space-between",
-
-    },
     appText: {
         fontSize: 14,
         fontWeight: "bold",
         color: colors.secondary
+    },
+    kebabModalView:{
+        width:'100%',
+        height:'100%',
+        display:"flex",
+        flexDirection:'row',
+        alignItems:'flex-end',
+        backgroundColor: 'transparent'
+    },
+    kebabContainer:{
+        minHeight:'10%',
+        maxHeight:'25%',
+        width:'100%',
+        paddingTop:7,
+        borderTopEndRadius:20,
+        backgroundColor: '#fff',
+        flex:1,
+        flexDirection:'column'
+    },
+    modalButton:{
+        width:40,
+        height:40,
+        alignSelf:'flex-end',
+        top:20,
+        right:20,
+        position:'absolute',
+        zIndex:1
+    },
+    kebabItem: {
+        flex:1,
+        flexDirection:'row',
+        padding:15,
+    },
+    leaveGroupText: {
+        marginLeft: 15,
+        fontSize: 16,
+        fontWeight: "bold"
+    },
+    leaveTextDetails: {
+        marginLeft: 15,
+        color: colors.medium,
+        fontSize: 13
+
     }
 })

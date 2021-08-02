@@ -28,7 +28,7 @@ const guidelinesData = [
 ]
 
 const HelpScreen = ({navigation, route}) => {
-    const fromHomeScreen = route.params.homeScreen
+    const fromHomeScreen = route.params?.homeScreen
     const [userName, setUserName] = useState('')
     const [fromHS, setFromHS] = useState(false)
 
