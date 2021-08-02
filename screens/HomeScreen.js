@@ -34,20 +34,22 @@ const HomeScreen = ({navigation}) => {
         })
 
         // -----------fetching posts---------------------//
-        await groupIds.forEach((doc1)=>{
-            const groupPosts = firebase.firestore().collection('groups').doc(doc1).collection('posts')
-            groupPosts.orderBy('postTime','desc').get().then((snapshot2)=>{
-                snapshot2.forEach(doc=>{
-                    
-                    const postItem = doc.data()
-                    postItem.id = doc.id;
-                    postItem.grpId = doc1;
-                    postItem.deptId=''
-                    allPosts.push(postItem)
+        
+            await groupIds.forEach((doc1)=>{
+                const groupPosts = firebase.firestore().collection('groups').doc(doc1).collection('posts')
+                groupPosts.orderBy('postTime','desc').get().then((snapshot2)=>{
+                    snapshot2.forEach(doc=>{
+                        
+                        const postItem = doc.data()
+                        postItem.id = doc.id;
+                        postItem.grpId = doc1;
+                        postItem.deptId=''
+                        allPosts.push(postItem)
+                    })
                 })
+                
             })
-            
-        })
+        
 
         const departPosts = firebase.firestore().collection('departments').doc(department_id).collection('posts')
         await departPosts.orderBy('postTime','desc').get().then((snapshot1)=>{
@@ -140,6 +142,7 @@ const HomeScreen = ({navigation}) => {
                             commentsCount={item.comments.length}
                             page={item.page}
                             screen = 'home'
+                            type={item.type}
                         />
                     )}
 

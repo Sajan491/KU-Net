@@ -65,7 +65,7 @@ const ThirdRegisterScreen = ({navigation}) => {
     }
 
     return (
-        <Screen>
+        <Screen style={styles.screen}>
         
         <View style={styles.container}>
             <Text style={styles.welcome}>Welcome to KU-Net, {userName}</Text>
@@ -102,6 +102,9 @@ const ThirdRegisterScreen = ({navigation}) => {
 export default ThirdRegisterScreen
 
 const styles = StyleSheet.create({
+    screen:{
+        marginTop:20
+    },
     submitText:{
         fontSize:15,
         fontWeight:'bold'

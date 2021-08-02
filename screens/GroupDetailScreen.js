@@ -305,7 +305,6 @@ const styles = StyleSheet.create({
     groupContainer: {
         margin: 10,
         height: windowHeight,
-        backgroundColor: "#fff",
         flex: 1,
         borderRadius: 10,
     },

@@ -36,7 +36,8 @@ const Card = ({
     userImg,
     postTime,
     page,
-    screen
+    screen,
+    type
     }) => {
         const [isUpdating, setIsUpdating] = useState(false)
         const [uid, setUid] = useState('')
@@ -430,6 +431,10 @@ const Card = ({
             })
         }
 
+        const handleDownload =()=>{
+            console.log('meowsad');
+        }
+
     
 
         // image uploader from edit modal
@@ -811,6 +816,7 @@ const Card = ({
                     
                 </View>
 
+                {type==='photo/Video' ? 
                    <FlatList 
                         key={keyy}
                         data={postContents}
@@ -845,6 +851,26 @@ const Card = ({
                                 </TouchableWithoutFeedback>)
                         }}
                    />
+                   : 
+                   <FlatList 
+                        key={keyy}
+                        data={postContents}
+                        numColumns={1}
+                        keyExtractor={(item)=>{return item.id}}
+                        renderItem={({item})=>{
+                        return (
+                           <TouchableWithoutFeedback onPress={()=>{
+                               handleDownload(item)
+                            }
+                           }>
+                               
+                                <Text>click here to party</Text>
+
+                           </TouchableWithoutFeedback>)
+                        }}
+                    />
+                }
+                   
             
                 <View style={styles.interactionWrapper}>
                     <View style={styles.interaction} >
