@@ -9,7 +9,7 @@ import Card from "../components/Card";
 import colors from '../config/colors';
 import firebase from "../config/firebase";
 import Loading from "../components/Loading";
-import { SimpleLineIcons, Ionicons } from '@expo/vector-icons';
+import { SimpleLineIcons, Ionicons, FontAwesome } from '@expo/vector-icons';
 import Screen from "../components/Screen";
 
 const GroupDetailScreen = ({route, navigation}) => {
@@ -24,6 +24,7 @@ const GroupDetailScreen = ({route, navigation}) => {
     const usersDB = firebase.firestore().collection("users_extended")
     const groupsDB = firebase.firestore().collection("groups");
     const [modalOpen, setModalOpen] = useState(false)
+    const [qnaModalOpen, setQnaModalOpen] = useState(false)
     const [posts, setPosts] = useState([])
 
     useEffect(  () => {
@@ -41,6 +42,19 @@ const GroupDetailScreen = ({route, navigation}) => {
         return () => subscriber();
  
     }, [userID, isAMember])
+
+    const QNAs = [
+        {
+            id: 1,
+            q: "What is your name?",
+            a: "My name is Sabin Thapa"
+        },
+       {
+           id: 2,
+           q: "Where do you live?",
+           a: "I live in Nepal"
+       } 
+    ]
 
     const getPosts= async ()=>{
         const groupPosts = groupsDB.doc(group.id).collection('posts')
@@ -216,8 +230,18 @@ const GroupDetailScreen = ({route, navigation}) => {
                             <View style={styles.modalButton}>
                                 <Button title='X' onPress={()=>setModalOpen(false)} />
                             </View>
+                            <TouchableOpacity style = {styles.kebabItem} onPress = {() => {
+                                setQnaModalOpen(true)
+                                setModalOpen(false)
+                                }}>
+                                <FontAwesome name = "question-circle" size = {20} />
+                                    <View >
+                                        <Text style = {styles.leaveGroupText}> Q&A Section</Text>
+                                        <Text style = {styles.leaveTextDetails}> Click to view/ask group questions</Text>
+                                    </View>
+                            </TouchableOpacity>
                             <TouchableOpacity style = {styles.kebabItem} onPress = {showAlert}>
-                                <Ionicons name = "exit-outline" size = {20} />
+                                <Ionicons name = "exit" size = {20} />
                                     <View >
                                         <Text style = {styles.leaveGroupText}> Leave Group</Text>
                                         <Text style = {styles.leaveTextDetails}> Click to leave the group</Text>
@@ -227,6 +251,38 @@ const GroupDetailScreen = ({route, navigation}) => {
                     </View>
                 </Modal>
 
+            {/* Q&A Modal */}
+            <Modal
+                animationType = "slide"
+                visible = {qnaModalOpen}
+                transparent = {true}
+                onRequestClose = {() => setQnaModalOpen(false)}
+                >
+                    <View style = {styles.qnaModalView}>
+                        <View style={styles.qnaContainer}>
+                            <View style={styles.modalButton}>
+                                <Button title='X' onPress={()=>setQnaModalOpen(false)} />
+                            </View>
+                            <View style = {styles.qnaContent}>
+                                <FlatList
+                                    horizontal
+                                    showsHorizontalScrollIndicator = {false}
+                                    keyExtractor = {(item) => item.id.toString()}
+                                    data = {QNAs}
+                                    renderItem = {({item}) => (
+                                        <View style = {{display: "flex", flexDirection: "column"}}>
+                                            <Text> {item.q}</Text>
+                                            <Text>{item.a}</Text>
+                                            <Text>sabin</Text>
+                                        </View>
+                                    )}
+                                />
+                                <AppButton title = "Add Question" style ={{display: "flex", flexDirection: "column", alignSelf: "flexEnd"}}/>
+                            </View>
+                        </View>
+
+                    </View>
+                </Modal>
             
             <View style = {styles.groupContainer}>
                <View style = {styles.groupContent}>
@@ -258,8 +314,12 @@ const GroupDetailScreen = ({route, navigation}) => {
                                 }
                             </View>
 
-                            {isAMember ? <Caption style = {{alignSelf: "flex-start", padding: 4}}> Group Posts</Caption>
-                                        : <Caption style = {{alignSelf: "center", padding: 100}}> Join to View Group Posts</Caption> }
+                            {isAMember 
+                                ? (<View style = {{display: "flex", flexDirection: "row"}}>
+                                        <Caption style = {{alignSelf: "flex-start", padding: 4}}> Group Posts</Caption>
+                                    </View>)
+                                : <Caption style = {{alignSelf: "center", padding: 100}}> Join to View Group Posts</Caption> }
+
                         </View>
                         </>
                     }
@@ -331,10 +391,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent'
     },
     kebabContainer:{
-        minHeight:'10%',
+        minHeight:'20%',
         maxHeight:'25%',
         width:'100%',
-        paddingTop:7,
+        paddingTop:17,
         borderTopEndRadius:20,
         backgroundColor: '#fff',
         flex:1,
@@ -344,7 +404,7 @@ const styles = StyleSheet.create({
         width:40,
         height:40,
         alignSelf:'flex-end',
-        top:20,
+        top:5,
         right:20,
         position:'absolute',
         zIndex:1
@@ -353,6 +413,8 @@ const styles = StyleSheet.create({
         flex:1,
         flexDirection:'row',
         padding:15,
+        borderBottomWidth: 1,
+        borderBottomColor: colors.secondary
     },
     leaveGroupText: {
         marginLeft: 15,
@@ -364,5 +426,27 @@ const styles = StyleSheet.create({
         color: colors.medium,
         fontSize: 13
 
-    }
+    },
+    qnaModalView:{
+        width:'100%',
+        height:'100%',
+        display:"flex",
+        flexDirection:'row',
+        alignItems:'flex-end',
+        backgroundColor: 'transparent'
+    },
+    qnaContainer:{
+        minHeight:'95%',
+        maxHeight:'100%',
+        width:'100%',
+        paddingTop:17,
+        borderTopEndRadius:20,
+        backgroundColor: '#fff',
+        flex:1,
+        flexDirection:'column'
+    },
+    qnaContent: {
+        justifyContent: "center",
+        alignItems: "center"
+    } 
 })
