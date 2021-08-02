@@ -49,7 +49,7 @@ const ThirdRegisterScreen = ({navigation}) => {
     const handleSubmit = () =>{
 
         checked.forEach(function(ch){
-            const groupMembers = firebase.firestore().collection('groups').doc(ch.id).collection('members').doc(userID)
+            const groupMembers = firebase.firestore().collection('groups').doc(ch.id).collection('members').doc(uid)
             groupMembers.set({id:uid}).then(()=>{console.log('added user to groups')})
         })
         
