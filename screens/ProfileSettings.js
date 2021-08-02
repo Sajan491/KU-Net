@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { StyleSheet, Text, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Button, ScrollView, TouchableOpacity, ImageBackground, Modal } from 'react-native'
 import * as Yup from 'yup';
 import { AppForm, AppFormField, SubmitButton } from '../components/form'
 import Screen from '../components/Screen'
@@ -9,6 +9,8 @@ import firebase from "../config/firebase";
 import {Label} from "native-base";
 import departments from "../components/Departments";
 import Loading from '../components/Loading';
+import {MaterialCommunityIcons} from "@expo/vector-icons"
+import colors from "../config/colors"
 
 const validationSecondRegisterScreen = Yup.object().shape({
     username: Yup.string().min(1).nullable().label("Username"),
@@ -26,6 +28,8 @@ const ProfileSettings = ({navigation}) => {
     const [age, setAge] = useState(null);
     const [loading, setLoading] = useState(true);
     const [batch, setBatch] = useState(null);
+    const [kebabModalVisible, setKebabModalVisible] = useState(false)  
+
     const userID = firebase.auth().currentUser.uid;
     const db = usersCollection.doc(userID)
 
@@ -96,7 +100,11 @@ const ProfileSettings = ({navigation}) => {
         } catch (error) {
             console.log("Error updating values in the database",error)
         }
-        navigation.navigate("Settings")      
+        navigation.goBack()      
+    }
+
+    const changeProfilePicHandler = () => {
+        console.log("PP CHANGED");
     }
 
     if(loading){
@@ -104,10 +112,62 @@ const ProfileSettings = ({navigation}) => {
 
     return (
         <Screen style={styles.container}>
+
+
+            {/* kebab modal */}
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={kebabModalVisible} 
+                onRequestClose={() => {
+                setLikersModalVisible(false);
+            }}>
+                
+                <View style={styles.kebabModalView}>
+                    <View style={styles.kebabContainer}>
+
+                        <View style={styles.modalButton}>
+                            <Button title='X' onPress={()=>setKebabModalVisible(false)} />
+                        </View>
+                            <>
+                            <TouchableOpacity style={styles.kebabOneItem} onPress={() => {}}>
+                                <MaterialCommunityIcons name="content-save" size={30} color="black" />
+                                <View style={styles.kebabText}>
+                                    <Text style={styles.kebabTitle}>Upload Photo</Text>
+                                    <Text style={styles.kebabDetail}>Upload a photo from your gallery.</Text>
+                                </View> 
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={styles.kebabOneItem} onPress={() => {}}>
+                                <MaterialCommunityIcons name="camera" size={30} color="black" />
+                                <View style={styles.kebabText}>
+                                    <Text style={styles.kebabTitle}>Take Photo</Text>
+                                    <Text style={styles.kebabDetail}>Open camera to take your photo.</Text>
+                                </View> 
+                            </TouchableOpacity>
+                       
+                            </>
+                    </View>
+                </View>   
+            </Modal>
+
             <ScrollView
                 showsVerticalScrollIndicator = {false}
             >
-            <AppText style={styles.header}>Profile Details</AppText>
+            
+            <TouchableOpacity onPress = {() => setKebabModalVisible(true)}>
+                <View style = {styles.imageContainer}>
+                    <ImageBackground
+                        source = {require("../assets/sajan.png")}
+                        style = {{height: 100, width: 100, resizeMode: "contain"}}
+                        imageStyle = {{borderRadius: 25}}
+                    >
+                        <View style = {styles.cameraIconContainer}>
+                            <MaterialCommunityIcons name="camera" size = {35} color = {colors.light} style = {styles.cameraIcon} />
+                        </View>
+                    </ImageBackground>
+                </View>
+            </TouchableOpacity>
 
             <AppForm
                 initialValues={{username: "", age:'',  department: null, bio:'', batch:''}}
@@ -173,7 +233,7 @@ const styles = StyleSheet.create({
         paddingTop:30
     },
     container:{
-        padding:20
+        padding:20,
     },
     inputGroup: {
         flex: 1,
@@ -186,5 +246,70 @@ const styles = StyleSheet.create({
         fontSize: 13,
         paddingTop: 10,
         paddingLeft: 8
-    }
+    },
+    imageContainer: {
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    cameraIconContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    cameraIcon: {
+        opacity: 0.9,
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: colors.light
+    },
+
+    kebab:{
+        marginTop:5,
+        width:10
+    },
+    kebabModalView:{
+        width:'100%',
+        height:'100%',
+        display:"flex",
+        flexDirection:'row',
+        alignItems:'flex-end',
+        backgroundColor: 'transparent'
+    },
+    kebabContainer:{
+        minHeight:'10%',
+        maxHeight:'25%',
+        width:'100%',
+        paddingTop:7,
+        borderTopEndRadius:20,
+        backgroundColor: '#fff',
+        flex:1,
+        flexDirection:'column'
+    },
+    kebabOneItem:{
+        flex:1,
+        flexDirection:'row',
+        paddingLeft:20,
+        borderBottomColor:'rgba(0,0,0,0.4)',
+        borderBottomWidth:0.2,
+        padding:15,
+        paddingTop: 17
+    },
+    kebabText:{
+        marginLeft:15,
+        marginTop:-3
+    },
+    kebabTitle:{
+        fontSize:16,
+        fontWeight:'bold'
+    },
+    kebabDetail:{
+        fontSize:12,
+        color:'rgba(0,0,0,0.7)',
+
+    },
+    editButtonGap:{
+        flex:1,
+        flexDirection:'row',
+        justifyContent:'space-between'
+    },
 })
