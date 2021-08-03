@@ -21,7 +21,7 @@ const MessagesScreen = ({navigation}) => {
 
     useEffect( () => {
         getData();
-    }, [])
+    }, [groups, department])
     
     // const getGroups = () => {
     //     firebase.firestore().collection("groups").get().then((docs)=> {
