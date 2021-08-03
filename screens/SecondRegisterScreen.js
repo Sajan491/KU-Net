@@ -27,6 +27,7 @@ const usersCollection = firebase.firestore().collection("users_extended")
 
 const SecondRegisterScreen = ({navigation}) => {
     const user = useContext(AuthContext);
+    const userID = firebase.auth().currentUser.uid;
 
     const [uploading, setUploading] = useState(false)
 
@@ -83,13 +84,11 @@ const SecondRegisterScreen = ({navigation}) => {
     }
 
     const finalSubmit = async (values) =>{
-        const departMembers = firebase.firestore().collection('departments').doc(values.department.value).collection('members');
+        const departMembers = firebase.firestore().collection('departments').doc(values.department.value).collection('members').doc(userID);
         try {
-            const userID = firebase.auth().currentUser.uid;
-            console.log(userID);
             await usersCollection.doc(userID).update({ ...values, department: values.department
             })
-            await departMembers.add({id:userID}).then(()=>{
+            await departMembers.set({id:userID}).then(()=>{
                 console.log("member added in department")
             })
 

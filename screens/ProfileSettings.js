@@ -11,6 +11,7 @@ import departments from "../components/Departments";
 import Loading from '../components/Loading';
 import {MaterialCommunityIcons} from "@expo/vector-icons"
 import colors from "../config/colors"
+import { domMax } from 'framer-motion';
 
 const validationSecondRegisterScreen = Yup.object().shape({
     username: Yup.string().min(1).nullable().label("Username"),
@@ -20,7 +21,6 @@ const validationSecondRegisterScreen = Yup.object().shape({
     batch:  Yup.string().min(4).label("Batch")
 });
 
-const usersCollection = firebase.firestore().collection("users_extended")
 const ProfileSettings = ({navigation}) => {
     const [userName, setUserName] = useState("");
     const [department, setDepartment] = useState({});
@@ -29,21 +29,21 @@ const ProfileSettings = ({navigation}) => {
     const [loading, setLoading] = useState(true);
     const [batch, setBatch] = useState(null);
     const [kebabModalVisible, setKebabModalVisible] = useState(false)  
-
+    
     const userID = firebase.auth().currentUser.uid;
-    const db = usersCollection.doc(userID)
+    const usersCollection = firebase.firestore().collection("users_extended").doc(userID)
+    const departCollection = firebase.firestore().collection("departments").doc(department.value).collection("members")
 
     useEffect(() => {
         getData();
-        console.log(department.label, "I ama LABEL");
+       
     }, [])
 
     const getData =  () => {
-        db.get()
+        usersCollection.get()
         .then((doc) => { 
               setUserName(doc.data()['username'])
               const dept = doc.data()['department']
-              console.log(dept, "heheh");
               setDepartment(dept)
               setAge(doc.data()['age'])
               setBio(doc.data()['bio'])
@@ -54,14 +54,15 @@ const ProfileSettings = ({navigation}) => {
             setLoading(false);
     }
 
+
     const handleSubmit=(values)=>{
         console.log(values, "jn");
         try {            
             console.log("User ID: ", userID);
-            db.get()
+            usersCollection.get()
                 .then( () => {
                     if(values.username !== "") {
-                        db.update({
+                        usersCollection.update({
                             username: values.username
                         })
                         console.log("Updated username");
@@ -70,26 +71,40 @@ const ProfileSettings = ({navigation}) => {
                         })
                     }
                     if(values.age !== "") {
-                        db.update({
+                        usersCollection.update({
                             age: values.age
                         })
                         console.log("Updated age!")
                     }
                     if(values.bio !== "") {
-                        db.update({
+                        usersCollection.update({
                             bio: values.bio
                         })
                         console.log("Updated bio!");
                     }
                     if(values.batch !== "") {
-                        db.update({
+                        usersCollection.update({
                             batch: values.batch
                         })
                         console.log("Updated batch");
                     }
 
+                    // If department is changed 
                     if(values.department !== null) {
-                        db.update({
+                        // Delete user from previous department 
+                        departCollection.doc(userID).delete().then(() => {
+                            console.log("User successfyll removed from previous department", department.label);
+                        }).catch((err) => {
+                            console.log("Error removing user", erro);
+                        })
+
+                        // add user to the new department 
+                        firebase.firestore().collection("departments").doc(values.department.value).collection("members").doc(userID).set({
+                            id: userID
+                        })
+                        
+                        //Update department in users collection
+                        usersCollection.update({
                             department: values.department
                         })
                         console.log(("Department updated!"));
