@@ -447,7 +447,6 @@ const Card = ({
 
 
         const handleDownload= async (item)=>{
-            console.log(item);
             Linking.openURL(item.uri);
         }
     

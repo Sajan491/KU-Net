@@ -14,7 +14,7 @@ const SavedPostsScreen = () => {
         const userID = firebase.auth().currentUser.uid;
         const postsToPush =[];
         const posts = firebase.firestore().collection("users_extended").doc(userID).collection("savedPosts")
-        await posts.get().then((doc)=>{
+        await posts.orderBy('postTime','desc').get().then((doc)=>{
             doc.forEach((oneDoc)=>{
                 postsToPush.push(oneDoc.data())
             })

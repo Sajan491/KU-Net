@@ -28,6 +28,15 @@ const menuItems = [
         targetScreen: "Settings"
     },
     {
+        title: "Department Posts",
+        icon: {
+            name: "view-list",
+            backgroundColor: colors.secondary
+        },
+        targetScreen: "DepartmentPosts"
+    },
+
+    {
         title: "Saved Posts",
         icon: {
             name: "content-save",

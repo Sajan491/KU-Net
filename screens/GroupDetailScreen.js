@@ -343,6 +343,7 @@ const GroupDetailScreen = ({route, navigation}) => {
                             commentsCount={item.comments.length}
                             page={item.page}
                             screen = 'home'
+                            type={item.type}
                         />
                     )}
 
