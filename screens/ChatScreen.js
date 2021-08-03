@@ -7,10 +7,10 @@ import { FontAwesome } from '@expo/vector-icons';
 import {AuthContext} from "../context/AuthProvider";
 import firebase from "../config/firebase";
 const ChatScreen = ({route}) => {
-    const {id,abbr} = route.params;
+    const {id,abbr, value, label} = route.params;
     const {user} = useContext(AuthContext);
     const [messages, setMessages] = useState([]);
-   const docID = abbr+"-"+id
+   const docID = (abbr || label) +"-"+ (id || value)
 
     useLayoutEffect(() => {
       const unsubscribe = firebase.firestore().collection('chats').doc(docID)
@@ -50,7 +50,7 @@ const ChatScreen = ({route}) => {
       const myMsg = {
         ...msg,
         sentBy: user.uid,
-        sentTo: id,
+        sentTo: id || value,
         createdAt: new Date()
       }
       setMessages(previousMessages => GiftedChat.append(previousMessages, myMsg));

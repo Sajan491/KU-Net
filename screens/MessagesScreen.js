@@ -14,13 +14,13 @@ import { groupStyles as styles } from '../styles/globalStyles';
 
 const MessagesScreen = ({navigation}) => {
     const [groups, setGroups] = useState([]);
+    const [department, setDepartment] = useState([]);
     const [loading, setLoading] = useState(true);
     const usersDB = firebase.firestore().collection("users_extended");
     const userID = firebase.auth().currentUser.uid;
 
     useEffect( () => {
-        // getGroups();
-        getEnrolledGroups();
+        getData();
     }, [])
     
     // const getGroups = () => {
@@ -34,12 +34,17 @@ const MessagesScreen = ({navigation}) => {
     //     })
     // }
 
+    const getData = () => {
+        getEnrolledGroups();
+        getCurrentDepartment();
+        setLoading(false);
+    }
+
     const getEnrolledGroups =  () => {
         usersDB.doc(userID).get().then((doc) => {
-          if(doc.data()['groups'] !== undefined) {
+          if(doc.exists) {
               const groupArr = doc.data()['groups']
               setGroups(groupArr)
-              setLoading(false)
            } else{
                usersDB.doc(userID).update({
                    groups: []
@@ -47,6 +52,17 @@ const MessagesScreen = ({navigation}) => {
            }
        }).catch(err => {
            console.log("Error fetching users data", err);
+       })
+   }
+
+   const getCurrentDepartment = () => {
+       usersDB.doc(userID).get().then((doc) => {
+            if(doc.exists) {
+                const myDepartment = doc.data()['department']
+                setDepartment(myDepartment)
+            }
+       }).catch((err) => {
+           console.log(err.message);
        })
    }
 
@@ -59,22 +75,43 @@ const MessagesScreen = ({navigation}) => {
         <View style= {styles.container}>
             <Header headerText="Chat" />
             <AppText style={{color: colors.secondary, textAlign: "center", marginBottom: 5}}> Tap on the channel to join the chat!</AppText>
-            <FlatList 
-                data = {groups}
-                keyExtractor = {item => item.id}
-                ItemSeparatorComponent = {ItemSeparator}
-                showsVerticalScrollIndicator={false}
-                renderItem = {({item}) => (
-                    <TouchableOpacity onPress = {() => navigation.navigate("Chat", item)}>
-                            <View style = {styles.content}>
-                                <MaterialCommunityIcons name = {item.icon} size={35} style = {styles.channelImage} />
-                                {/* <Image source = {item.icon} style = {styles.channelImage} /> */}
-                                <AppText style = {styles.channelName}>{item.title}</AppText>
-                            </View>
-                        </TouchableOpacity>
-                )}
-                />
-            </View>
+           
+           {department
+            ? <>
+                <Text style = {styles.title}> My Department </Text>
+                        <TouchableOpacity onPress = {() => navigation.navigate("Chat", department)}>
+                                <View style = {styles.content}>
+                                    <MaterialCommunityIcons name = {department.icon} size={35} style = {styles.channelImage} />
+                                    {/* <Image source = {item.icon} style = {styles.channelImage} /> */}
+                                    <AppText style = {styles.channelName}>{department.label}</AppText>
+                                </View>
+                            </TouchableOpacity>
+
+             </>
+             : null }
+
+            {groups 
+            ? <>
+                    <Text style = {styles.title}> My Groups</Text>
+                    <FlatList 
+                        data = {groups}
+                        keyExtractor = {item => item.id.toString()}
+                        ItemSeparatorComponent = {ItemSeparator}
+                        showsVerticalScrollIndicator={false}
+                        renderItem = {({item}) => (
+                            <TouchableOpacity onPress = {() => navigation.navigate("Chat", item)}>
+                                    <View style = {styles.content}>
+                                        <MaterialCommunityIcons name = {item.icon} size={35} style = {styles.channelImage} />
+                                        {/* <Image source = {item.icon} style = {styles.channelImage} /> */}
+                                        <AppText style = {styles.channelName}>{item.title}</AppText>
+                                    </View>
+                                </TouchableOpacity>
+                        )}
+                        />
+                </>
+                : null}
+
+        </View>
     )
 }
 

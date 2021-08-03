@@ -25,5 +25,12 @@ export const groupStyles = StyleSheet.create({
    channelName: {
        marginTop: 30,
        marginLeft: 20,
+   },
+   title: {
+       fontWeight: "bold",
+       fontSize: 16,
+       marginBottom: 5,
+       marginTop: 5,
+       color: colors.secondary
    }
 });
