@@ -18,7 +18,7 @@ const ChatNavigator=()=>(
                 name="Chat" 
                 component={ChatScreen} 
                 options={({route})=>({
-                    title: route.params.abbr,
+                    title: route.params.abbr || route.params.label,
                     headerTitleAlign: "center"
                 })}
             />
