@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Image, StyleSheet, Text, View, TouchableWithoutFeedback, Alert } from 'react-native'
 import colors from '../../config/colors' 
 import * as DocumentPicker from 'expo-document-picker';
@@ -8,6 +8,7 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 
 
 const FileInput = ({fileUri, onChangeFile}) => {
+    const [fileName, setFileName] = useState('')
 
     const requestPermission =async() =>{
         const result = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
@@ -42,7 +43,11 @@ const FileInput = ({fileUri, onChangeFile}) => {
         <TouchableWithoutFeedback onPress={handlePress}>
             <View style={styles.container} >
                 {!fileUri && <SimpleLineIcons name="paper-clip" size={50} color={colors.medium} />}
-                {fileUri && <Image source={require('../../assets/file.png')} style={styles.file} /> }
+                {fileUri && 
+                    <>
+                        <Image source={require('../../assets/file.png')} style={styles.file} /> 
+                    </>
+                }
             </View>
         </TouchableWithoutFeedback>
     )

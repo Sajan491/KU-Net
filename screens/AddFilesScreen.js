@@ -66,7 +66,7 @@ const AddFilesScreen = ({navigation}) => {
         var count = 0;
         var limit = values.files.length;
         await values.files.forEach( async (file)=>{
-            console.log(file);
+            
             const random_id = uuidv4();
             const extension = file.split('.').pop();
             
@@ -104,10 +104,10 @@ const AddFilesScreen = ({navigation}) => {
                     blob.close();
                     let extensions = ['pdf','docx','odt','rtf','txt','wpd','doc']
                     if (extensions.includes(extension)){
-                        uris.push({uri:downloadUrl, id:random_id, type:'text'})
+                        uris.push({uri:downloadUrl, id:random_id, type:'text', ext:extension})
                     }
                     else{
-                        uris.push({uri:downloadUrl, id:random_id, type:'others'})
+                        uris.push({uri:downloadUrl, id:random_id, type:'others', ext:extension})
                     }
                     
                     if (count === limit){ 

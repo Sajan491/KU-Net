@@ -79,6 +79,7 @@ const SavedPostsScreen = () => {
                             postTime= {item.postTime}
                             page={item.page}
                             screen = 'savedPosts'
+                            type={item.type}
                         />
                     )}
                 />
