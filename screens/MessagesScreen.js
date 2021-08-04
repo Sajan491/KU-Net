@@ -21,7 +21,7 @@ const MessagesScreen = ({navigation}) => {
 
     useEffect( () => {
         getData();
-    }, [])
+    }, [groups, department])
     
     // const getGroups = () => {
     //     firebase.firestore().collection("groups").get().then((docs)=> {
@@ -76,7 +76,7 @@ const MessagesScreen = ({navigation}) => {
             <Header headerText="Chat" />
             <AppText style={{color: colors.secondary, textAlign: "center", marginBottom: 5}}> Tap on the channel to join the chat!</AppText>
            
-           {department
+           {department.length !== 0
             ? <>
                 <Text style = {styles.title}> My Department </Text>
                         <TouchableOpacity onPress = {() => navigation.navigate("Chat", department)}>
@@ -90,7 +90,7 @@ const MessagesScreen = ({navigation}) => {
              </>
              : null }
 
-            {groups 
+            {groups.length !== 0
             ? <>
                     <Text style = {styles.title}> My Groups</Text>
                     <FlatList 

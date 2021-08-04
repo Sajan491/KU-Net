@@ -75,6 +75,7 @@ const ChatScreen = ({route}) => {
         alwaysShowSend
         scrollToBottom
         scrollToBottomComponent = {scrollToBottomComponent}
+        renderUsernameOnMessage = {true}
         user={{
           _id: user?.uid,
           name: user?.displayName
