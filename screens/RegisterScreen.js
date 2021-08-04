@@ -12,7 +12,8 @@ const registerValidationSchema = Yup.object().shape({
     .string()
     .email("Please enter a valid email!")
     .required("Email is required!")
-    .label("Email"),
+    .label("Email")
+    .matches(/@student.ku.edu.np/, "You can only sign up using your university email!"),
     password: Yup
     .string()
     .required("Password is required!")
