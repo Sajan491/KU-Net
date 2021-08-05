@@ -5,6 +5,7 @@ import MessagesScreen from "../screens/MessagesScreen";
 import SavedPostsScreen from "../screens/SavedPostsScreen";
 import SettingsNavigator from "./SettingsNavigator";
 import ProfileNavigator from "../navigation/ProfileNavigator";
+import DepartmentPostsScreen from "../screens/DepartmentPostsScreen";
 
 const Stack = createStackNavigator();
 
@@ -17,6 +18,7 @@ const AccountNavigator=()=>(
         <Stack.Screen name = "Settings" component = {SettingsNavigator} options = {{headerShown: false }}/>
         <Stack.Screen name = "SavedPosts" component = {SavedPostsScreen} options = {{headerShown: false }}/>
         <Stack.Screen name = "UserProfile" component = {ProfileNavigator} options = {{headerShown: false }}/>
+        <Stack.Screen name = "DepartmentPosts" component = {DepartmentPostsScreen} options = {{headerShown: false }}/>
         
     </Stack.Navigator>
 )

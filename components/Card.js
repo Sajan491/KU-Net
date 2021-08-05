@@ -13,16 +13,18 @@ import ReadMore from 'react-native-read-more-text';
 import {MaterialCommunityIcons} from '@expo/vector-icons'
 import Comment from './Comment';
 import Header from './Header';
-import { AppFormField, SubmitButton } from './form';
+import { AppFormField, AppFormFilePicker, SubmitButton } from './form';
 import AppFormImagePicker from './form/AppFormImagePicker';
 const ItemWidth = Dimensions.get('window').width / 2 -20;
 var storageRef = firebase.storage().ref();
+import * as Linking from 'expo-linking';
+import { FontAwesome } from '@expo/vector-icons'; 
+
 
 const validationSchema = Yup.object().shape({
     title: Yup.string().min(1).label("Title"),
     description: Yup.string().label("Description"),
-    // page: Yup.object().required().nullable().label("Page"),
-    // images: Yup.array().max(4, "Maximum images allowed: 4")
+    
 });
 
 const Card = ({
@@ -36,7 +38,8 @@ const Card = ({
     userImg,
     postTime,
     page,
-    screen
+    screen,
+    type
     }) => {
         const [isUpdating, setIsUpdating] = useState(false)
         const [uid, setUid] = useState('')
@@ -59,10 +62,10 @@ const Card = ({
         const [homeScreen, setHomeScreen] = useState(false)
         const [editModalVisible, setEditModalVisible] = useState(false)
         const [infoVisible, setInfoVisible] = useState(false)
-        // const [unreadComments, setUnreadComments] = useState(false)
 
+       
+        
         useEffect(() => {
-
             if(screen==='home'){
                 setHomeScreen(true)
             }
@@ -295,6 +298,7 @@ const Card = ({
                     page:page,
                     deptId: deptId,
                     grpId: grpId,
+                    type: type
                     }).then(()=>{
                         Alert.alert('Success!','Post Saved Successfully')
                         setKebabModalVisible(false)
@@ -374,7 +378,10 @@ const Card = ({
                 if(values.images.length>0){
                     uploadImage(values)
                 }
-                if(values.images.length===0){
+                if(values.files.length>0){
+                    uploadFile(values)
+                }
+                if(values.images.length===0 && values.files.length===0){
                     setEditModalVisible(false)
                     if(values.title!=='' || values.description!==''){
                         Alert.alert('Success!', 'Post Successfully Updated!')
@@ -392,7 +399,10 @@ const Card = ({
                 if(values.images.length>0){
                     uploadImage(values)
                 }
-                if(values.images.length===0){
+                if(values.files.length>0){
+                    uploadFile(values)
+                }
+                if(values.images.length===0 && values.files.length===0){
                     setEditModalVisible(false)
                     if(values.title!=='' || values.description!==''){
                         Alert.alert('Success!', 'Post Successfully Updated!')
@@ -422,6 +432,11 @@ const Card = ({
                                         savedPosts.doc(doc.id).update({postContents:updatedPostContents})
                                     }
                                 }
+                                if(values.files.length>0){
+                                    if(updatedPostContents){
+                                        savedPosts.doc(doc.id).update({postContents:updatedPostContents})
+                                    }
+                                }
                                 
                             }
                         })
@@ -429,6 +444,12 @@ const Card = ({
                 })
             })
         }
+
+
+        const handleDownload= async (item)=>{
+            Linking.openURL(item.uri);
+        }
+    
 
     
 
@@ -485,6 +506,85 @@ const Card = ({
                             }
                             else{
                                 uris.push({uri:downloadUrl, id:random_id, type:'video'})
+                            }
+                            
+                            if (count === limit){ 
+                                
+                                const updatedPostContents = postContents.concat(uris)
+                                if(deptId!==''){
+                                    const departPost = firebase.firestore().collection('departments').doc(deptId).collection('posts').doc(id)
+                                    departPost.update({postContents:updatedPostContents})
+                                }
+                                else if(grpId!==''){
+                                    const groupPost = firebase.firestore().collection('groups').doc(grpId).collection('posts').doc(id)
+                                    groupPost.update({postContents:updatedPostContents})
+                                }  
+                                updateInSavedPosts(values, updatedPostContents)
+                                
+                                setIsUpdating(false) 
+                                setEditModalVisible(false)  
+                                Alert.alert('Success!', 'Post Successfully Updated!')
+                            }
+                        })
+                    }
+                    );
+                })
+            }
+        }
+
+        // file uploader from edit modal
+        const uploadFile= async (values)=>{
+            // ----------uploading to storage-----------     
+            var uris = []
+            var count = 0;
+            var limit = values.files.length;
+            if(limit + postContents.length >4){
+                Alert.alert('Error!','A post cannot have more than 4 images/videos.')
+            }
+            else{
+                await values.files.forEach( async (file)=>{
+                    
+                    const random_id = uuidv4();
+                    const extension = file.split('.').pop();
+                    
+                    const blob = await new Promise((resolve,reject)=>{
+                        const xhr = new XMLHttpRequest();
+                        xhr.onload = function(){
+                            resolve(xhr.response);
+                        };
+                        xhr.onerror = function(){
+                            reject(new TypeError('Network request failed'));
+                        };
+                        xhr.responseType = 'blob';
+                        xhr.open('GET', file, true);
+                        xhr.send(null);
+        
+                    });
+                   
+                    const fileRef = storageRef.child(`files/${random_id+'.'+extension}`)
+                    const snapshot = fileRef.put(blob)
+                    snapshot.on(firebase.storage.TaskEvent.STATE_CHANGED, 
+                        (snapshot)=>{
+                        console.log(snapshot.state);
+                        console.log('progress:' + (snapshot.bytesTransferred / snapshot.totalBytes)*100);
+                        setIsUpdating(true)
+                    },
+                    (error)=>{
+                        setIsUpdating(false)
+                        console.log(error);
+                        blob.close()
+                        return
+                    },
+                    ()=>{
+                        fileRef.getDownloadURL().then((downloadUrl)=>{
+                            count= count+1;
+                            blob.close();
+                            let extensions = ['pdf','docx','odt','rtf','txt','wpd','doc']
+                            if (extensions.includes(extension)){
+                                uris.push({uri:downloadUrl, id:random_id, type:'text', ext:extension})
+                            }
+                            else{
+                                uris.push({uri:downloadUrl, id:random_id, type:'others', ext:extension})
                             }
                             
                             if (count === limit){ 
@@ -695,7 +795,7 @@ const Card = ({
                         <Header headerText="Edit Post" />
                         <View style={styles.editForm}>
                             <Formik
-                                initialValues={{title:'', description:'', postContents:postContents, images:[]}}
+                                initialValues={{title:'', description:'', postContents:postContents, images:[], files:[]}}
                                 onSubmit={(values)=>{
                                     handleSubmit(values)
                                 }}
@@ -706,10 +806,15 @@ const Card = ({
                                         <MaterialCommunityIcons name="information-outline" size={24} color="#999999" />
                                     </TouchableOpacity>
                                     {infoVisible && <View style={styles.infoContainer}>
-                                        <Text style={styles.editNote}>Note: You can only add images/videos from here and cannot delete existing ones. Also, maximum number of images/ videos per post is 4.</Text>
+                                        {type==='photo/Video'? 
+                                            <Text style={styles.editNote}>Note: You can only add images/videos from here and cannot delete existing ones. Also, maximum number of images/ videos per post is 4.</Text>
+                                        :
+                                            <Text style={styles.editNote}>Note: You can only add files from here and cannot delete existing ones. Also, maximum number of files per post is 4.</Text>
+                                        }
                                     </View>}
                                     
-                                    <AppFormImagePicker name="images"/>
+                                    {type==='photo/Video'? <AppFormImagePicker name="images"/>: <AppFormFilePicker name="files" />}
+                                    
                                     <Label style = {styles.label}> Title</Label>
                                     <AppFormField 
                                         maxLength = {255}
@@ -811,6 +916,7 @@ const Card = ({
                     
                 </View>
 
+                {type==='photo/Video' ? 
                    <FlatList 
                         key={keyy}
                         data={postContents}
@@ -845,6 +951,35 @@ const Card = ({
                                 </TouchableWithoutFeedback>)
                         }}
                    />
+                   : 
+                   <FlatList 
+                        style={styles.filesList}
+                        key={keyy}
+                        data={postContents}
+                        numColumns={1}
+                        keyExtractor={(item)=>{return item.id}}
+                        renderItem={({item})=>{
+                        return (
+                           <TouchableOpacity onPress={()=>{handleDownload(item)}}>
+
+                                {item.ext==='pdf' || item.ext==='docx' ? 
+                                    <View style={styles.fileBlock}>
+                                        {item.ext==='pdf' && <FontAwesome name="file-pdf-o" size={24} color={colors.red} />}
+                                        {item.ext==='docx' && <FontAwesome name="file-text" size={24} color={colors.pleasantBlue} />}   
+                                        {item.ext!==''?<Text style={styles.filesText}>{item.id+'.'+item.ext}</Text> : <Text style={styles.filesText}>{item.id+'.txt'}</Text> }
+                                    </View>
+                                :
+                                    <View style={styles.fileBlock}>
+                                        <FontAwesome name="file-o" size={24} color="black" />  
+                                        {item.ext!==''?<Text style={styles.filesText}>{item.id+'.'+item.ext}</Text> : <Text style={styles.filesText}>{item.id+'.txt'}</Text> }
+                                    </View>
+                                }
+                                
+                           </TouchableOpacity>)
+                        }}
+                    />
+                }
+                   
             
                 <View style={styles.interactionWrapper}>
                     <View style={styles.interaction} >
@@ -871,6 +1006,20 @@ const Card = ({
 export default Card
 
 const styles = StyleSheet.create({
+    filesList:{
+        marginTop:10,
+        marginLeft:5
+    },
+    fileBlock:{
+        flex:1,
+        flexDirection:'row',
+        paddingVertical:5,
+        paddingHorizontal:15
+    },
+    filesText:{
+        marginLeft:12,
+        marginTop:4
+    },
    
     editNote:{
         marginBottom:20,
@@ -1037,6 +1186,7 @@ const styles = StyleSheet.create({
     },
     contentWrapper:{
         paddingHorizontal: 12,
+        marginLeft:2,
         paddingTop:10,
     },
     modalView:{

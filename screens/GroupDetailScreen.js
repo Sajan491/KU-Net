@@ -343,6 +343,7 @@ const GroupDetailScreen = ({route, navigation}) => {
                             commentsCount={item.comments.length}
                             page={item.page}
                             screen = 'home'
+                            type={item.type}
                         />
                     )}
 
@@ -365,7 +366,6 @@ const styles = StyleSheet.create({
     groupContainer: {
         margin: 10,
         height: windowHeight,
-        backgroundColor: "#fff",
         flex: 1,
         borderRadius: 10,
     },

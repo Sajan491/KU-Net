@@ -48,8 +48,11 @@
     "styled-components": "^5.3.0",
     "uuid": "^3.4.0",
     "yup": "^0.32.9",
-    "expo-av": "~8.7.0",
-    "expo-document-picker": "~8.4.1"
+    "expo-document-picker": "~8.4.1",
+    "expo-file-system": "~9.3.0",
+    "expo-media-library": "~10.0.0",
+    "expo-linking": "~2.0.1",
+    "expo-web-browser": "~8.6.0"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
