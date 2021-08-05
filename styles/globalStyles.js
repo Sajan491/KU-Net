@@ -18,9 +18,10 @@ export const groupStyles = StyleSheet.create({
         borderBottomWidth: 0.7,
         borderColor: colors.secondary,
         borderWidth: 0.5,
-        // borderRadius: 20,
+        borderRadius: 5,
         marginBottom: 5,
-        backgroundColor: colors.white
+        backgroundColor: colors.white,
+        
     },
    channelName: {
        marginTop: 30,

@@ -51,7 +51,7 @@ const HelpScreen = ({navigation, route}) => {
     }
 
     return (
-        <Screen>
+        <Screen style={styles.screen}>
             <View style={styles.container}>
                {!fromHS 
                ? (<View>
@@ -66,6 +66,8 @@ const HelpScreen = ({navigation, route}) => {
 
                 }
                 <FlatList
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
                     data = {guidelinesData}
                     keyExtractor = {(item) => item.id.toString()}
                     renderItem = {({item}) => (
@@ -89,6 +91,10 @@ const HelpScreen = ({navigation, route}) => {
 export default HelpScreen
 
 const styles = StyleSheet.create({
+    screen:{
+        marginTop:30,
+        padding:10
+    },
     submitText:{
         fontSize:15,
         fontWeight:'bold',
@@ -115,17 +121,17 @@ const styles = StyleSheet.create({
     button:{
         flexDirection:'row',
         justifyContent:'center',
-        alignSelf: "center",
+        alignSelf:'center',
         padding:15,
         backgroundColor:colors.secondary,
         borderTopColor:'#fff',
         borderTopWidth:0.8,
-        borderRadius:15,
+        borderRadius:8,
         width: "90%",
         marginTop: 5
     },  
     container:{
-        alignItems:'center',
+     
         padding:20,
         flex: 1
     },

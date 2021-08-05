@@ -198,7 +198,7 @@ const AddPostScreen = ({navigation}) => {
                             value={values.title || ''}
                         />
                         <AppFormField 
-                            maxLength={255}
+                            maxLength={2555}
                             multiline
                             numberOfLines={4}
                             name="description"
