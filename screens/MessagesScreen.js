@@ -20,8 +20,10 @@ const MessagesScreen = ({navigation}) => {
     const userID = firebase.auth().currentUser.uid;
 
     useEffect( () => {
-        getData();
-    }, [groups, department])
+        // getGroups();
+        getEnrolledGroups();
+        getCurrentDepartment();
+    }, [])
     
     // const getGroups = () => {
     //     firebase.firestore().collection("groups").get().then((docs)=> {
@@ -34,17 +36,12 @@ const MessagesScreen = ({navigation}) => {
     //     })
     // }
 
-    const getData = () => {
-        getEnrolledGroups();
-        getCurrentDepartment();
-        setLoading(false);
-    }
-
     const getEnrolledGroups =  () => {
         usersDB.doc(userID).get().then((doc) => {
-          if(doc.exists) {
+          if(doc.data()['groups'] !== undefined) {
               const groupArr = doc.data()['groups']
               setGroups(groupArr)
+              setLoading(false)
            } else{
                usersDB.doc(userID).update({
                    groups: []
@@ -56,15 +53,16 @@ const MessagesScreen = ({navigation}) => {
    }
 
    const getCurrentDepartment = () => {
-       usersDB.doc(userID).get().then((doc) => {
-            if(doc.exists) {
-                const myDepartment = doc.data()['department']
-                setDepartment(myDepartment)
-            }
-       }).catch((err) => {
-           console.log(err.message);
-       })
-   }
+    usersDB.doc(userID).get().then((doc) => {
+         if(doc.exists) {
+             const myDepartment = doc.data()['department']
+             setDepartment(myDepartment)
+             setLoading(false);
+         }
+    }).catch((err) => {
+        console.log(err.message);
+    })
+}
 
 
     
@@ -75,9 +73,8 @@ const MessagesScreen = ({navigation}) => {
         <View style= {styles.container}>
             <Header headerText="Chat" />
             <AppText style={{color: colors.secondary, textAlign: "center", marginBottom: 5}}> Tap on the channel to join the chat!</AppText>
-           
-           {department.length !== 0
-            ? <>
+
+            <>
                 <Text style = {styles.title}> My Department </Text>
                         <TouchableOpacity onPress = {() => navigation.navigate("Chat", department)}>
                                 <View style = {styles.content}>
@@ -88,10 +85,8 @@ const MessagesScreen = ({navigation}) => {
                             </TouchableOpacity>
 
              </>
-             : null }
 
-            {groups.length !== 0
-            ? <>
+             <>
                     <Text style = {styles.title}> My Groups</Text>
                     <FlatList 
                         data = {groups}
@@ -107,11 +102,9 @@ const MessagesScreen = ({navigation}) => {
                                     </View>
                                 </TouchableOpacity>
                         )}
-                        />
-                </>
-                : null}
-
-        </View>
+                   />
+            </>
+            </View>
     )
 }
 
