@@ -13,7 +13,7 @@ const ListItem = (props) => {
                 onPress={props.onPress}
             >
                 <View style={styles.userContainer}>
-                    {props.image? <Image style={styles.image} source={props.image} /> : props.IconComponent}
+                    {props.image? <Image style={styles.image} source={{ uri: props.image}} /> : props.IconComponent}
                     
                     <View style={styles.textContainer}>
                         <AppText style={styles.title} numberOfLines={1}>{props.title}</AppText>

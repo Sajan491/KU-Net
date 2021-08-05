@@ -15,6 +15,7 @@ const UserProfileScreen = ({navigation}) => {
     const userId = firebase.auth().currentUser.uid;
 
     useEffect(() => {
+        console.log(userData);
         const subscriber = firebase.firestore().collection("users_extended").doc(userId).onSnapshot((documentSnapshot) => {
             console.log("User data: ", documentSnapshot.data());
             setUserData(documentSnapshot.data());
@@ -33,7 +34,7 @@ const UserProfileScreen = ({navigation}) => {
                 showsVerticalScrollIndicator = {false}    
             >
                 <Image 
-                    source = {require("../assets/sajan.png")} 
+                    source = { userData ? { uri: userData.profilePic} : require("../assets/sajan.png")} 
                     style = {styles.userImg} 
                 />
 

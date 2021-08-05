@@ -134,9 +134,9 @@ const styles = StyleSheet.create({
         top: 28
     },
     passwordContainer :{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-evenly",
+        // display: "flex",
+        // flexDirection: "row",
+        // justifyContent: "space-evenly",
         },
     logo: {
         alignSelf: "center",
