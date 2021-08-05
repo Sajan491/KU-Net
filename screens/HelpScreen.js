@@ -72,7 +72,9 @@ const HelpScreen = ({navigation, route}) => {
                         <View style = {styles.guidelines}>
                             <Text style = {styles.title}> {item.id}. {item.title} </Text>
                             <Text style = {styles.desc}> {item.desc} </Text>
-                            <Image source = {item.image} style ={styles.img} />
+                            <View style = {{marginLeft: -40}}>
+                                <Image source = {item.image} style ={styles.img} />
+                            </View>
                         </View>
                     )}
                     ListFooterComponent = {
@@ -121,8 +123,9 @@ const styles = StyleSheet.create({
         borderTopColor:'#fff',
         borderTopWidth:0.8,
         borderRadius:15,
-        width: "90%",
-        marginTop: 5
+        width: "80%",
+        marginTop: 5,
+        marginRight: 40
     },  
     container:{
         alignItems:'center',

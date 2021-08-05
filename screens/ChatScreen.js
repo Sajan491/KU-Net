@@ -84,7 +84,6 @@ const ChatScreen = ({route}) => {
         scrollToBottom
         scrollToBottomComponent = {scrollToBottomComponent}
         renderUsernameOnMessage = {true}
-        renderOwn
         user={{
           _id: user?.uid,
           name: user?.displayName
