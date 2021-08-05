@@ -241,7 +241,7 @@ const GroupDetailScreen = ({route, navigation}) => {
                                     </View>
                             </TouchableOpacity>
                             <TouchableOpacity style = {styles.kebabItem} onPress = {showAlert}>
-                                <Ionicons name = "exit" size = {20} />
+                                <Ionicons name = "exit" size = {20} color = {colors.danger}/>
                                     <View >
                                         <Text style = {styles.leaveGroupText}> Leave Group</Text>
                                         <Text style = {styles.leaveTextDetails}> Click to leave the group</Text>

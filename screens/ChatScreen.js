@@ -6,10 +6,14 @@ import {GiftedChat, Bubble} from "react-native-gifted-chat";
 import { FontAwesome } from '@expo/vector-icons';
 import {AuthContext} from "../context/AuthProvider";
 import firebase from "../config/firebase";
+import Loading from "../components/Loading";
+
 const ChatScreen = ({route}) => {
     const {id,abbr, value, label} = route.params;
     const {user} = useContext(AuthContext);
     const [messages, setMessages] = useState([]);
+    const [loading, setLoading] = useState(true);
+
    const docID = (abbr || label) +"-"+ (id || value)
 
     useLayoutEffect(() => {
@@ -24,6 +28,7 @@ const ChatScreen = ({route}) => {
       user: doc.data().user,
       }))
       ));
+      setLoading(false);
       return unsubscribe;
       }, [])
 
@@ -67,15 +72,19 @@ const ChatScreen = ({route}) => {
         )
     }
     
+    if(loading) {
+      return <Loading />
+    }
     return (
        <GiftedChat
         messages={messages}
-        // showAvatarForEveryMessage = {true}
+        showAvatarForEveryMessage = {true}
         onSend={messages => onSend(messages)}
         alwaysShowSend
         scrollToBottom
         scrollToBottomComponent = {scrollToBottomComponent}
         renderUsernameOnMessage = {true}
+        renderOwn
         user={{
           _id: user?.uid,
           name: user?.displayName
