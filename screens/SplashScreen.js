@@ -3,7 +3,7 @@ import React from 'react'
 import { Button, StyleSheet, Text, View, ImageBackground, Image, TouchableOpacity } from 'react-native'
 const SplashScreen = ({navigation}) => {
     return (
-        <ImageBackground blurRadius={5} style={styles.background}   >
+        <View style={styles.background}>
             <View style={styles.logoContainer}>
                 <Image style={styles.logo} source={require('../assets/appLogo.png')} />
                 <Text style={styles.title}>Welcome To KU-Net!</Text>
@@ -13,7 +13,7 @@ const SplashScreen = ({navigation}) => {
                 <TouchableOpacity style={[ {backgroundColor:colors.secondary},styles.button]} title='Register' onPress={()=>navigation.navigate('Register')}><Text style = {styles.text}>Register</Text></TouchableOpacity>
             </View>
             
-        </ImageBackground>
+        </View>
     )
 }
 
@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
     background:{
         flex:1,
         justifyContent: 'flex-end',
-        alignItems: 'center'
+        alignItems: 'center',
+        // backgroundColor:'#d5f2f5'
     },
     buttonContainer:{
         paddingTop:20,
@@ -33,7 +34,8 @@ const styles = StyleSheet.create({
     logoContainer:{
         position:'absolute',
         top: 25,
-        alignItems:'center'
+        alignItems:'center',
+        marginTop:90
     },
     
     // logo:{

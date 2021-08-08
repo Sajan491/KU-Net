@@ -78,7 +78,7 @@ const SavedPostsScreen = () => {
                             userImg={item.userImg}
                             postTime= {item.postTime}
                             page={item.page}
-                            screen = 'savedPosts'
+                            screen = 'save'
                             type={item.type}
                         />
                     )}

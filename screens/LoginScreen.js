@@ -77,11 +77,11 @@ const LoginScreen = ({navigation}) => {
                         }
                     </View>
 
-
                     <SubmitButton title = "Login" />
                     {
                         error ? <Text style={styles.errorMessage}> {error} </Text> : null
                     }
+                    
                 </AppForm>
     
             <TouchableOpacity style={styles.navBtn} onPress={() => navigation.navigate("ForgotPassword")}> 
@@ -134,9 +134,9 @@ const styles = StyleSheet.create({
         top: 28
     },
     passwordContainer :{
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-evenly",
+        // display: "flex",
+        // flexDirection: "row",
+        // justifyContent: "space-evenly",
         },
     logo: {
         alignSelf: "center",

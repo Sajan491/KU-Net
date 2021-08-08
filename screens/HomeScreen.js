@@ -7,6 +7,7 @@ import colors from "../config/colors";
 import GroupLogoWithTitle from '../components/GroupLogoWithTitle';
 import Constants from 'expo-constants'
 import firebase from "../config/firebase";
+import NotifButton from '../navigation/NotifButton';
 
 const usersCollection = firebase.firestore().collection("users_extended")
 
@@ -96,7 +97,7 @@ const HomeScreen = ({navigation}) => {
             <View style={styles.container}>
                 <View  style={styles.header} >
                     <Text style={styles.headerText}>Home</Text>
-                    {/* <NotifButton style={styles.notifButton} onPress={()=>navigation.navigate("Notifications")}/> */}
+                    {/* <NotifButton style={styles.notifButton} onPress={()=>navigation.navigate("Admin")}/> */}
                 </View>
                 {/* <View  style={styles.notifCount}>
                     <Text style={styles.notifCountText}>1</Text>
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
     container:{
         backgroundColor:colors.light,
         paddingHorizontal:17,
-        paddingTop:20,
+        paddingTop:10,
         flex:1,
      
     },

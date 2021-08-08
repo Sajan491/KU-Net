@@ -11,6 +11,7 @@ import firebase from "../config/firebase";
 
 const menuItems = [
     
+    
     {
         title: "Profile",
         icon: {
@@ -53,19 +54,30 @@ const delay = (timeout)  => {
     })
 }
 
+const usersCollection = firebase.firestore().collection("users_extended")
 
 
 const AccountScreen = ({navigation}) => {
     const {user, signOut} = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const userId = firebase.auth().currentUser.uid;
+    const [userIsAdmin, setUserIsAdmin] = useState(false)
 
+    const getAdminStatus = async ()=>{
+        await usersCollection.doc(userId).get().then((usr)=>{
+            if(usr.data()['isAdmin'] !== undefined){
+                if(usr.data()['isAdmin']===true){
+                    setUserIsAdmin(true)
+                }
+            }
+            
+        }).catch((error)=>{
+            console.log(error)
+        })
+    }
     useEffect(() => {
-        const subscriber = firebase.firestore().collection("users").doc(userId).onSnapshot((documentSnapshot) => {
-            console.log("User data: ", documentSnapshot.data());
-        });
-        return () => subscriber();
-    }, [userId])
+        getAdminStatus()
+    }, [])
 
     
 
@@ -97,7 +109,17 @@ const AccountScreen = ({navigation}) => {
                     />
                 </View>
                 <View style={styles.container}>
+                    {userIsAdmin && <View style={{marginBottom:10}}>
+                        <ListItem 
+                            title="Admin Control"
+                            IconComponent={
+                                <MyIcon name='wrench' backgroundColor={colors.secondary}/>
+                            }wrench
+                            onPress={()=>navigation.navigate("Admin")}
+                        />
+                    </View>}
                     <FlatList 
+                        
                         data={menuItems}
                         keyExtractor={(menuItem)=> menuItem.title}
                         ItemSeparatorComponent={ItemSeperator}
@@ -136,7 +158,7 @@ const styles = StyleSheet.create({
     ,screen:{
         backgroundColor:colors.light,
         paddingHorizontal:17,
-        paddingTop:20,
+        paddingTop:10,
         flex:1,
         marginTop:-10
 

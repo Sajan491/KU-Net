@@ -8,8 +8,7 @@ export const groupStyles = StyleSheet.create({
         flex:1,
     },
     channelImage: {
-        marginTop: 20,
-        marginBottom: 20,
+        paddingVertical:20,
         marginLeft: 20
     },
     content: {

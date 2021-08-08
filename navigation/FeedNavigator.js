@@ -4,7 +4,6 @@ import PostDetailScreen from "../screens/PostDetailScreen";
 import GroupDetailScreen from "../screens/GroupDetailScreen";
 import HomeScreen from "../screens/HomeScreen";
 
-import NotificationsScreen from "../screens/NotificationsScreen";
 import CommentsScreen from "../screens/CommentsScreen";
 
 const Stack = createStackNavigator();
@@ -24,8 +23,8 @@ const FeedNavigator=()=>(
                     // headerLeft:null,
                 })}
             />
-            <Stack.Screen name="Post Detail" component={PostDetailScreen}/>
-            <Stack.Screen name="Notifications" component={NotificationsScreen}/>
+            {/* <Stack.Screen name="Post Detail" component={PostDetailScreen}/> */}
+            
               <Stack.Screen name="GroupDetails" component={GroupDetailScreen} options= {({route}) => ({
                   title: route.params.abbr,
                   headerTitleAlign: "center"

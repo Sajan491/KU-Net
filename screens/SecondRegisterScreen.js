@@ -165,7 +165,8 @@ const styles = StyleSheet.create({
         paddingTop:30
     },
     container:{
-        padding:20
+        padding:20,
+        marginTop:20
     },
     inputGroup: {
         flex: 1,

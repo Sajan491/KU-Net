@@ -60,14 +60,23 @@ const Card = ({
         const [postUser, setPostUser] = useState('')
         const [sameUser, setSameUser] = useState(false)
         const [homeScreen, setHomeScreen] = useState(false)
+        const [saveScreen, setSaveScreen] = useState(false)
+        const [adminScreen, setAdminScreen] = useState(false)
         const [editModalVisible, setEditModalVisible] = useState(false)
         const [infoVisible, setInfoVisible] = useState(false)
-
+        const [posterId, setPosterId] = useState('')
+        const [userIsAdmin, setUserIsAdmin] = useState(false)
        
         
         useEffect(() => {
             if(screen==='home'){
                 setHomeScreen(true)
+            }
+            else if(screen==='save'){
+                setSaveScreen(true)
+            }
+            else if(screen==='admin'){
+                setAdminScreen(true)
             }
             
             const fetchData=()=>{
@@ -75,7 +84,11 @@ const Card = ({
                 setUid(userID)
                 var username;
                 usersCollection.doc(userID).get().then((usr)=>{
-                    
+                    if(usr.data()['isAdmin'] !== undefined){
+                        if(usr.data()['isAdmin']===true){
+                            setUserIsAdmin(true)
+                        }
+                    }
                     setUserName(usr.data()['username'])
                     username = usr.data()['username']
                     if(usr.data()['profilePic']){
@@ -743,37 +756,84 @@ const Card = ({
                         <View style={styles.modalButton}>
                             <Button title='X' onPress={()=>setKebabModalVisible(false)} />
                         </View>
-                        {homeScreen? <>
-                            <TouchableOpacity style={styles.kebabOneItem} onPress={handleSavePost}>
-                                <MaterialCommunityIcons name="content-save" size={30} color="black" />
-                                <View style={styles.kebabText}>
-                                    <Text style={styles.kebabTitle}>Save</Text>
-                                    <Text style={styles.kebabDetail}>Add this post to your saved items.</Text>
-                                </View> 
-                            </TouchableOpacity>
-                            {sameUser && <>
-                            <TouchableOpacity style={styles.kebabOneItem} onPress={handleEditPost}>
-                                <MaterialCommunityIcons name="square-edit-outline" size={30} color="black" />
-                                <View style={styles.kebabText}>
-                                    <Text style={styles.kebabTitle}>Edit</Text>
-                                    <Text style={styles.kebabDetail}>Make changes to the current post.</Text>
-                                </View> 
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.kebabOneItem} onPress={onPressDelete}>
+                        {homeScreen &&
+                            <>
+                                <TouchableOpacity style={styles.kebabOneItem} onPress={handleSavePost}>
+                                    <MaterialCommunityIcons name="content-save" size={30} color="black" />
+                                    <View style={styles.kebabText}>
+                                        <Text style={styles.kebabTitle}>Save</Text>
+                                        <Text style={styles.kebabDetail}>Add this post to your saved items.</Text>
+                                    </View> 
+                                </TouchableOpacity>
+                                {userIsAdmin && <TouchableOpacity style={styles.kebabOneItem} onPress={onPressDelete}>
+                                    <MaterialCommunityIcons name="delete-forever" size={30} color="black" />
+                                    <View style={styles.kebabText}>
+                                        <Text style={styles.kebabTitle}>Delete</Text>
+                                        <Text style={styles.kebabDetail}>Delete this post.</Text>
+                                    </View> 
+                                </TouchableOpacity>}
+                                {sameUser && <>
+                                <TouchableOpacity style={styles.kebabOneItem} onPress={handleEditPost}>
+                                    <MaterialCommunityIcons name="square-edit-outline" size={30} color="black" />
+                                    <View style={styles.kebabText}>
+                                        <Text style={styles.kebabTitle}>Edit</Text>
+                                        <Text style={styles.kebabDetail}>Make changes to the current post.</Text>
+                                    </View> 
+                                </TouchableOpacity>
+                                {!userIsAdmin && <TouchableOpacity style={styles.kebabOneItem} onPress={onPressDelete}>
+                                    <MaterialCommunityIcons name="delete-forever" size={30} color="black" />
+                                    <View style={styles.kebabText}>
+                                        <Text style={styles.kebabTitle}>Delete</Text>
+                                        <Text style={styles.kebabDetail}>Delete this post.</Text>
+                                    </View> 
+                                </TouchableOpacity>}</>}
+                            </>
+                        }
+                        {saveScreen &&
+                            <>
+                                <TouchableOpacity style={styles.kebabOneItem} onPress={handleUnsavePost}>
                                 <MaterialCommunityIcons name="delete-forever" size={30} color="black" />
                                 <View style={styles.kebabText}>
-                                    <Text style={styles.kebabTitle}>Delete</Text>
-                                    <Text style={styles.kebabDetail}>Delete this post.</Text>
+                                    <Text style={styles.kebabTitle}>Unsave</Text>
+                                    <Text style={styles.kebabDetail}>Unsave this post.</Text>
                                 </View> 
-                            </TouchableOpacity></>}
-                        </>:
-                            <TouchableOpacity style={styles.kebabOneItem} onPress={handleUnsavePost}>
-                            <MaterialCommunityIcons name="delete-forever" size={30} color="black" />
-                            <View style={styles.kebabText}>
-                                <Text style={styles.kebabTitle}>Unsave</Text>
-                                <Text style={styles.kebabDetail}>Unsave this post.</Text>
-                            </View> 
-                            </TouchableOpacity>
+                                </TouchableOpacity>
+                                {userIsAdmin && <TouchableOpacity style={styles.kebabOneItem} onPress={onPressDelete}>
+                                    <MaterialCommunityIcons name="delete-forever" size={30} color="black" />
+                                    <View style={styles.kebabText}>
+                                        <Text style={styles.kebabTitle}>Delete</Text>
+                                        <Text style={styles.kebabDetail}>Delete this post.</Text>
+                                    </View> 
+                                </TouchableOpacity>}
+                                
+                            </>
+                        }
+                            
+                        {adminScreen&&
+                            <>
+                            <TouchableOpacity style={styles.kebabOneItem} onPress={handleSavePost}>
+                                    <MaterialCommunityIcons name="content-save" size={30} color="black" />
+                                    <View style={styles.kebabText}>
+                                        <Text style={styles.kebabTitle}>Save</Text>
+                                        <Text style={styles.kebabDetail}>Add this post to your saved items.</Text>
+                                    </View> 
+                                </TouchableOpacity>
+                                {sameUser && <>
+                                <TouchableOpacity style={styles.kebabOneItem} onPress={handleEditPost}>
+                                    <MaterialCommunityIcons name="square-edit-outline" size={30} color="black" />
+                                    <View style={styles.kebabText}>
+                                        <Text style={styles.kebabTitle}>Edit</Text>
+                                        <Text style={styles.kebabDetail}>Make changes to the current post.</Text>
+                                    </View> 
+                                </TouchableOpacity></>}
+                                <TouchableOpacity style={styles.kebabOneItem} onPress={onPressDelete}>
+                                    <MaterialCommunityIcons name="delete-forever" size={30} color="black" />
+                                    <View style={styles.kebabText}>
+                                        <Text style={styles.kebabTitle}>Delete</Text>
+                                        <Text style={styles.kebabDetail}>Delete this post.</Text>
+                                    </View> 
+                                </TouchableOpacity>
+                            </>
                         }
                         
                     </View>
@@ -1061,6 +1121,8 @@ const styles = StyleSheet.create({
         flexDirection:'column'
     },
     kebabOneItem:{
+        minHeight:40,
+        maxHeight:70,
         flex:1,
         flexDirection:'row',
         paddingLeft:20,

@@ -103,7 +103,7 @@ export default ThirdRegisterScreen
 
 const styles = StyleSheet.create({
     screen:{
-        marginTop:20
+        marginTop:30
     },
     submitText:{
         fontSize:15,

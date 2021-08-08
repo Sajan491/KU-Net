@@ -298,9 +298,9 @@ const GroupDetailScreen = ({route, navigation}) => {
                         <>
                         <View style>
                             <View style = {styles.groupInfo}>
-                                <Image source = {require("../assets/groups/ku.png")} style = {styles.detailImage} resizeMode = {'contain'} />
-                                <AppText> {group.title} </AppText>
-                                <Caption> {group.about} </Caption>
+                                <Image source = {require("../assets/groups/kucc.png")} style = {styles.detailImage} resizeMode = {'contain'} />
+                                {/* <AppText> {group.title} </AppText> */}
+                                <Caption style={styles.about}> {group.about} </Caption>
                                 
                                 { isAMember
                                     ? (<View>
@@ -359,6 +359,9 @@ const GroupDetailScreen = ({route, navigation}) => {
 export default GroupDetailScreen
 
 const styles = StyleSheet.create({
+    about:{
+        marginTop:20
+    },
     detailImage: {
         height: windowHeight/6,
         width: windowWidth
@@ -368,6 +371,7 @@ const styles = StyleSheet.create({
         height: windowHeight,
         flex: 1,
         borderRadius: 10,
+        padding:10
     },
     groupInfo: {
         justifyContent: "center",
