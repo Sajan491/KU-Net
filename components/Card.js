@@ -39,7 +39,8 @@ const Card = ({
     postTime,
     page,
     screen,
-    type
+    type,
+    navigation
     }) => {
         const [isUpdating, setIsUpdating] = useState(false)
         const [uid, setUid] = useState('')
@@ -62,10 +63,12 @@ const Card = ({
         const [homeScreen, setHomeScreen] = useState(false)
         const [editModalVisible, setEditModalVisible] = useState(false)
         const [infoVisible, setInfoVisible] = useState(false)
+        const [postUserID, setPostUserID] = useState("")
 
        
         
         useEffect(() => {
+            console.log(postUserID);
             if(screen==='home'){
                 setHomeScreen(true)
             }
@@ -91,6 +94,7 @@ const Card = ({
  
                         let tempComments = post.data()['comments']
                         setPostUser(post.data()['userInfo'].username)
+                        setPostUserID(post.data()['userInfo']?.uid)
                         
                         setcommentsCount(tempComments.length)
                         // console.log(tempComments, "temp");c
@@ -125,6 +129,7 @@ const Card = ({
                         let postLikers = post.data()['peopleWhoLiked']
                         let tempComments = post.data()['comments']
                         setPostUser(post.data()['userInfo'].username)
+                        setPostUserID(post.data()['userInfo']?.userID)
                         setAllComments((prev) => {
                             return tempComments;
                         }) 
@@ -887,7 +892,22 @@ const Card = ({
         
         <View style={styles.card}> 
             <View style={styles.userInfo}>
-                {userImg? <Image style={styles.userImage} source={{uri:userImg}} /> : <Image style={styles.userImage} source={require("../assets/sajan.png")} />}
+                 <TouchableOpacity onPress = {() => navigation.navigate("Feed",
+                 {
+                     screen: "UserProfile",
+                         params: {
+                         postUser: postUser,
+                         postUserID: postUserID
+                     }
+                 }
+
+                 )}>
+                    {userImg
+                        ?<Image style={styles.userImage} source={{uri:userImg}} /> 
+                        : <Image style={styles.userImage} source={require("../assets/sajan.png")} />
+                        
+                    }
+                </TouchableOpacity>
                 <View style={styles.editButtonGap}>
                     <View style={styles.userInfoText}>
                         <Text style={styles.username}>{username}</Text>

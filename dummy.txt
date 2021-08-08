@@ -1,0 +1,32 @@
+We're always looking ambitious and talented young people who are passionate about making the world a better a place.
+
+
+Join the amazing community of AISEC!
+
+
+Hello everyone,
+Python Community is organizing the “Workshop on Python” on July 1, 2021 (Tomorrow) . The workshop is targeted at beginners who want to familiarize themselves with python. The topics to be covered are as follows:
+Introduction to Python
+Input/Output
+Variables and Operators
+List, Tuples, and Set
+List Comprehensions
+Dictionaries
+Type Conversions
+If Statements
+Loops
+Classes and Objects
+Inheritance
+Polymorphism and Operator Overloading
+Exception Handling
+Numpy - working with matrices
+Matplotlib - working with graphs
+Event Details
+Date: July 1, 2021.
+Time: 4:00 PM - 6:00 PM
+
+
+Please contact us to fill out the registration form before the deadline. 
+Do participate and have fun.
+
+Memories we will never forget and the family which will never depart. Thank you everyone! 

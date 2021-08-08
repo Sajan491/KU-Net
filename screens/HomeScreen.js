@@ -143,6 +143,7 @@ const HomeScreen = ({navigation}) => {
                             page={item.page}
                             screen = 'home'
                             type={item.type}
+                            navigation = {navigation}
                         />
                     )}
 

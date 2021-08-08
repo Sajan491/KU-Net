@@ -28,6 +28,7 @@ const AddPostScreen = ({navigation}) => {
     const [uploading, setUploading] = useState(false)
     const [clubs, setClubs] = useState([])
     const [userName, setUserName] = useState('')
+    const [postUserID, setPostUserID] = useState('')
     const [userPpic, setUserPpic] = useState('')
     const [infoVisible, setInfoVisible] = useState(false)
     useEffect(() => {
@@ -42,7 +43,8 @@ const AddPostScreen = ({navigation}) => {
                 data.push({label: doc.title, value:doc.id, icon:doc.icon})
             })
             setClubs(data)
-            setUserName(usr.data()['username'])
+            setUserName(usr.data()['id'])
+            setPostUserID(usr.data()['uid'])
             if(usr.data()['profilePic']){
                 setUserPpic(usr.data()['profilePic'])
             }
@@ -129,7 +131,7 @@ const AddPostScreen = ({navigation}) => {
         else{  
             if(values.page['label'] === 'My Department') {
                 values.page = dept.label;
-                values.userInfo = {username: userName, profilePic: userPpic};
+                values.userInfo = {username: userName,userID: postUserID, profilePic: userPpic};
                 departPosts.add(values).then(()=>{
                     Alert.alert('Success!','Post Added Successfully',[
                         {text: 'Continue', onPress: () => navigation.jumpTo('Feed')},
@@ -139,7 +141,7 @@ const AddPostScreen = ({navigation}) => {
             }
             else{
                 values.page=values.page['label']
-                values.userInfo = {username: userName, profilePic: userPpic};
+                values.userInfo = {username: userName, userID: postUserID, profilePic: userPpic};
                 groupPosts.add(values).then(()=>{
                     
                     Alert.alert('Success!','Post Added Successfully',[
@@ -198,7 +200,7 @@ const AddPostScreen = ({navigation}) => {
                             value={values.title || ''}
                         />
                         <AppFormField 
-                            maxLength={255}
+                            maxLength={2555}
                             multiline
                             numberOfLines={4}
                             name="description"

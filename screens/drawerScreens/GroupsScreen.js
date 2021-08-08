@@ -38,6 +38,7 @@ const GroupsScreen = ({navigation}) => {
             usersDB.doc(userID).get().then((doc) => {
                 if(doc.data()['groups'] !== undefined) {
                     const groupArr = doc.data()['groups']
+                    console.log(groupArr);
                     setEnrolledGroups(groupArr)
                 } else{
                     usersDB.doc(userID).update({
