@@ -63,7 +63,6 @@ const AccountScreen = ({navigation}) => {
     const [profilePic, setProfilePic] = useState("")
     const userId = firebase.auth().currentUser.uid;
     const [userIsAdmin, setUserIsAdmin] = useState(false)
-    const usersCollection = firebase.firestore().collection("users_extended").doc(userId)
 
     const getAdminStatus = async ()=>{
         await usersCollection.doc(userId).get().then((usr)=>{
@@ -79,7 +78,7 @@ const AccountScreen = ({navigation}) => {
     }
     useEffect(() => {
         getAdminStatus()
-        usersCollection.get()
+        usersCollection.doc(userId).get()
         .then((doc) => { 
               setProfilePic(doc.data()['profilePic'])
             }).catch ((err) => {

@@ -31,10 +31,10 @@ const AddPostScreen = ({navigation}) => {
     const [postUserID, setPostUserID] = useState('')
     const [userPpic, setUserPpic] = useState('')
     const [infoVisible, setInfoVisible] = useState(false)
-    const [uiD, setUiD] = useState('')
+    const [usersiD, setUsersiD] = useState('')
     useEffect(() => {
         const userID = firebase.auth().currentUser.uid;
-        setUiD(userID)
+        setUsersiD(userID)
         usersCollection.doc(userID).get().then((usr)=>{
             let dep = usr.data()['department']
             setDept(dep)
@@ -44,13 +44,11 @@ const AddPostScreen = ({navigation}) => {
                 data.push({label: doc.title, value:doc.id, icon:doc.icon})
             })
             setClubs(data)
-            setUserName(usr.data()['id'])
+            setUserName(usr.data()['username'])
             setPostUserID(usr.data()['uid'])
             if(usr.data()['profilePic']){
                 setUserPpic(usr.data()['profilePic'])
             }
-            
-            
         }).catch((error)=>{
             console.log(error)
         })
@@ -132,7 +130,7 @@ const AddPostScreen = ({navigation}) => {
         else{  
             if(values.page['label'] === 'My Department') {
                 values.page = dept.label;
-                values.userInfo = {username: userName, profilePic: userPpic, userId:uiD};
+                values.userInfo = {username: userName, profilePic: userPpic, usersId:usersiD};
                 departPosts.add(values).then(()=>{
                     Alert.alert('Success!','Post Added Successfully',[
                         {text: 'Continue', onPress: () => navigation.jumpTo('Feed')},
@@ -142,7 +140,7 @@ const AddPostScreen = ({navigation}) => {
             }
             else{
                 values.page=values.page['label']
-                values.userInfo = {username: userName, profilePic: userPpic, userId:uiD};
+                values.userInfo = {username: userName, profilePic: userPpic, usersId:usersiD};
                 groupPosts.add(values).then(()=>{
                     
                     Alert.alert('Success!','Post Added Successfully',[

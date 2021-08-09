@@ -65,14 +65,10 @@ const Card = ({
         const [adminScreen, setAdminScreen] = useState(false)
         const [editModalVisible, setEditModalVisible] = useState(false)
         const [infoVisible, setInfoVisible] = useState(false)
-        const [posterId, setPosterId] = useState('')
         const [userIsAdmin, setUserIsAdmin] = useState(false)
-        const [postUserID, setPostUserID] = useState("")
+        const [postUserID, setPostUserID] = useState('')
 
-       
-        
         useEffect(() => {
-            console.log(postUserID);
             if(screen==='home'){
                 setHomeScreen(true)
             }
@@ -108,7 +104,7 @@ const Card = ({
  
                         let tempComments = post.data()['comments']
                         setPostUser(post.data()['userInfo'].username)
-                        setPostUserID(post.data()['userInfo']?.uid)
+                        setPostUserID(post.data()['userInfo'].usersId)
                         
                         setcommentsCount(tempComments.length)
                         // console.log(tempComments, "temp");c
@@ -291,7 +287,7 @@ const Card = ({
 
         const handleKebabPress = () =>{
         
-            if(userName === postUser ) {
+            if(uid === postUserID ) {
                 setSameUser(true)
             }
             setKebabModalVisible(true)
