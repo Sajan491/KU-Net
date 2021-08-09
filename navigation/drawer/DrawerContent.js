@@ -138,15 +138,6 @@ const DrawerContent = (props) => {
 
             <Drawer.Section style = {styles.bottomDrawerSection} >
                 <DrawerItem 
-                     icon = {({size, color}) => (
-                        <FontAwesome name="gear" size = {size} color = {color} />
-                        )
-                    }
-                    label = "Settings"
-                    onPress = {() => signOut()  }
-                    style = {{ borderBottomColor: "#f4f4f4", borderBottomWidth: 1}}
-                />
-                <DrawerItem 
                      icon = {({size}) => (
                         <MaterialCommunityIcons name="logout" size = {size} color = {colors.danger} />
                         )
