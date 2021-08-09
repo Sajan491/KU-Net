@@ -2,40 +2,61 @@ import React, {useContext, useState, useEffect, useCallback} from 'react'
 import { Text, StyleSheet, View, ScrollView, Image, TouchableOpacity, Button, Alert } from 'react-native'
 import colors from "../config/colors";
 import Screen from "../components/Screen";
-import {AuthContext} from "../context/AuthProvider"
 import Header from '../components/Header';
 import firebase from "../config/firebase";
 import {Entypo} from "@expo/vector-icons"
 
 
 const UserProfileScreen = ({navigation, route}) => {
-    const postAuthor = route.params?.postUser
     const postAuthorID = route.params?.postUserID
-    const {user, signOut} = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [userData, setUserData] = useState([])
-    const userId = firebase.auth().currentUser.uid;
+    const currentUserId = firebase.auth().currentUser.uid;
     const [ratingCount, setRatingCount] = useState(0);
     const [canUpVote, setCanUpVote] = useState(true);
     const [canDownVote, setCanDownVote] = useState(true);
     const [sameUser, setSameUser] = useState(false)
-
+    const [userHasAlreadyUpvoted, setUserHasAlreadyUpvoted] = useState(false)
+    const [userHasAlreadyDownvoted, setUserHasAlreadyDownvoted] = useState(false)
     useEffect(() => {
-        console.log(postAuthorID, "id");
+        // console.log(postAuthorID, " post");
+        console.log(currentUserId, "current");
         getData();
-            if(postAuthor === userData.username) {
+            if(postAuthorID === currentUserId || postAuthorID === undefined) {
                 setSameUser(true)
             } else {
                 setSameUser(false);
             }
-
-            console.log(sameUser, "same?");
-    }, [userId])
+            console.log(sameUser, "same user?");
+    }, [])
 
     const getData = () => {
-            firebase.firestore().collection("users_extended").doc(userId).onSnapshot((documentSnapshot) => {
+            firebase.firestore().collection("users_extended").doc(postAuthorID || currentUserId).onSnapshot((documentSnapshot) => {
             setUserData(documentSnapshot.data())
-        })
+             })
+             firebase.firestore().collection("users_extended")
+                    .doc(postAuthorID || currentUserId).collection("ratings")
+                    .doc(postAuthorID || currentUserId).get().then((doc) =>{
+                        if(doc.exists){
+                            {setRatingCount(doc.data()['voteCount'] ) };
+                            const upVotersArr = []
+                            upVotersArr.push(doc.data()['upvoter'])
+                            {upVotersArr.length !== 0 && upVotersArr.forEach((voterID) => {
+                                if(voterID === currentUserId) {
+                                    setUserHasAlreadyUpvoted(true)
+                                }
+                            })}
+    
+                            const downVotersArr = []
+                            downVotersArr.push(doc.data()['downvoter'])
+                            {downVotersArr.length !== 0 && downVotersArr.forEach((voterID) => {
+                                if(voterID === currentUserId) {
+                                    setUserHasAlreadyDownvoted(true)
+                                }
+                            })}
+                        }
+
+             })
 
     }
 
@@ -46,6 +67,14 @@ const UserProfileScreen = ({navigation, route}) => {
         setCanUpVote(false)
         setCanDownVote(true)
         //firebase.firestore().collection(users_extended).ratings ma vote count push
+        firebase.firestore().collection("users_extended").doc(postAuthorID).collection("ratings").doc(postAuthorID).set({
+            voteCount: ratingCount+1,
+            upvoter: [currentUserId]
+        }, {
+            merge: true
+        }).then(() => {
+            console.log("Upvote added to the database");
+        })
         //enable downvote with count-=2
     }
 
@@ -55,12 +84,19 @@ const UserProfileScreen = ({navigation, route}) => {
         //disable downvote
         setCanDownVote(false)
         setCanUpVote(true)
-        //enable upvote with count+=2
+        firebase.firestore().collection("users_extended").doc(postAuthorID).collection("ratings").doc(postAuthorID).set({
+            voteCount: ratingCount-1,
+            downvoter: [currentUserId]
+        },
+            {merge: true}
+        ).then(() => {
+            console.log("Upvote added to the database");
+        })
     }
 
     return (
         <Screen style={styles.screen}>
-            <Header headerText="Profile" />
+            { !route?.params && <Header headerText="Profile" /> }
             <ScrollView
                 style = {styles.container}
                 contentContainerStyle = {{justifyContent: "center", alignItems: "center"}}
@@ -90,18 +126,18 @@ const UserProfileScreen = ({navigation, route}) => {
 
                         <View style = {{marginTop: 5, borderTopWidth: 1, borderTopColor: colors.secondary}}>
                             <Text style = {styles.userName}> Upvotes/Ratings</Text>
-                            {userData.uid !== userId  && <Text style = {styles.aboutUser}> You can only rate a user once.</Text> }
-                            {userData.uid === userId  && <Text style = {styles.aboutUser}> Your ratings based on other users' votes is</Text> }
+                            {!sameUser  && <Text style = {styles.aboutUser}> You can only rate a user once.</Text> }
+                            {sameUser && <Text style = {styles.aboutUser}> Your ratings based on other users' votes is</Text> }
                             <View style = {styles.ratingContainer}>
-                            {userData.uid !== userId && canUpVote && <TouchableOpacity onPress = {() => handlePressUpvote()}>
-                                    <Entypo name="arrow-up" size={65} color = "green"/>
-                                </TouchableOpacity> }
-                                <View style = {styles.rating}> 
-                                    <Text style={{textAlign: "center", marginRight: 15, fontSize: 80, color: "#fff"}}> {ratingCount}</Text>
-                                </View>
-                            {userData.uid !== userId && canDownVote && <TouchableOpacity onPress = {() => handlePressDownvote()}>
-                                <Entypo name="arrow-down" size={65} color = {colors.primary}/>
-                                </TouchableOpacity> }
+                                {!sameUser && canUpVote && !userHasAlreadyUpvoted && <TouchableOpacity onPress = {() => handlePressUpvote()}>
+                                        <Entypo name="arrow-up" size={65} color = "green"/>
+                                    </TouchableOpacity> }
+                                    <View style = {styles.rating}> 
+                                        <Text style={{textAlign: "center", marginRight: 15, fontSize: 80, color: "#fff"}}> {ratingCount}</Text>
+                                    </View>
+                                {!sameUser && canDownVote && !userHasAlreadyDownvoted && <TouchableOpacity onPress = {() => handlePressDownvote()}>
+                                    <Entypo name="arrow-down" size={65} color = {colors.primary}/>
+                                    </TouchableOpacity> }
                             </View>
                         </View>
 
@@ -173,8 +209,8 @@ const styles = StyleSheet.create({
       },
       rating: {
           backgroundColor: colors.secondary,
-          height: 100,
-          width: 100,
+          height: 115,
+          width: 115,
           borderRadius: 25,
           justifyContent: "center",
           alignItems: "center"
