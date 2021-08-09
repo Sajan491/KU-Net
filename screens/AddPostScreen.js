@@ -30,9 +30,10 @@ const AddPostScreen = ({navigation}) => {
     const [userName, setUserName] = useState('')
     const [userPpic, setUserPpic] = useState('')
     const [infoVisible, setInfoVisible] = useState(false)
+    const [uiD, setUiD] = useState('')
     useEffect(() => {
         const userID = firebase.auth().currentUser.uid;
-
+        setUiD(userID)
         usersCollection.doc(userID).get().then((usr)=>{
             let dep = usr.data()['department']
             setDept(dep)
@@ -129,7 +130,7 @@ const AddPostScreen = ({navigation}) => {
         else{  
             if(values.page['label'] === 'My Department') {
                 values.page = dept.label;
-                values.userInfo = {username: userName, profilePic: userPpic};
+                values.userInfo = {username: userName, profilePic: userPpic, userId:uiD};
                 departPosts.add(values).then(()=>{
                     Alert.alert('Success!','Post Added Successfully',[
                         {text: 'Continue', onPress: () => navigation.jumpTo('Feed')},
@@ -139,7 +140,7 @@ const AddPostScreen = ({navigation}) => {
             }
             else{
                 values.page=values.page['label']
-                values.userInfo = {username: userName, profilePic: userPpic};
+                values.userInfo = {username: userName, profilePic: userPpic, userId:uiD};
                 groupPosts.add(values).then(()=>{
                     
                     Alert.alert('Success!','Post Added Successfully',[

@@ -28,7 +28,6 @@ const GroupDetailScreen = ({route, navigation}) => {
     const [posts, setPosts] = useState([])
 
     useEffect(  () => {
-        console.log(group.id);
         const subscriber = usersDB
                             .doc(userID)
                             .onSnapshot((docs) => {
@@ -69,7 +68,6 @@ const GroupDetailScreen = ({route, navigation}) => {
             })
         })
         setPosts(postsArray)
-        console.log(postsArray);
     }
     
     const getGroups = async () => {
@@ -287,18 +285,17 @@ const GroupDetailScreen = ({route, navigation}) => {
             <View style = {styles.groupContainer}>
                <View style = {styles.groupContent}>
                 
-                {isAMember?
-                (<TouchableOpacity onPress = {() => {setModalOpen(true)}}>
-                    <SimpleLineIcons name = "options-vertical" size = {20}  style = {{alignSelf: "flex-end", marginRight: 10}}/>
-                </TouchableOpacity>)
-                : null }
-
                  <FlatList 
                     ListHeaderComponent = {
                         <>
+                        {isAMember?
+                        (<TouchableOpacity onPress = {() => {setModalOpen(true)}}>
+                            <SimpleLineIcons name = "options-vertical" size = {20}  style = {{alignSelf: "flex-end", marginRight: 10}}/>
+                        </TouchableOpacity>)
+                        : null }
                         <View style>
                             <View style = {styles.groupInfo}>
-                                <Image source = {require("../assets/groups/kucc.png")} style = {styles.detailImage} resizeMode = {'contain'} />
+                                <Image source = {require("../assets/groups/ku.png")} style = {styles.detailImage} resizeMode = {'contain'} />
                                 {/* <AppText> {group.title} </AppText> */}
                                 <Caption style={styles.about}> {group.about} </Caption>
                                 
@@ -352,7 +349,6 @@ const GroupDetailScreen = ({route, navigation}) => {
 
         </View>
         </Screen>
-
     ) : <Loading/>;
 }
 
