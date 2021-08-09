@@ -74,7 +74,9 @@ const HelpScreen = ({navigation, route}) => {
                         <View style = {styles.guidelines}>
                             <Text style = {styles.title}> {item.id}. {item.title} </Text>
                             <Text style = {styles.desc}> {item.desc} </Text>
-                            <Image source = {item.image} style ={styles.img} />
+                            <View style = {{marginLeft: -40}}>
+                                <Image source = {item.image} style ={styles.img} />
+                            </View>
                         </View>
                     )}
                     ListFooterComponent = {

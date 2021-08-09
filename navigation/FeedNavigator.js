@@ -5,6 +5,7 @@ import GroupDetailScreen from "../screens/GroupDetailScreen";
 import HomeScreen from "../screens/HomeScreen";
 
 import CommentsScreen from "../screens/CommentsScreen";
+import UserProfileScreen from "../screens/UserProfileScreen";
 
 const Stack = createStackNavigator();
 
@@ -30,6 +31,7 @@ const FeedNavigator=()=>(
                   headerTitleAlign: "center"
               })}/>
             <Stack.Screen name="Comments" component={CommentsScreen}/>
+            <Stack.Screen name="UserProfile" component={UserProfileScreen}/>
             
         </Stack.Navigator>
 

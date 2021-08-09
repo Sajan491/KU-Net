@@ -29,14 +29,15 @@ const ProfileSettings = ({navigation}) => {
     const [loading, setLoading] = useState(true);
     const [batch, setBatch] = useState(null);
     const [kebabModalVisible, setKebabModalVisible] = useState(false)  
-    
+    const [profilePic, setProfilePic] = useState("")
+    const user = firebase.auth().currentUser
     const userID = firebase.auth().currentUser.uid;
     const usersCollection = firebase.firestore().collection("users_extended").doc(userID)
     const departCollection = firebase.firestore().collection("departments").doc(department.value).collection("members")
 
     useEffect(() => {
         getData();
-       
+        console.log(profilePic);
     }, [])
 
     const getData =  () => {
@@ -48,6 +49,7 @@ const ProfileSettings = ({navigation}) => {
               setAge(doc.data()['age'])
               setBio(doc.data()['bio'])
               setBatch(doc.data()['batch'])
+              setProfilePic(doc.data()['profilePic'])
             }).catch ((err) => {
                 console.log("Error receiving data from the database", err);
             })
@@ -173,7 +175,7 @@ const ProfileSettings = ({navigation}) => {
             <TouchableOpacity onPress = {() => setKebabModalVisible(true)}>
                 <View style = {styles.imageContainer}>
                     <ImageBackground
-                        source = {require("../assets/sajan.png")}
+                        source = { profilePic ? { uri: profilePic} : require("../assets/sajan.png")} 
                         style = {{height: 100, width: 100, resizeMode: "contain"}}
                         imageStyle = {{borderRadius: 25}}
                     >

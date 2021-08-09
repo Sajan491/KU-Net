@@ -19,6 +19,7 @@ const DrawerContent = (props) => {
     const {user, signOut} = useContext(AuthContext);
     const [username, setUsername] = useState("");
     const [loading, setLoading] = useState(true);
+    const [profilePic, setProfilePic] = useState("")
 
     useEffect(() => {
         getEnrolledGroups();
@@ -35,6 +36,7 @@ const DrawerContent = (props) => {
          usersDB.doc(userID).get().then((doc) => {
            if(doc.data()['groups'] !== undefined) {
                const groupArr = doc.data()['groups']
+               setProfilePic(doc.data()['profilePic'])
                setGroups(groupArr)
             } else{
                 usersDB.doc(userID).update({
@@ -54,7 +56,7 @@ const DrawerContent = (props) => {
                         <View style = {{flexDirection: "row", marginTop: 15}}>
                             <TouchableOpacity onPress = {() => props.navigation.navigate("UserProfile")}>
                                 <Avatar.Image
-                                    source = {require("../../assets/sajan.png")}
+                                    source = { profilePic ? { uri: profilePic} : require("../../assets/sajan.png")} 
                                     size = {50}
                                 />
                             </TouchableOpacity>

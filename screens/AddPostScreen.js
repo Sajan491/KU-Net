@@ -28,6 +28,7 @@ const AddPostScreen = ({navigation}) => {
     const [uploading, setUploading] = useState(false)
     const [clubs, setClubs] = useState([])
     const [userName, setUserName] = useState('')
+    const [postUserID, setPostUserID] = useState('')
     const [userPpic, setUserPpic] = useState('')
     const [infoVisible, setInfoVisible] = useState(false)
     const [uiD, setUiD] = useState('')
@@ -43,7 +44,8 @@ const AddPostScreen = ({navigation}) => {
                 data.push({label: doc.title, value:doc.id, icon:doc.icon})
             })
             setClubs(data)
-            setUserName(usr.data()['username'])
+            setUserName(usr.data()['id'])
+            setPostUserID(usr.data()['uid'])
             if(usr.data()['profilePic']){
                 setUserPpic(usr.data()['profilePic'])
             }

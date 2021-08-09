@@ -60,8 +60,10 @@ const usersCollection = firebase.firestore().collection("users_extended")
 const AccountScreen = ({navigation}) => {
     const {user, signOut} = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
+    const [profilePic, setProfilePic] = useState("")
     const userId = firebase.auth().currentUser.uid;
     const [userIsAdmin, setUserIsAdmin] = useState(false)
+    const usersCollection = firebase.firestore().collection("users_extended").doc(userId)
 
     const getAdminStatus = async ()=>{
         await usersCollection.doc(userId).get().then((usr)=>{
@@ -77,6 +79,13 @@ const AccountScreen = ({navigation}) => {
     }
     useEffect(() => {
         getAdminStatus()
+        usersCollection.get()
+        .then((doc) => { 
+              setProfilePic(doc.data()['profilePic'])
+            }).catch ((err) => {
+                console.log("Error receiving data from the database", err);
+            })
+
     }, [])
 
     
@@ -105,7 +114,7 @@ const AccountScreen = ({navigation}) => {
                     <ListItem 
                         title= {user.displayName ? user.displayName : "Update name in Settings!"}
                         subTitle= {user.email}
-                        image={require('../assets/sajan.png')}
+                        image = {profilePic}
                     />
                 </View>
                 <View style={styles.container}>
