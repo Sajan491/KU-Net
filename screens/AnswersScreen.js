@@ -5,7 +5,8 @@ import Screen from "../components/Screen"
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 const AnswersScreen = ({route, navigation}) => {
-    const question = route.params
+    const question = route.params.item
+    const group = route.params.group
 
     const answers = [
         {
@@ -37,7 +38,7 @@ const AnswersScreen = ({route, navigation}) => {
     return (
         <Screen style = {styles.screen}>
             <View style = {styles.qnaContent}>
-                <TouchableOpacity title = "Add Answer" onPress = {() => {navigation.navigate("AddAnswer", question)}} style = {styles.addQuestion}>
+                <TouchableOpacity title = "Add Answer" onPress = {() => {navigation.navigate("AddAnswer",{question, group})}} style = {styles.addQuestion}>
                     <MaterialCommunityIcons name = "plus-circle-outline" size = {36} style = {{alignSelf: "center"}} />
                 </TouchableOpacity>
                 <View style = {styles.qnaContainer}>
