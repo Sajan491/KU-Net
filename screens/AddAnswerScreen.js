@@ -43,6 +43,7 @@ const AddAnswerScreen = ({route, navigation}) => {
         values.userInfo = {username: userName, profilePic: userPpic, usersId:usersiD};
         QnAs.get().then(doc=>{
             let answers = doc.data()['answers']
+            values.id = random_id
             answers.push(values)
             QnAs.update({answers:answers})
         }) 
