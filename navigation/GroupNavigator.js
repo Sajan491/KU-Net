@@ -7,6 +7,8 @@ import CommentsScreen from "../screens/CommentsScreen";
 import {GroupProvider} from "../context/GroupProvider"
 import QnAScreen from "../screens/QnAScreen";
 import AddQuestionScreen from "../screens/AddQuestionScreen";
+import AnswersScreen from "../screens/AnswersScreen";
+import AddAnswerScreen from "../screens/AddAnswerScreen";
 
 const GroupNavigator=()=>(
     <GroupProvider>
@@ -34,6 +36,20 @@ const GroupNavigator=()=>(
              <Stack.Screen 
                 name="AddQuestion" 
                 component={AddQuestionScreen} 
+                options={({route})=>({
+                    headerTitleAlign: "center"
+                })}
+            />
+             <Stack.Screen 
+                name="AddAnswer" 
+                component={AddAnswerScreen} 
+                options={({route})=>({
+                    headerTitleAlign: "center"
+                })}
+            />
+             <Stack.Screen 
+                name="Answers" 
+                component={AnswersScreen} 
                 options={({route})=>({
                     headerTitleAlign: "center"
                 })}

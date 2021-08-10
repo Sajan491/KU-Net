@@ -238,7 +238,7 @@ const GroupDetailScreen = ({route, navigation}) => {
                         <>
                         {isAMember?
                         (<TouchableOpacity onPress = {() => {setModalOpen(true)}}>
-                            <SimpleLineIcons name = "options-vertical" size = {30}  style = {{alignSelf: "flex-end", marginRight: 0}}/>
+                            <SimpleLineIcons name = "options-vertical" size = {15}  style = {{alignSelf: "flex-end", margin: 10}}/>
                         </TouchableOpacity>)
                         : null }
                         <View style>

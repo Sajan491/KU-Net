@@ -8,11 +8,11 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Screen from "../components/Screen"
 import firebase from "../config/firebase";
 
-const AddQuestionScreen = ({route, navigation}) => {
+const AddAnswerScreen = ({route, navigation}) => {
     const [userPpic, setUserPpic] = useState('')
     const [usersiD, setUsersiD] = useState('')
     const [userName, setUserName] = useState('')
-
+    const question = route.params
     useEffect(() => {
         const usersCollection = firebase.firestore().collection("users_extended")
         const userID = firebase.auth().currentUser.uid;
@@ -32,17 +32,28 @@ const AddQuestionScreen = ({route, navigation}) => {
     
 
     const validationSchema = Yup.object().shape({
-        title: Yup.string().required().min(1).label("Title"),
-        description: Yup.string().label("Description"),
+        answer: Yup.string().required().min(1).label("Answer"),
     }); 
 
    
     const handleSubmit = (values) => {
+        console.log("added");
         const QnAs = firebase.firestore().collection('groups').doc(group.id).collection('QnA')
+        QNAs.where("title", '==', question.title)
+                .get()
+                .then((docs) => {
+                    docs.forEach((doc) => {
+                        doc.ref.update({
+                            answers: values.title
+                            })
+                        })
+                    }).catch((err) => {
+                        console.log(err.message());
+                })
         values.userInfo = {username: userName, profilePic: userPpic, usersId:usersiD};
         QnAs.add(values).then(()=>{
-            Alert.alert('Success!','Question Added Successfully',[
-                {text: 'Continue', onPress: () => navigation.navigate("QnA", group)},
+            Alert.alert('Success!','Answer Added Successfully',[
+                {text: 'Continue', onPress: () => navigation.navigate("Answers", group)},
               ])
         })
     }
@@ -51,7 +62,7 @@ const AddQuestionScreen = ({route, navigation}) => {
         <Screen style = {styles.screen}>
             <View  style={styles.formContainer}>
                 <Formik
-                    initialValues={{title:'',description:'', answers:[], postTime:firebase.firestore.FieldValue.serverTimestamp(), userInfo:{}}}
+                    initialValues={{answer: "", postTime:firebase.firestore.FieldValue.serverTimestamp(), userInfo:{}}}
                     onSubmit={(values, {resetForm}) => {
                         handleSubmit(values)
                         resetForm({});
@@ -65,17 +76,9 @@ const AddQuestionScreen = ({route, navigation}) => {
                     <View>
                         <AppFormField 
                             maxLength = {255}
-                            placeholder="Question"
+                            placeholder="Answer"
                             name="title"
-                            value={values.title || ''}
-                        />
-                        <AppFormField 
-                            maxLength={2555}
-                            multiline
-                            numberOfLines={3}
-                            name="description"
-                            placeholder="Description"
-                            value={values.description || ''}
+                            value={values.answer || ''}
                         />
                         <SubmitButton title="Submit"/>
                     </View>
@@ -89,7 +92,7 @@ const AddQuestionScreen = ({route, navigation}) => {
     )
 }
 
-export default AddQuestionScreen
+export default AddAnswerScreen
 
 const styles = StyleSheet.create({
     formContainer:{
