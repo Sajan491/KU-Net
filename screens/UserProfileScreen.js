@@ -20,7 +20,7 @@ const UserProfileScreen = ({navigation, route}) => {
     const [userHasAlreadyDownvoted, setUserHasAlreadyDownvoted] = useState(false)
     const ratingsDoc = firebase.firestore().collection("users_extended").doc(postAuthorID).collection("ratings").doc(postAuthorID)
     useEffect(() => {
-        // console.log(postAuthorID, " post");
+        console.log(postAuthorID, " postUserID");
         console.log(currentUserId, "current");
         getData();
             if(postAuthorID === currentUserId || postAuthorID === undefined) {
