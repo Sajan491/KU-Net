@@ -66,17 +66,7 @@ const DrawerContent = (props) => {
                             </View>
                         </View>
                     </View>
-                
-                        {/* <View style = {styles.row}>
-                            <View style = {styles.followerSection}>
-                                <Paragraph style = {styles.count}> 80 </Paragraph>
-                                <Caption> Following </Caption>
-                            </View>
-                            <View style = {styles.followerSection}>
-                                <Paragraph style = {styles.count}> 80 </Paragraph>
-                                <Caption> Followers </Caption>
-                            </View>
-                        </View> */}
+            
                 </View>
 
                <Drawer.Section style = {styles.topDdrawerSection}>
@@ -110,29 +100,6 @@ const DrawerContent = (props) => {
                         label = "Help"
                         onPress = {() => props.navigation.navigate("Help", {homeScreen: "yes"})}
                     />
-                    {/* <DrawerItem
-                        icon = {({size, color}) => (
-                            <MaterialCommunityIcons name="details" size = {size} color = {color} />
-                            )
-                        }
-                        label = "About"
-                        onPress = {() => props.navigation.navigate("About")}
-                    /> */}
-               </Drawer.Section>
-               <Drawer.Section style = {styles.enrolledGroup}>
-                   <Caption style = {styles.drawerText}> Enrolled</Caption>
-                        {groups.map((group) => {
-                            return(
-                                <DrawerItem 
-                                    key = {group.id}
-                                    icon = {({size}) => (
-                                        <FontAwesome name="hand-o-right" size = {size/1.2} color = {colors.secondary} />
-                                    )}
-                                    label = {group.title}
-                                    onPress = {() => props.navigation.navigate("GroupDetails", group)}
-                                />
-                            )
-                        })}
                </Drawer.Section>
             </DrawerContentScrollView>
 
