@@ -4,29 +4,30 @@ import colors from '../config/colors'
 import Screen from "../components/Screen"
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
-const QnAScreen = ({route, navigation}) => {
-    const group = route.params
-    const QNAs = [
+const AnswersScreen = ({route, navigation}) => {
+    const question = route.params
+
+    const answers = [
         {
             id: 1,
-            title: "What is your name?",
-            question: "Which government? The world doesn’t consist of just one messily governmental office. You’ve been watching too many American doomsday movies.",
+            postDate: "Nov20, 2021",
+            answer: "Which government? The world doesn’t consist of just one messily governmental office. You’ve been watching too many American doomsday movies.",
             author: "Sabin Thapa",
-            postDate: "Nov 16, 2020"
+      
         },
        {
            id: 2,
-           title: "Where do you live?",
-           question: "I live in Nepal",
+           postDate: "Nov20, 2021",
+           answer: "I live in Nepal",
            author: "Sabin Thapa",
-           postDate: "Nov 16, 2020"
+ 
        },
     {
         id: 3,
-        title: "What is your name?",
-        question: "Which government? The world doesn’t consist of just one messily governmental office. You’ve been watching too many American doomsday movies.",
+             postDate: "Nov20, 2021",
+        answer: "Which government? The world doesn’t consist of just one messily governmental office. You’ve been watching too many American doomsday movies.",
         author: "Sabin Thapa",
-        postDate: "Nov 16, 2020"
+       
     }, 
     ]
 
@@ -36,47 +37,59 @@ const QnAScreen = ({route, navigation}) => {
     return (
         <Screen style = {styles.screen}>
             <View style = {styles.qnaContent}>
-            <TouchableOpacity title = "Add Answer" onPress = {() => {navigation.navigate("AddQuestion", group)}} style = {styles.addQuestion}>
+                <TouchableOpacity title = "Add Answer" onPress = {() => {navigation.navigate("AddAnswer", question)}} style = {styles.addQuestion}>
                     <MaterialCommunityIcons name = "plus-circle-outline" size = {36} style = {{alignSelf: "center"}} />
                 </TouchableOpacity>
-                <FlatList
+                <View style = {styles.qnaContainer}>
+                    <View style = {styles.userInfo}>
+                        <Image source = {require("../assets/sajan.png")} style ={styles.userImage}/>
+                            <View style = {{display: "flex", marginLeft: 5}}>
+                                <Text style = {{fontWeight: "bold"}}> {question.author}</Text>
+                                <Text style = {{color: colors.medium, fontSize: 12}}> {question.postDate}</Text>
+                            </View>
+                    </View>
+                   
+                    <View style = {styles.questionContainer}>
+                        <Text style = {{fontWeight: "bold"}}> {question.title}</Text>
+                        <Text> {question.question}</Text>
+                    </View> 
+                    <Text style = {{color: colors.secondary}}> Answers </Text>
+
+                    <FlatList
                     vertical
                     showsHorizontalScrollIndicator = {false}
                     keyExtractor = {(item) => item.id.toString()}
-                    data = {QNAs}
+                    data = {answers}
                     renderItem = {({item}) => (
-                        <View style = {styles.qnaContainer}>
+                        <View style = {{margin: 5, borderRadius:10, backgroundColor: colors.secondary}}>
                             <View style = {styles.userInfo}>
                                 <Image source = {require("../assets/sajan.png")} style ={styles.userImage}/>
                                     <View style = {{display: "flex", marginLeft: 5}}>
                                         <Text style = {{fontWeight: "bold"}}> {item.author}</Text>
-                                        <Text style = {{color: colors.medium, fontSize: 12}}> {item.postDate}</Text>
+                                        <Text style = {[{color: colors.medium, fontSize: 12}, styles.fontColor]}> {item.postDate}</Text>
                                     </View>
                             </View>
                             <View style = {styles.questionContainer}>
-                                <Text style = {{fontWeight: "bold"}}> {item.title}</Text>
-                                <Text> {item.question}</Text>
+                                <Text style = {styles.fontColor}> {item.answer}</Text>
                             </View>    
-                            <TouchableOpacity onPress = {() => navigation.navigate("Answers", item)}>
-                                <Text style = {{color: colors.secondary, marginLeft: 5}}>View Answers</Text>
-                            </TouchableOpacity>
-                        </View>
+                    </View>
                     )}
                 />
+                    
+                </View>
                 
             </View>
         </Screen>
          )
 }
 
-export default QnAScreen
+export default AnswersScreen
 
 const styles = StyleSheet.create({
     qnaContainer:{
         padding: 10,
         margin: 5,
         borderRadius: 10,
-        paddingTop:17,
         backgroundColor: '#fff',
     },
     questionContainer: {
@@ -92,6 +105,7 @@ const styles = StyleSheet.create({
         marginTop:-10
 },
     userInfo: {
+        marginTop: 5,
         marginLeft:5,
         display: "flex",
         alignSelf: "flex-start",
@@ -108,4 +122,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
        borderBottomWidth: 1
     },
+    fontColor: {
+        color: "#fff"
+    }
 })
