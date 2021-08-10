@@ -127,7 +127,8 @@ const SecondRegisterScreen = ({navigation}) => {
                     placeholder='Age'
                     name="age"
                 />
-                <ProfileImagePicker name='profileImage' />
+                <Text style={styles.text}>Please pick an image to display on your profile</Text>
+                <ProfileImagePicker screen='secondReg' name='profileImage' />
                 
                 <ItemPicker
                     items = {departments}
@@ -162,6 +163,10 @@ const SecondRegisterScreen = ({navigation}) => {
 export default SecondRegisterScreen
 
 const styles = StyleSheet.create({
+    text:{
+        color:colors.medium,
+        padding:5
+    },
     header:{
         paddingLeft:8,
         paddingTop:30

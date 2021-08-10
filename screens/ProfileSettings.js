@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { StyleSheet, Text, View, Button, ScrollView, TouchableOpacity, ImageBackground, Modal } from 'react-native'
+import { StyleSheet, Text, View, Button, ScrollView, TouchableOpacity, ImageBackground, Modal, ActivityIndicator } from 'react-native'
 import * as Yup from 'yup';
 import { AppForm, AppFormField, SubmitButton } from '../components/form'
 import Screen from '../components/Screen'
@@ -12,6 +12,9 @@ import Loading from '../components/Loading';
 import {MaterialCommunityIcons} from "@expo/vector-icons"
 import colors from "../config/colors"
 import { domMax } from 'framer-motion';
+import ProfileImagePicker from '../components/ProfileImagePicker';
+import { v4 as uuidv4 } from 'uuid';
+var storageRef = firebase.storage().ref();
 
 const validationSecondRegisterScreen = Yup.object().shape({
     username: Yup.string().min(1).nullable().label("Username"),
@@ -34,6 +37,7 @@ const ProfileSettings = ({navigation}) => {
     const userID = firebase.auth().currentUser.uid;
     const usersCollection = firebase.firestore().collection("users_extended").doc(userID)
     const departCollection = firebase.firestore().collection("departments").doc(department.value).collection("members")
+    const [uploading, setUploading] = useState(false)
 
     useEffect(() => {
         getData();
@@ -60,9 +64,12 @@ const ProfileSettings = ({navigation}) => {
     const handleSubmit=(values)=>{
         console.log(values, "jn");
         try {            
-            console.log("User ID: ", userID);
+            console.log(values);
             usersCollection.get()
                 .then( () => {
+                    if(values.profileImage!== ''){
+                        uploadImage(values);
+                    }
                     if(values.username !== "") {
                         usersCollection.update({
                             username: values.username
@@ -118,9 +125,62 @@ const ProfileSettings = ({navigation}) => {
         navigation.goBack()      
     }
 
-    const changeProfilePicHandler = () => {
-        console.log("PP CHANGED");
+
+
+    // image uploader from profile picture
+    const uploadImage= async (values)=>{
+        const random_id = uuidv4();
+        const extension = values.profileImage.split('.').pop();
+
+        const blob = await new Promise((resolve,reject)=>{
+            const xhr = new XMLHttpRequest();
+            xhr.onload = function(){
+                resolve(xhr.response);
+            };
+            xhr.onerror = function(){
+                reject(new TypeError('Network request failed'));
+            };
+            xhr.responseType = 'blob';
+            xhr.open('GET', values.profileImage, true);
+            xhr.send(null);
+
+        });
+        const ppicRef = storageRef.child(`profilePictures/${random_id+'.'+extension}`)
+        const snapshot = ppicRef.put(blob);
+
+        snapshot.on(firebase.storage.TaskEvent.STATE_CHANGED, 
+            (snapshot)=>{
+            console.log(snapshot.state);
+            console.log('progress:' + (snapshot.bytesTransferred / snapshot.totalBytes)*100);
+            setUploading(true);
+        },
+        (error)=>{
+            setUploading(false)
+            console.log(error);
+            blob.close()
+            return
+        },
+        ()=>{
+            ppicRef.getDownloadURL().then((downloadUrl)=>{
+                blob.close();
+                
+                delete values.profileImage
+                values.profilePic = downloadUrl
+                finalSubmit(values)
+                setUploading(false)                  
+            })
+        }
+        );
+    } 
+    
+    const finalSubmit = (values) =>{
+        usersCollection.update({
+            profilePic: values.profilePic
+        })
+        console.log("Updated profilepic");
     }
+          
+    
 
     if(loading){
         return <Loading/>}
@@ -128,67 +188,17 @@ const ProfileSettings = ({navigation}) => {
     return (
         <Screen style={styles.container}>
 
-
-            {/* kebab modal */}
-            <Modal
-                animationType="slide"
-                transparent={true}
-                visible={kebabModalVisible} 
-                onRequestClose={() => {
-                setLikersModalVisible(false);
-            }}>
-                
-                <View style={styles.kebabModalView}>
-                    <View style={styles.kebabContainer}>
-
-                        <View style={styles.modalButton}>
-                            <Button title='X' onPress={()=>setKebabModalVisible(false)} />
-                        </View>
-                            <>
-                            <TouchableOpacity style={styles.kebabOneItem} onPress={() => {}}>
-                                <MaterialCommunityIcons name="content-save" size={30} color="black" />
-                                <View style={styles.kebabText}>
-                                    <Text style={styles.kebabTitle}>Upload Photo</Text>
-                                    <Text style={styles.kebabDetail}>Upload a photo from your gallery.</Text>
-                                </View> 
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={styles.kebabOneItem} onPress={() => {}}>
-                                <MaterialCommunityIcons name="camera" size={30} color="black" />
-                                <View style={styles.kebabText}>
-                                    <Text style={styles.kebabTitle}>Take Photo</Text>
-                                    <Text style={styles.kebabDetail}>Open camera to take your photo.</Text>
-                                </View> 
-                            </TouchableOpacity>
-                       
-                            </>
-                    </View>
-                </View>   
-            </Modal>
-
             <ScrollView
                 showsVerticalScrollIndicator = {false}
             >
-            
-            <TouchableOpacity onPress = {() => setKebabModalVisible(true)}>
-                <View style = {styles.imageContainer}>
-                    <ImageBackground
-                        source = { profilePic ? { uri: profilePic} : require("../assets/sajan.png")} 
-                        style = {{height: 100, width: 100, resizeMode: "contain"}}
-                        imageStyle = {{borderRadius: 25}}
-                    >
-                        <View style = {styles.cameraIconContainer}>
-                            <MaterialCommunityIcons name="camera" size = {35} color = {colors.light} style = {styles.cameraIcon} />
-                        </View>
-                    </ImageBackground>
-                </View>
-            </TouchableOpacity>
 
             <AppForm
-                initialValues={{username: "", age:'',  department: null, bio:'', batch:''}}
+                initialValues={{username: "", age:'',  department: null, bio:'', batch:'', profileImage:''}}
                 onSubmit={handleSubmit}
                 validationSchema={validationSecondRegisterScreen}
             >
+                <Label style = {styles.label}> Click to change profile picture</Label>
+                <ProfileImagePicker screen='settings' name='profileImage' />
                 <Label style = {styles.label}> Username</Label>
                 <AppFormField 
                     maxLength = {255}
@@ -229,9 +239,9 @@ const ProfileSettings = ({navigation}) => {
                     defaultValue = {batch}
                     name="batch"
                 />
-                <SubmitButton 
+                { !uploading? <SubmitButton 
                     title="Save"
-                />               
+                />:<ActivityIndicator size={40} color={colors.primary} />}                
             </AppForm>
             </ScrollView>
 
@@ -259,8 +269,9 @@ const styles = StyleSheet.create({
       },
     label: {
         fontSize: 13,
-        paddingTop: 10,
-        paddingLeft: 8
+        marginLeft:5,
+        
+        color:colors.medium
     },
     imageContainer: {
         justifyContent: "center",
