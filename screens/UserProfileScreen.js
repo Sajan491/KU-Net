@@ -18,6 +18,7 @@ const UserProfileScreen = ({navigation, route}) => {
     const [sameUser, setSameUser] = useState(false)
     const [userHasAlreadyUpvoted, setUserHasAlreadyUpvoted] = useState(false)
     const [userHasAlreadyDownvoted, setUserHasAlreadyDownvoted] = useState(false)
+    const ratingsDoc = firebase.firestore().collection("users_extended").doc(postAuthorID).collection("ratings").doc(postAuthorID)
     useEffect(() => {
         // console.log(postAuthorID, " post");
         console.log(currentUserId, "current");
@@ -40,18 +41,22 @@ const UserProfileScreen = ({navigation, route}) => {
                         if(doc.exists){
                             {setRatingCount(doc.data()['voteCount'] ) };
                             const upVotersArr = []
-                            upVotersArr.push(doc.data()['upvoter'])
-                            {upVotersArr.length !== 0 && upVotersArr.forEach((voterID) => {
+                            const upVoterArrFromDB = doc.data()['upvoter']
+                            const arr = upVotersArr.concat(upVoterArrFromDB);
+                            {arr.length !== 0 && arr.forEach((voterID) => {
                                 if(voterID === currentUserId) {
                                     setUserHasAlreadyUpvoted(true)
+                                    setCanDownVote(true)
                                 }
                             })}
     
                             const downVotersArr = []
-                            downVotersArr.push(doc.data()['downvoter'])
-                            {downVotersArr.length !== 0 && downVotersArr.forEach((voterID) => {
+                            const downVoterArrFromDB = (doc.data()['downvoter'])
+                            const arr2 = downVotersArr.concat(downVoterArrFromDB);   
+                            {arr2.length !== 0 && arr2.forEach((voterID) => {
                                 if(voterID === currentUserId) {
                                     setUserHasAlreadyDownvoted(true)
+                                    setCanUpVote(true)
                                 }
                             })}
                         }
@@ -66,8 +71,8 @@ const UserProfileScreen = ({navigation, route}) => {
         // disable upvote
         setCanUpVote(false)
         setCanDownVote(true)
-        //firebase.firestore().collection(users_extended).ratings ma vote count push
-        firebase.firestore().collection("users_extended").doc(postAuthorID).collection("ratings").doc(postAuthorID).set({
+        setUserHasAlreadyDownvoted(false)
+        ratingsDoc.set({
             voteCount: ratingCount+1,
             upvoter: [currentUserId]
         }, {
@@ -75,6 +80,16 @@ const UserProfileScreen = ({navigation, route}) => {
         }).then(() => {
             console.log("Upvote added to the database");
         })
+
+        ratingsDoc.get().then((doc) => {
+            const downVotersFromDB = doc.data()['downvoter'] || []
+            const filteredDownvoters = downVotersFromDB.filter((id) => id!== currentUserId)
+            console.log(filteredDownvoters, "filteredLIST");
+            ratingsDoc.update({
+                downvoter: filteredDownvoters
+            })
+        })
+
         //enable downvote with count-=2
     }
 
@@ -84,13 +99,25 @@ const UserProfileScreen = ({navigation, route}) => {
         //disable downvote
         setCanDownVote(false)
         setCanUpVote(true)
-        firebase.firestore().collection("users_extended").doc(postAuthorID).collection("ratings").doc(postAuthorID).set({
+        setUserHasAlreadyUpvoted(false)
+      
+        console.log(canUpVote, "canUpVote");
+        ratingsDoc.set({
             voteCount: ratingCount-1,
             downvoter: [currentUserId]
         },
             {merge: true}
         ).then(() => {
             console.log("Upvote added to the database");
+        })
+
+        ratingsDoc.get().then((doc) => {
+            const upvotersFromDB = doc.data()['upvoter'] || []
+            const filteredUpvoters = upvotersFromDB.filter((id) => id!== currentUserId)
+            console.log(filteredUpvoters, "filteredLIST");
+            ratingsDoc.update({
+                upvoter: filteredUpvoters
+            })
         })
     }
 
