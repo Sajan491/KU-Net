@@ -64,7 +64,11 @@ const QnAScreen = ({route, navigation}) => {
                     renderItem = {({item}) => (
                         <View style = {styles.qnaContainer}>
                             <View style = {styles.userInfo}>
-                                <Image source = {require("../assets/sajan.png")} style ={styles.userImage}/>
+                            {item.userInfo.profilePic 
+                                ? <Image source = {{uri: item.userInfo.profilePic}} style ={styles.userImage} />
+                                :  <Image source = {require("../assets/sajan.png")} style ={styles.userImage} />
+                            }
+                                    
                                     <View style = {{display: "flex", marginLeft: 5}}>
                                         <Text style = {{fontWeight: "bold"}}> {item.userInfo?.username}</Text>
                                         {/* <Text style = {{color: colors.medium, fontSize: 12}}> {item.postTime}</Text> */}
