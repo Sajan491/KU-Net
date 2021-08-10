@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect, useCallback} from 'react'
-import { FlatList, RefreshControl, ScrollView, StyleSheet, View } from 'react-native'
+import { FlatList, RefreshControl, ScrollView, StyleSheet, View, Image, Text, TouchableOpacity } from 'react-native'
 import colors from "../config/colors";
 import Screen from "../components/Screen";
 import ListItem from '../components/ListItem';
@@ -110,11 +110,17 @@ const AccountScreen = ({navigation}) => {
                 }
             >
                 <View style={styles.container}>
-                    <ListItem 
-                        title= {user.displayName ? user.displayName : "Update name in Settings!"}
-                        subTitle= {user.email}
-                        image = {profilePic}
-                    />
+                    <TouchableOpacity onPress = {() => navigation.navigate("UserProfile")} >
+                        {profilePic 
+                            ? <Image style={styles.image} source={{ uri: profilePic}} /> 
+                            : <Image style={styles.image} source={require("../assets/sajan.png")} /> 
+                        
+                        }
+                    </TouchableOpacity>
+                   <View style = {styles.textContent}>
+                        <Text style = {{fontWeight: "bold", fontSize: 16, marginBottom: 6}}>{user.displayName ? user.displayName : "Update name in Settings!"}</Text>
+                        <Text style = {{fontWeight: "bold", color: colors.medium}}>{user.email}</Text>
+                   </View>
                 </View>
                 <View style={styles.container}>
                     {userIsAdmin && <View style={{marginBottom:10}}>
@@ -161,7 +167,10 @@ export default AccountScreen
 const styles = StyleSheet.create({
     container:{
         marginBottom:10,
-        borderRadius:20
+        borderRadius:20,
+        display: "flex",
+        flexDirection: "row",
+        backgroundColor: "#fff"
     }
     ,screen:{
         backgroundColor:colors.light,
@@ -170,6 +179,18 @@ const styles = StyleSheet.create({
         flex:1,
         marginTop:-10
 
+},     image:{
+        width:60,
+        height:60,
+        borderRadius:35,
+        margin: 7
+        
+    },
+    textContent: {
+        display: "flex",
+        margin: 10,
+        alignItems: "flex-start",
+        justifyContent: "center",
     }
 })
 
