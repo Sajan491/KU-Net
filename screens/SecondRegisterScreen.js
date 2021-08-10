@@ -27,6 +27,8 @@ const usersCollection = firebase.firestore().collection("users_extended")
 
 const SecondRegisterScreen = ({navigation}) => {
     const user = useContext(AuthContext);
+
+    console.log("Verified?", firebase.auth().currentUser.emailVerified  );
     const userID = firebase.auth().currentUser.uid;
 
     const [uploading, setUploading] = useState(false)

@@ -228,7 +228,18 @@ const GroupDetailScreen = ({route, navigation}) => {
 
     return  !loading ?    
      (  
-        <Screen >
+        <Screen style={styles.screen} >
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={modalOpen} 
+                onRequestClose={() => {
+                    setModalOpen(false);
+            }}>
+                
+                <View style={styles.groupKebabBack}>
+                </View>   
+            </Modal>
             <Modal
                 animationType = "slide"
                     visible = {modalOpen}
@@ -312,15 +323,12 @@ const GroupDetailScreen = ({route, navigation}) => {
                                 {/* <AppText> {group.title} </AppText> */}
                                 <Caption style={styles.about}> {group.about} </Caption>
                                 
-                                { isAMember
-                                    ? (<View>
-                                            <Caption style = {{color: colors.secondary}}> Already a member!</Caption> 
-                                        </View>
-                                        )
+                                { !isAMember &&
+                                    
                                     // :<AppButton onPress = {() => {setJoining((prev => !prev))}} title={joining? "Joining" : "Join"} >
-                                    :(<AppButton onPress = {joinGroupHandler} title={joining? "Joining" : "Join"} >
+                                    <AppButton onPress = {joinGroupHandler} title={joining? "Joining" : "Join"} >
                                         {joining &&  <ActivityIndicator size="small" color ="#fff" />}    
-                                     </AppButton> )
+                                     </AppButton> 
                                 }
                             </View>
 
@@ -368,6 +376,14 @@ const GroupDetailScreen = ({route, navigation}) => {
 export default GroupDetailScreen
 
 const styles = StyleSheet.create({
+    screen:{
+        marginTop:-50
+    },
+    groupKebabBack: {
+        backgroundColor: 'rgba(0,0,0,0.55)',
+        width:'100%',
+        height:'100%',
+    },
     about:{
         marginTop:20
     },

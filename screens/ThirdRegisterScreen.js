@@ -14,6 +14,7 @@ const ThirdRegisterScreen = ({navigation}) => {
     const [userName, setUserName] = useState('')
     const [clubs, setClubs] = useState([])
     useEffect(() => {
+        console.log("Verified?", firebase.auth().currentUser.emailVerified  );
         const userID = firebase.auth().currentUser.uid;
         setUid(userID)
         clubsCollection.get().then((abc)=>{

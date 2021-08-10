@@ -80,7 +80,7 @@ const HomeScreen = ({navigation}) => {
     }
 
     useEffect(()=> {
-
+        console.log("Verified?", firebase.auth().currentUser.emailVerified  );
         getPosts()
         setRefreshing(false)
         groupsDB.get().then((docs)=> {

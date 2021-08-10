@@ -130,7 +130,7 @@ const UserProfileScreen = ({navigation, route}) => {
                 showsVerticalScrollIndicator = {false}    
             >
                 <Image 
-                    source = { userData ? { uri: userData.profilePic} : require("../assets/sajan.png")} 
+                    source = { userData.profilePic ? { uri: userData.profilePic} : require("../assets/sajan.png")} 
                     style = {styles.userImg} 
                 />
 
