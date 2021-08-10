@@ -5,14 +5,19 @@ import {MaterialCommunityIcons} from '@expo/vector-icons'
 import * as Permissions from 'expo-permissions'
 import * as ImagePicker from 'expo-image-picker';
 import { useFormikContext } from 'formik';
+import firebase from "../config/firebase";
 
 
 
-const ProfileImagePicker = ({name}) => {
+const ProfileImagePicker = ({screen, name}) => {
 
     const {setFieldValue} = useFormikContext();
 
     const [imageUri, setImageUri] = useState(null)
+    const [profilePic, setProfilePic] = useState("")
+    const [profilePicFetched, setProfilePicFetched] = useState(false)
+    const [settingsScreen, setSettingsScreen] = useState(false)
+
 
     const requestPermission =async() =>{
         const result = await Permissions.askAsync(Permissions.MEDIA_LIBRARY)
@@ -21,6 +26,18 @@ const ProfileImagePicker = ({name}) => {
         }
     }
     useEffect(() => {
+        if(screen==='settings'){
+            setSettingsScreen(true)
+            const userID = firebase.auth().currentUser.uid;
+            const usersCollection = firebase.firestore().collection("users_extended").doc(userID)
+            usersCollection.get()
+            .then((doc) => { 
+                setProfilePic(doc.data()['profilePic'])
+                setProfilePicFetched(true)
+            }).catch ((err) => {
+                console.log(err);
+            })
+        }
         requestPermission();
     }, [])
 
@@ -50,10 +67,11 @@ const ProfileImagePicker = ({name}) => {
 
     return (
         <>
-        <Text style={styles.text}>Please pick an image to display on your profile</Text>
+        
         <TouchableWithoutFeedback onPress={handlePress}>
             <View style={styles.container}>
-                {!imageUri && <MaterialCommunityIcons name="camera" size={40} color={colors.medium} />}
+                {!imageUri && !settingsScreen && <MaterialCommunityIcons name="camera" size={40} color={colors.medium} />}
+                {!imageUri && settingsScreen && profilePicFetched && <Image source={{uri:profilePic}} style={styles.image} />}
                 {imageUri && <Image source={{uri:imageUri}} style={styles.image} /> }
             </View>     
         </TouchableWithoutFeedback>
@@ -65,6 +83,8 @@ export default ProfileImagePicker
 
 const styles = StyleSheet.create({
     container:{
+        marginTop:10,
+        marginBottom:15,
         backgroundColor: colors.light,
         backgroundColor: colors.light,
         borderRadius: 15,

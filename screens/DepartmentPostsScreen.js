@@ -8,7 +8,7 @@ import colors from "../config/colors";
 import firebase from "../config/firebase";
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 
-const SavedPostsScreen = () => {
+const DepartmentPostsScreen = () => {
     const [departPosts, setDepartPosts] = useState([])
     
     const fetchPosts= async ()=>{
@@ -75,7 +75,7 @@ const SavedPostsScreen = () => {
     )
 }
 
-export default SavedPostsScreen
+export default DepartmentPostsScreen
 
 const styles = StyleSheet.create({
     container:{

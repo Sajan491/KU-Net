@@ -27,10 +27,12 @@ const QnAScreen = ({route, navigation}) => {
         firebase.firestore().collection("groups").doc(group.id).collection("QnA").get().then((docs) => {
             const QNAs = []
             docs.forEach((doc) => {
-                QNAs.push(doc.data())
-
+                const questionItem = doc.data()
+                questionItem.id = doc.id
+                QNAs.push(questionItem)
             })
             setQuestions(QNAs)
+            
         })
             setLoading(false)
     }
@@ -76,7 +78,7 @@ const QnAScreen = ({route, navigation}) => {
                                 <Text style = {{fontWeight: "bold"}}> {item.title}</Text>
                                 <Text> {item.description}</Text>
                             </View>    
-                            <TouchableOpacity onPress = {() => navigation.navigate("Answers", item)}>
+                            <TouchableOpacity onPress = {() => navigation.navigate("Answers",{item, group})}>
                                 <Text style = {{color: colors.secondary, marginLeft: 5}}>View Answers</Text>
                             </TouchableOpacity>
                         </View>

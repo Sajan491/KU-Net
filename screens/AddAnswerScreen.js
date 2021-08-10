@@ -4,15 +4,15 @@ import {Formik} from "formik"
 import colors from "../config/colors";
 import { AppForm, AppFormField, SubmitButton } from '../components/form'
 import * as Yup from 'yup';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Screen from "../components/Screen"
 import firebase from "../config/firebase";
+import { v4 as uuidv4 } from 'uuid';
 
 const AddAnswerScreen = ({route, navigation}) => {
     const [userPpic, setUserPpic] = useState('')
     const [usersiD, setUsersiD] = useState('')
     const [userName, setUserName] = useState('')
-    const question = route.params
+    
     useEffect(() => {
         const usersCollection = firebase.firestore().collection("users_extended")
         const userID = firebase.auth().currentUser.uid;
@@ -28,7 +28,8 @@ const AddAnswerScreen = ({route, navigation}) => {
 
     }, [])
 
-    const group = route.params
+    const group = route.params.group
+    const question = route.params.question
     
 
     const validationSchema = Yup.object().shape({
@@ -37,32 +38,25 @@ const AddAnswerScreen = ({route, navigation}) => {
 
    
     const handleSubmit = (values) => {
-        console.log("added");
-        const QnAs = firebase.firestore().collection('groups').doc(group.id).collection('QnA')
-        QNAs.where("title", '==', question.title)
-                .get()
-                .then((docs) => {
-                    docs.forEach((doc) => {
-                        doc.ref.update({
-                            answers: values.title
-                            })
-                        })
-                    }).catch((err) => {
-                        console.log(err.message());
-                })
+        var random_id = uuidv4();
+        const QnAs = firebase.firestore().collection('groups').doc(group.id).collection('QnA').doc(question.id)
         values.userInfo = {username: userName, profilePic: userPpic, usersId:usersiD};
-        QnAs.add(values).then(()=>{
-            Alert.alert('Success!','Answer Added Successfully',[
-                {text: 'Continue', onPress: () => navigation.navigate("Answers", group)},
-              ])
-        })
+        QnAs.get().then(doc=>{
+            let answers = doc.data()['answers']
+            values.id = random_id
+            answers.push(values)
+            QnAs.update({answers:answers})
+        }) 
+
+        navigation.goBack()
+        
     }
 
     return (
         <Screen style = {styles.screen}>
             <View  style={styles.formContainer}>
                 <Formik
-                    initialValues={{answer: "", postTime:firebase.firestore.FieldValue.serverTimestamp(), userInfo:{}}}
+                    initialValues={{answer: "", postTime:firebase.firestore.Timestamp.now(), userInfo:{}}}
                     onSubmit={(values, {resetForm}) => {
                         handleSubmit(values)
                         resetForm({});
@@ -77,7 +71,7 @@ const AddAnswerScreen = ({route, navigation}) => {
                         <AppFormField 
                             maxLength = {255}
                             placeholder="Answer"
-                            name="title"
+                            name="answer"
                             value={values.answer || ''}
                         />
                         <SubmitButton title="Submit"/>
