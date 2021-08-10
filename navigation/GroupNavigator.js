@@ -5,7 +5,8 @@ const Stack = createStackNavigator();
 import GroupDetailScreen from "../screens/GroupDetailScreen";
 import CommentsScreen from "../screens/CommentsScreen";
 import {GroupProvider} from "../context/GroupProvider"
-import ChatScreen from "../screens/ChatScreen";
+import QnAScreen from "../screens/QnAScreen";
+import AddQuestionScreen from "../screens/AddQuestionScreen";
 
 const GroupNavigator=()=>(
     <GroupProvider>
@@ -24,14 +25,19 @@ const GroupNavigator=()=>(
             })}/>
             <Stack.Screen name="Comments" component={CommentsScreen}/>
             <Stack.Screen 
-                name="Chat" 
-                component={ChatScreen} 
+                name="QnA" 
+                component={QnAScreen} 
                 options={({route})=>({
-                    title: route.params.abbr,
                     headerTitleAlign: "center"
                 })}
             />
-            
+             <Stack.Screen 
+                name="AddQuestion" 
+                component={AddQuestionScreen} 
+                options={({route})=>({
+                    headerTitleAlign: "center"
+                })}
+            />
         </Stack.Navigator>
        </GroupProvider>
     

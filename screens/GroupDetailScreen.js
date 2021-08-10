@@ -42,19 +42,6 @@ const GroupDetailScreen = ({route, navigation}) => {
  
     }, [userID, isAMember])
 
-    const QNAs = [
-        {
-            id: 1,
-            q: "What is your name?",
-            a: "My name is Sabin Thapa"
-        },
-       {
-           id: 2,
-           q: "Where do you live?",
-           a: "I live in Nepal"
-       } 
-    ]
-
     const getPosts= async ()=>{
         const groupPosts = groupsDB.doc(group.id).collection('posts')
         let postsArray=[]
@@ -155,38 +142,6 @@ const GroupDetailScreen = ({route, navigation}) => {
             console.log("Deleted member from database");
         })
     }
-
-
-    // const joinGroupHandler =   () => {
-    //             try{
-    //                 //Add group in groups array inside users collection
-    //                 setGroupData([...groupData, group.title])
-    //                  usersDB.doc(userID).update({
-    //                     groups: groupData
-    //                 }).then(() => {
-    //                     console.log("Joined Successfully", group.title);
-    //                     setGroupData(groupData);
-    //                     setIsAMember(true);                            
-    //                 })
-                    
-    //                 // Add member in members array inside groups collection
-    //                 setMembersData ([...membersData, group.title])
-    //                  groupsDB.doc(group.id).get().then(() => {
-    //                     groupsDB.doc(group.id).update({
-    //                         members: membersData
-    //                     }).then(()=> {
-    //                         console.log("Member added successfully!");
-    //                         setIsAMember(true);   
-    //                         console.log(membersData); 
-    //                     })
-    //                 })
-                    
-    //             }catch(err){
-    //                 console.log("Error joining group:", err.message);
-    //             };
-    //         }
-        
-
    
 
     const showAlert = () => {
@@ -229,7 +184,7 @@ const GroupDetailScreen = ({route, navigation}) => {
                                 <Button title='X' onPress={()=>setModalOpen(false)} />
                             </View>
                             <TouchableOpacity style = {styles.kebabItem} onPress = {() => {
-                                setQnaModalOpen(true)
+                                navigation.navigate("QnA", group)
                                 setModalOpen(false)
                                 }}>
                                 <FontAwesome name = "question-circle" size = {20} />
@@ -249,38 +204,7 @@ const GroupDetailScreen = ({route, navigation}) => {
                     </View>
                 </Modal>
 
-            {/* Q&A Modal */}
-            <Modal
-                animationType = "slide"
-                visible = {qnaModalOpen}
-                transparent = {true}
-                onRequestClose = {() => setQnaModalOpen(false)}
-                >
-                    <View style = {styles.qnaModalView}>
-                        <View style={styles.qnaContainer}>
-                            <View style={styles.modalButton}>
-                                <Button title='X' onPress={()=>setQnaModalOpen(false)} />
-                            </View>
-                            <View style = {styles.qnaContent}>
-                                <FlatList
-                                    horizontal
-                                    showsHorizontalScrollIndicator = {false}
-                                    keyExtractor = {(item) => item.id.toString()}
-                                    data = {QNAs}
-                                    renderItem = {({item}) => (
-                                        <View style = {{display: "flex", flexDirection: "column"}}>
-                                            <Text> {item.q}</Text>
-                                            <Text>{item.a}</Text>
-                                            <Text>sabin</Text>
-                                        </View>
-                                    )}
-                                />
-                                <AppButton title = "Add Question" style ={{display: "flex", flexDirection: "column", alignSelf: "flexEnd"}}/>
-                            </View>
-                        </View>
-
-                    </View>
-                </Modal>
+           
             
             <View style = {styles.groupContainer}>
                <View style = {styles.groupContent}>
@@ -290,7 +214,7 @@ const GroupDetailScreen = ({route, navigation}) => {
                         <>
                         {isAMember?
                         (<TouchableOpacity onPress = {() => {setModalOpen(true)}}>
-                            <SimpleLineIcons name = "options-vertical" size = {20}  style = {{alignSelf: "flex-end", marginRight: 10}}/>
+                            <SimpleLineIcons name = "options-vertical" size = {30}  style = {{alignSelf: "flex-end", marginRight: 0}}/>
                         </TouchableOpacity>)
                         : null }
                         <View style>
@@ -427,26 +351,6 @@ const styles = StyleSheet.create({
         fontSize: 13
 
     },
-    qnaModalView:{
-        width:'100%',
-        height:'100%',
-        display:"flex",
-        flexDirection:'row',
-        alignItems:'flex-end',
-        backgroundColor: 'transparent'
-    },
-    qnaContainer:{
-        minHeight:'95%',
-        maxHeight:'100%',
-        width:'100%',
-        paddingTop:17,
-        borderTopEndRadius:20,
-        backgroundColor: '#fff',
-        flex:1,
-        flexDirection:'column'
-    },
-    qnaContent: {
-        justifyContent: "center",
-        alignItems: "center"
-    } 
+
+
 })
