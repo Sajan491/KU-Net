@@ -45,7 +45,6 @@ const menuItems = [
         },
         targetScreen: "SavedPosts"
     },
-
 ]
 
 const delay = (timeout)  => {
@@ -122,7 +121,7 @@ const AccountScreen = ({navigation}) => {
                         <Text style = {{fontWeight: "bold", color: colors.medium}}>{user.email}</Text>
                    </View>
                 </View>
-                <View style={styles.container}>
+                <View style={styles.container1}>
                     {userIsAdmin && <View style={{marginBottom:10}}>
                         <ListItem 
                             title="Admin Control"
@@ -148,7 +147,7 @@ const AccountScreen = ({navigation}) => {
                         )}
                     />
                 </View>
-                <View>
+                <View style={styles.container2}>
                     <ListItem 
                         title="Log Out"
                         IconComponent={
@@ -165,9 +164,13 @@ const AccountScreen = ({navigation}) => {
 export default AccountScreen
 
 const styles = StyleSheet.create({
+    container2:{
+        marginTop:10
+    },
     container:{
+        marginTop:10,
         marginBottom:10,
-        borderRadius:20,
+        borderRadius:10,
         display: "flex",
         flexDirection: "row",
         backgroundColor: "#fff"
