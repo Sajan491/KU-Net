@@ -58,7 +58,7 @@ const QnAScreen = ({route, navigation}) => {
                         </View>
                     )}
                 />
-                <Button title = "Add Question" onPress = {() => navigation.navigate("AddQuestion")} style = {styles.submitBtn}/>
+                <Button title = "Add Question" onPress = {() => navigation.navigate("AddQuestion", group)} style = {styles.submitBtn}/>
             </View>
         </Screen>
          )
