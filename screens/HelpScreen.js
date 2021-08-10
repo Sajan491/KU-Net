@@ -10,20 +10,20 @@ const guidelinesData = [
     {
         id: 1,
         title: "User Ratings/Votes",
-        desc: "You can upvote a user by going to their profile and rating them. On doing so, the user gets +1 rating. User with the most rating is considered a ----- user.",
-        image: require("../assets/sajan.png")
+        desc: "You can upvote a user by going to their profile and rating them. On doing so, the user gets +1 rating. User with the most rating is considered a valuable user.",
+        image: require("../assets/rating.png")
     },
     {
         id: 2,
-        title: "User Ratings/Votes",
-        desc: "You can upvote a user by going to their profile and rating them. On doing so, the user gets +1 rating. User with the most rating is considered a ----- user.",
-        image: require("../assets/sajan.png")
+        title: "Post Creation",
+        desc: "You can either create a post with multimedia attachments or attach a document file to the post",
+        image: require("../assets/post.png")
     },
     {
         id: 3,
-        title: "User Ratings/Votes",
-        desc: "You can upvote a user by going to their profile and rating them. On doing so, the user gets +1 rating. User with the most rating is considered a ----- user.",
-        image: require("../assets/sajan.png")
+        title: "Chat",
+        desc: "You can chat with your department members and group members by navigating to the chat tab.",
+        image: require("../assets/chat.png")
     }
 ]
 
@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
     submitText:{
         fontSize:15,
         fontWeight:'bold',
+        color: "#fff"
     },
     guidelines: {
 
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
         borderBottomColor: colors.secondary
     },
     img: {
-        height: 150,
+        height: 250,
         resizeMode: "contain",
         width: 400,
         marginTop: 5,
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
         borderTopWidth:0.8,
         borderRadius:8,
         width: "90%",
-        marginTop: 5
+        marginTop: 5,
     },  
     container:{
      
