@@ -40,11 +40,22 @@ const HomeScreen = ({navigation}) => {
             const groupPosts = firebase.firestore().collection('groups').doc(doc1).collection('posts')
             groupPosts.orderBy('postTime','desc').get().then((snapshot2)=>{
                 snapshot2.forEach(doc=>{
-                    const postItem = doc.data()
-                    postItem.id = doc.id;
-                    postItem.grpId = doc1;
-                    postItem.deptId=''
-                    allPosts.push(postItem)
+                    if(doc.data()['userInfo'].departmentID){
+                        if(doc.data()['userInfo'].departmentID === department_id){
+                            const postItem = doc.data()
+                            postItem.id = doc.id;
+                            postItem.grpId = doc1;
+                            postItem.deptId=''
+                            allPosts.push(postItem)
+                        }
+                    }
+                    else{
+                        const postItem = doc.data()
+                        postItem.id = doc.id;
+                        postItem.grpId = doc1;
+                        postItem.deptId=''
+                        allPosts.push(postItem)
+                    }
                 })
             })
         })

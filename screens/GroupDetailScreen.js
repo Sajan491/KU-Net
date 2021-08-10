@@ -26,8 +26,11 @@ const GroupDetailScreen = ({route, navigation}) => {
     const [modalOpen, setModalOpen] = useState(false)
     const [qnaModalOpen, setQnaModalOpen] = useState(false)
     const [posts, setPosts] = useState([])
+    const [userDepartId, setUserDepartId] = useState('')
 
     useEffect(  () => {
+        
+
         const subscriber = usersDB
                             .doc(userID)
                             .onSnapshot((docs) => {
@@ -60,11 +63,22 @@ const GroupDetailScreen = ({route, navigation}) => {
         let postsArray=[]
         await groupPosts.orderBy('postTime','desc').get().then((docs)=>{
             docs.forEach(doc=>{
-                const postItem = doc.data()
-                postItem.grpId = group.id;
-                postItem.deptId=''
-                postItem.id = doc.id
-                postsArray.push(postItem)
+                if(doc.data()['userInfo'].departmentID){
+                    if(doc.data()['userInfo'].departmentID === userDepartId){
+                        const postItem = doc.data()
+                        postItem.grpId = group.id;
+                        postItem.deptId=''
+                        postItem.id = doc.id
+                        postsArray.push(postItem)
+                    }
+                }
+                else{
+                    const postItem = doc.data()
+                    postItem.grpId = group.id;
+                    postItem.deptId=''
+                    postItem.id = doc.id
+                    postsArray.push(postItem)
+                }
             })
         })
         setPosts(postsArray)
@@ -72,6 +86,7 @@ const GroupDetailScreen = ({route, navigation}) => {
     
     const getGroups = async () => {
         await usersDB.doc(userID).get().then((doc) => {
+            setUserDepartId(doc.data()['department'].value)
            if(doc.data()['groups'] !== undefined) {
                const groupArr = doc.data()['groups']
                setGroupData(groupArr)
@@ -90,12 +105,10 @@ const GroupDetailScreen = ({route, navigation}) => {
         groupsDB.doc(group.id).collection("members").get().then((docs) => {
             const membersArr= []
             docs.forEach((doc) => {
-                // console.log(doc.data().id, "MEMBERS LIST");
-                // console.log(userID, "Current user iD");
+               
                 membersArr.push({id: doc.data().id})
                 if (doc.data().id === userID) {
                     setIsAMember(true);
-                    console.log(isAMember, "IS A MEMBERss!");
                     setLoading(false);
                 }
             })

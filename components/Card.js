@@ -139,7 +139,7 @@ const Card = ({
                         let postLikers = post.data()['peopleWhoLiked']
                         let tempComments = post.data()['comments']
                         setPostUser(post.data()['userInfo'].username)
-                        setPostUserID(post.data()['userInfo']?.userID)
+                        setPostUserID(post.data()['userInfo'].usersId)
                         setAllComments((prev) => {
                             return tempComments;
                         }) 
