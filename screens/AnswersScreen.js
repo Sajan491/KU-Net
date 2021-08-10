@@ -1,39 +1,29 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import { StyleSheet, Text, View, FlatList, Button, Image, TouchableOpacity } from 'react-native'
 import colors from '../config/colors'
 import Screen from "../components/Screen"
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import firebase from "../config/firebase"
 
 const AnswersScreen = ({route, navigation}) => {
     const question = route.params.item
     const group = route.params.group
-
-    const answers = [
-        {
-            id: 1,
-            postDate: "Nov20, 2021",
-            answer: "Which government? The world doesn’t consist of just one messily governmental office. You’ve been watching too many American doomsday movies.",
-            author: "Sabin Thapa",
-      
-        },
-       {
-           id: 2,
-           postDate: "Nov20, 2021",
-           answer: "I live in Nepal",
-           author: "Sabin Thapa",
- 
-       },
-    {
-        id: 3,
-             postDate: "Nov20, 2021",
-        answer: "Which government? The world doesn’t consist of just one messily governmental office. You’ve been watching too many American doomsday movies.",
-        author: "Sabin Thapa",
-       
-    }, 
-    ]
-
+    const [answers, setAnswers] = useState([])
     useEffect(() => {
-    }, [])
+        getAnswers();
+        const unsubscribe = navigation.addListener('focus', () => {
+            getAnswers();
+          });
+          return unsubscribe;
+    }, [navigation])
+
+    const getAnswers = () => {
+        firebase.firestore().collection("groups").doc(group.id).collection("QnA").doc(question.id).get().then((doc) => {
+            setAnswers(doc.data()['answers'])
+        }).catch((err) => {
+            console.log(err.message());
+        })
+    }
 
     return (
         <Screen style = {styles.screen}>
@@ -66,12 +56,15 @@ const AnswersScreen = ({route, navigation}) => {
                             <View style = {styles.userInfo}>
                                 <Image source = {require("../assets/sajan.png")} style ={styles.userImage}/>
                                     <View style = {{display: "flex", marginLeft: 5}}>
-                                        <Text style = {{fontWeight: "bold"}}> {item.author}</Text>
-                                        <Text style = {[{color: colors.medium, fontSize: 12}, styles.fontColor]}> {item.postDate}</Text>
+                                        <Text style = {{fontWeight: "bold"}}> {item.userInfo.username}</Text>
+                                        {/* <Text style = {[{color: colors.medium, fontSize: 12}, styles.fontColor]}> {item.postDate}</Text> */}
                                     </View>
                             </View>
-                            <View style = {styles.questionContainer}>
+                            <View style = {styles.answerContainer}>
                                 <Text style = {styles.fontColor}> {item.answer}</Text>
+                                <TouchableOpacity style ={{alignSelf: "flex-end"}}>
+                                    <MaterialCommunityIcons name = "delete" size = {22} color = {colors.primary} onPress = {() => handleDeleteQuestion(item.title)} />
+                                </TouchableOpacity>
                             </View>    
                     </View>
                     )}
@@ -87,6 +80,9 @@ const AnswersScreen = ({route, navigation}) => {
 export default AnswersScreen
 
 const styles = StyleSheet.create({
+    qnaContent: {
+        marginBottom: 40
+    },
     qnaContainer:{
         padding: 10,
         margin: 5,
@@ -124,5 +120,11 @@ const styles = StyleSheet.create({
     },
     fontColor: {
         color: "#fff"
+    },
+    answerContainer: {
+        display: "flex",
+        padding: 10,
+        flexDirection: "row",
+        justifyContent: "space-between"
     }
 })

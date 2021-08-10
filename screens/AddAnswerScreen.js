@@ -47,6 +47,8 @@ const AddAnswerScreen = ({route, navigation}) => {
             answers.push(values)
             QnAs.update({answers:answers})
         }) 
+
+        navigation.goBack()
         
     }
 

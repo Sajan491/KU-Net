@@ -19,7 +19,11 @@ const GroupsScreen = ({navigation}) => {
 
     useEffect(() => {
         getData();
-    }, [])
+        const unsubscribe = navigation.addListener('focus', () => {
+            getData();
+          });
+          return unsubscribe;
+    }, [navigation])
     
     // To get the array of unjoined groups
     const filteredGroups = groups?.filter(({id: id1}) => !enrolledGroups?.some(({id: id2}) => id2 === id1 ));

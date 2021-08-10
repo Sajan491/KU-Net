@@ -23,7 +23,12 @@ const MessagesScreen = ({navigation}) => {
         // getGroups();
         getEnrolledGroups();
         getCurrentDepartment();
-    }, [])
+        const unsubscribe = navigation.addListener('focus', () => {
+            getCurrentDepartment();
+            getEnrolledGroups();
+          });
+          return unsubscribe;
+    }, [navigation])
     
     // const getGroups = () => {
     //     firebase.firestore().collection("groups").get().then((docs)=> {

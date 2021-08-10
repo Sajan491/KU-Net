@@ -77,16 +77,24 @@ const AccountScreen = ({navigation}) => {
     }
     useEffect(() => {
         getAdminStatus()
+        getPP()
+        const unsubscribe = navigation.addListener('focus', () => {
+            getPP()
+        });
+          return unsubscribe;
+        
+
+    }, [navigation])
+
+    
+    const getPP = () => {
         usersCollection.doc(userId).get()
         .then((doc) => { 
               setProfilePic(doc.data()['profilePic'])
             }).catch ((err) => {
                 console.log("Error receiving data from the database", err);
             })
-
-    }, [])
-
-    
+    }
 
     const loadMore = useCallback(async () => {
         setLoading(true);
