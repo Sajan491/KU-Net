@@ -4,14 +4,18 @@ import colors from '../config/colors'
 import Screen from "../components/Screen"
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import firebase from "../config/firebase"
+import Loading from "../components/Loading";
 
 const AnswersScreen = ({route, navigation}) => {
     const question = route.params.item
     const group = route.params.group
     const [answers, setAnswers] = useState([])
+    const [loading, setLoading] = useState(true)
+
     useEffect(() => {
         getAnswers();
         const unsubscribe = navigation.addListener('focus', () => {
+            console.log("OP");
             getAnswers();
           });
           return unsubscribe;
@@ -19,13 +23,19 @@ const AnswersScreen = ({route, navigation}) => {
 
     const getAnswers = () => {
         firebase.firestore().collection("groups").doc(group.id).collection("QnA").doc(question.id).get().then((doc) => {
-            setAnswers(doc.data()['answers'])
+            if(doc.exists) {
+                setAnswers(doc.data()['answers'])
+            }
         }).catch((err) => {
             console.log(err.message());
         })
-    }
 
-    return (
+        setLoading(false)
+    }
+    
+
+
+    return !loading ? (
         <Screen style = {styles.screen}>
             <View style = {styles.qnaContent}>
                 <TouchableOpacity title = "Add Answer" onPress = {() => {navigation.navigate("AddAnswer",{question, group})}} style = {styles.addQuestion}>
@@ -33,7 +43,11 @@ const AnswersScreen = ({route, navigation}) => {
                 </TouchableOpacity>
                 <View style = {styles.qnaContainer}>
                     <View style = {styles.userInfo}>
-                        <Image source = {require("../assets/sajan.png")} style ={styles.userImage}/>
+                        {question.userInfo.profilePic 
+                                ? <Image source = {{uri: question.userInfo.profilePic}} style ={styles.userImage} />
+                                :  <Image source = {require("../assets/sajan.png")} style ={styles.userImage} />
+                            }
+
                             <View style = {{display: "flex", marginLeft: 5}}>
                                 <Text style = {{fontWeight: "bold"}}> {question.userInfo?.username}</Text>
                                 {/* <Text style = {{color: colors.medium, fontSize: 12}}> {question.postTime}</Text> */}
@@ -52,9 +66,12 @@ const AnswersScreen = ({route, navigation}) => {
                     keyExtractor = {(item) => item.id.toString()}
                     data = {answers}
                     renderItem = {({item}) => (
-                        <View style = {{margin: 5, borderRadius:10, backgroundColor: colors.secondary}}>
+                        <View style = {{margin: 5, borderRadius:10, backgroundColor: "#e2ece9"}}>
                             <View style = {styles.userInfo}>
-                                <Image source = {require("../assets/sajan.png")} style ={styles.userImage}/>
+                                    {item.userInfo.profilePic 
+                                        ? <Image source = {{uri: item.userInfo.profilePic}} style ={styles.userImage} />
+                                        :  <Image source = {require("../assets/sajan.png")} style ={styles.userImage} />
+                                    }
                                     <View style = {{display: "flex", marginLeft: 5}}>
                                         <Text style = {{fontWeight: "bold"}}> {item.userInfo.username}</Text>
                                         {/* <Text style = {[{color: colors.medium, fontSize: 12}, styles.fontColor]}> {item.postDate}</Text> */}
@@ -62,9 +79,6 @@ const AnswersScreen = ({route, navigation}) => {
                             </View>
                             <View style = {styles.answerContainer}>
                                 <Text style = {styles.fontColor}> {item.answer}</Text>
-                                <TouchableOpacity style ={{alignSelf: "flex-end"}}>
-                                    <MaterialCommunityIcons name = "delete" size = {22} color = {colors.primary} onPress = {() => handleDeleteQuestion(item.title)} />
-                                </TouchableOpacity>
                             </View>    
                     </View>
                     )}
@@ -74,18 +88,18 @@ const AnswersScreen = ({route, navigation}) => {
                 
             </View>
         </Screen>
-         )
+         ) : <Loading />
 }
 
 export default AnswersScreen
 
 const styles = StyleSheet.create({
     qnaContent: {
-        marginBottom: 40
+        marginBottom: 80
     },
     qnaContainer:{
         padding: 10,
-        margin: 5,
+        marginBottom: 215,
         borderRadius: 10,
         backgroundColor: '#fff',
     },
@@ -119,7 +133,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     fontColor: {
-        color: "#fff"
+        color: "#000"
     },
     answerContainer: {
         display: "flex",

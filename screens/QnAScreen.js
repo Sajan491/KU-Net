@@ -12,9 +12,9 @@ const QnAScreen = ({route, navigation}) => {
     const [sameUser, setSameUser] = useState(false);
     const [questions, setQuestions] = useState([])
     const [loading, setLoading] = useState(true)
+    const currUserID = firebase.auth().currentUser.uid;
 
     useEffect(() => {
-        setLoading(true)
         getQuestions();
         const unsubscribe = navigation.addListener('focus', () => {
             getQuestions();
@@ -23,12 +23,12 @@ const QnAScreen = ({route, navigation}) => {
     }, [navigation])
     
     const getQuestions = () => {
-        console.log("Get hit");
         firebase.firestore().collection("groups").doc(group.id).collection("QnA").get().then((docs) => {
             const QNAs = []
             docs.forEach((doc) => {
                 const questionItem = doc.data()
                 questionItem.id = doc.id
+                questionItem.userId = doc.data()['userInfo'].usersId
                 QNAs.push(questionItem)
             })
             setQuestions(QNAs)
@@ -38,7 +38,6 @@ const QnAScreen = ({route, navigation}) => {
     }
 
     const handleDeleteQuestion = (title) => {
-        console.log(title);
         const dbRef = firebase.firestore().collection("groups").doc(group.id).collection("QnA").where("title", '==', title);
         dbRef.get().then((querySnapshot) => {
             querySnapshot.forEach((doc) => {
@@ -65,16 +64,22 @@ const QnAScreen = ({route, navigation}) => {
                     renderItem = {({item}) => (
                         <View style = {styles.qnaContainer}>
                             <View style = {styles.userInfo}>
-                                <Image source = {require("../assets/sajan.png")} style ={styles.userImage}/>
+                            {item.userInfo.profilePic 
+                                ? <Image source = {{uri: item.userInfo.profilePic}} style ={styles.userImage} />
+                                :  <Image source = {require("../assets/sajan.png")} style ={styles.userImage} />
+                            }
+                                    
                                     <View style = {{display: "flex", marginLeft: 5}}>
                                         <Text style = {{fontWeight: "bold"}}> {item.userInfo?.username}</Text>
                                         {/* <Text style = {{color: colors.medium, fontSize: 12}}> {item.postTime}</Text> */}
                                     </View>
                             </View>
                             <View style = {styles.questionContainer}>
-                                <TouchableOpacity style ={{alignSelf: "flex-end"}}>
-                                    <MaterialCommunityIcons name = "delete" size = {22} color = {colors.primary} onPress = {() => handleDeleteQuestion(item.title)} />
-                                </TouchableOpacity>
+                                
+                                {item.userId === currUserID &&<TouchableOpacity style ={{alignSelf: "flex-end"}}>
+                                        <MaterialCommunityIcons name = "delete" size = {22} color = {colors.primary} onPress = {() => handleDeleteQuestion(item.title)} />
+                                    </TouchableOpacity> }
+
                                 <Text style = {{fontWeight: "bold"}}> {item.title}</Text>
                                 <Text> {item.description}</Text>
                             </View>    
