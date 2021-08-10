@@ -4,27 +4,52 @@ import colors from '../config/colors'
 import Screen from "../components/Screen"
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import firebase from "../config/firebase";
+import Loading from "../components/Loading"
+
 
 const QnAScreen = ({route, navigation}) => {
     const group = route.params
+    const [sameUser, setSameUser] = useState(false);
     const [questions, setQuestions] = useState([])
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
+        setLoading(true)
         getQuestions();
-    }, [])
+        const unsubscribe = navigation.addListener('focus', () => {
+            getQuestions();
+          });
+          return unsubscribe;
+    }, [navigation])
     
     const getQuestions = () => {
+        console.log("Get hit");
         firebase.firestore().collection("groups").doc(group.id).collection("QnA").get().then((docs) => {
             const QNAs = []
             docs.forEach((doc) => {
                 QNAs.push(doc.data())
+
             })
             setQuestions(QNAs)
-            console.log(QNAs, "QUES");
         })
+            setLoading(false)
     }
 
-    return (
+    const handleDeleteQuestion = (title) => {
+        console.log(title);
+        const dbRef = firebase.firestore().collection("groups").doc(group.id).collection("QnA").where("title", '==', title);
+        dbRef.get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                doc.ref.delete();
+            })
+        })
+
+        const filteredQuestions = questions.filter((qTitle) => qTitle.title !== title)
+        setQuestions(filteredQuestions)
+        
+    }
+
+    return !loading ? (
         <Screen style = {styles.screen}>
             <View style = {styles.qnaContent}>
             <TouchableOpacity title = "Add Answer" onPress = {() => {navigation.navigate("AddQuestion", group)}} style = {styles.addQuestion}>
@@ -45,6 +70,9 @@ const QnAScreen = ({route, navigation}) => {
                                     </View>
                             </View>
                             <View style = {styles.questionContainer}>
+                                <TouchableOpacity style ={{alignSelf: "flex-end"}}>
+                                    <MaterialCommunityIcons name = "delete" size = {22} color = {colors.primary} onPress = {() => handleDeleteQuestion(item.title)} />
+                                </TouchableOpacity>
                                 <Text style = {{fontWeight: "bold"}}> {item.title}</Text>
                                 <Text> {item.description}</Text>
                             </View>    
@@ -57,7 +85,7 @@ const QnAScreen = ({route, navigation}) => {
                 
             </View>
         </Screen>
-         )
+         ) : <Loading /> 
 }
 
 export default QnAScreen
@@ -69,6 +97,9 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         paddingTop:17,
         backgroundColor: '#fff',
+    },
+    qnaContent: {
+        marginBottom: 40
     },
     questionContainer: {
         borderRadius: 10,
