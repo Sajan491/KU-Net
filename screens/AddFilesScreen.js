@@ -28,10 +28,10 @@ const AddFilesScreen = ({navigation}) => {
     const [userName, setUserName] = useState('')
     const [userPpic, setUserPpic] = useState('')
     const [dept, setDept] = useState({})
-
+    const [usersiD, setUsersiD] = useState('')
     useEffect(() => {
         const userID = firebase.auth().currentUser.uid;
-
+        setUsersiD(userID)
         usersCollection.doc(userID).get().then((usr)=>{
             let dep = usr.data()['department']
             setDept(dep)
@@ -133,7 +133,7 @@ const AddFilesScreen = ({navigation}) => {
         else{  
             if(values.page['label'] === 'My Department') {
                 values.page = dept.label;
-                values.userInfo = {username: userName, profilePic: userPpic};
+                values.userInfo = {username: userName, profilePic: userPpic, usersId:usersiD};
                 departFiles.add(values).then(()=>{
                     Alert.alert('Success!','Files Added Successfully',[
                         {text: 'Continue', onPress: () => navigation.jumpTo('Feed')},
@@ -143,7 +143,12 @@ const AddFilesScreen = ({navigation}) => {
             }
             else{
                 values.page=values.page['label']
-                values.userInfo = {username: userName, profilePic: userPpic};
+                if(values.page === 'ALUMNI' || values.page === 'Startup Corner'){
+                    values.userInfo = {username: userName, profilePic: userPpic, usersId:usersiD, departmentID:dept.value};
+                }
+                else{
+                    values.userInfo = {username: userName, profilePic: userPpic, usersId:usersiD};
+                };
                 groupFiles.add(values).then(()=>{
                     
                     Alert.alert('Success!','Files Added Successfully',[

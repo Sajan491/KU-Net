@@ -44,14 +44,14 @@ const AnswersScreen = ({route, navigation}) => {
                     <View style = {styles.userInfo}>
                         <Image source = {require("../assets/sajan.png")} style ={styles.userImage}/>
                             <View style = {{display: "flex", marginLeft: 5}}>
-                                <Text style = {{fontWeight: "bold"}}> {question.author}</Text>
-                                <Text style = {{color: colors.medium, fontSize: 12}}> {question.postDate}</Text>
+                                <Text style = {{fontWeight: "bold"}}> {question.userInfo?.username}</Text>
+                                {/* <Text style = {{color: colors.medium, fontSize: 12}}> {question.postTime}</Text> */}
                             </View>
                     </View>
                    
                     <View style = {styles.questionContainer}>
                         <Text style = {{fontWeight: "bold"}}> {question.title}</Text>
-                        <Text> {question.question}</Text>
+                        <Text> {question.description}</Text>
                     </View> 
                     <Text style = {{color: colors.secondary}}> Answers </Text>
 
@@ -120,7 +120,6 @@ const styles = StyleSheet.create({
     },
     addQuestion: {
         marginTop: 10,
-       borderBottomWidth: 1
     },
     fontColor: {
         color: "#fff"

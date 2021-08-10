@@ -140,7 +140,12 @@ const AddPostScreen = ({navigation}) => {
             }
             else{
                 values.page=values.page['label']
-                values.userInfo = {username: userName, profilePic: userPpic, usersId:usersiD};
+                if(values.page === 'ALUMNI' || values.page === 'Startup Corner'){
+                    values.userInfo = {username: userName, profilePic: userPpic, usersId:usersiD, departmentID:dept.value};
+                }
+                else{
+                    values.userInfo = {username: userName, profilePic: userPpic, usersId:usersiD};
+                };
                 groupPosts.add(values).then(()=>{
                     
                     Alert.alert('Success!','Post Added Successfully',[

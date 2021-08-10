@@ -95,7 +95,7 @@ const ProfileSettings = ({navigation}) => {
                     if(values.department !== null) {
                         // Delete user from previous department 
                         departCollection.doc(userID).delete().then(() => {
-                            console.log("User successfyll removed from previous department", department.label);
+                            console.log("User successfully removed from previous department", department.label);
                         }).catch((err) => {
                             console.log("Error removing user", erro);
                         })
@@ -111,8 +111,6 @@ const ProfileSettings = ({navigation}) => {
                         })
                         console.log(("Department updated!"));
                     }
-                    
-                    
                 })          
         } catch (error) {
             console.log("Error updating values in the database",error)

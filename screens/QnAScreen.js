@@ -1,37 +1,28 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import { StyleSheet, Text, View, FlatList, Button, Image, TouchableOpacity } from 'react-native'
 import colors from '../config/colors'
 import Screen from "../components/Screen"
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import firebase from "../config/firebase";
 
 const QnAScreen = ({route, navigation}) => {
     const group = route.params
-    const QNAs = [
-        {
-            id: 1,
-            title: "What is your name?",
-            question: "Which government? The world doesn’t consist of just one messily governmental office. You’ve been watching too many American doomsday movies.",
-            author: "Sabin Thapa",
-            postDate: "Nov 16, 2020"
-        },
-       {
-           id: 2,
-           title: "Where do you live?",
-           question: "I live in Nepal",
-           author: "Sabin Thapa",
-           postDate: "Nov 16, 2020"
-       },
-    {
-        id: 3,
-        title: "What is your name?",
-        question: "Which government? The world doesn’t consist of just one messily governmental office. You’ve been watching too many American doomsday movies.",
-        author: "Sabin Thapa",
-        postDate: "Nov 16, 2020"
-    }, 
-    ]
+    const [questions, setQuestions] = useState([])
 
     useEffect(() => {
+        getQuestions();
     }, [])
+    
+    const getQuestions = () => {
+        firebase.firestore().collection("groups").doc(group.id).collection("QnA").get().then((docs) => {
+            const QNAs = []
+            docs.forEach((doc) => {
+                QNAs.push(doc.data())
+            })
+            setQuestions(QNAs)
+            console.log(QNAs, "QUES");
+        })
+    }
 
     return (
         <Screen style = {styles.screen}>
@@ -42,20 +33,20 @@ const QnAScreen = ({route, navigation}) => {
                 <FlatList
                     vertical
                     showsHorizontalScrollIndicator = {false}
-                    keyExtractor = {(item) => item.id.toString()}
-                    data = {QNAs}
+                    keyExtractor = {(item) => item.title.toString()}
+                    data = {questions}
                     renderItem = {({item}) => (
                         <View style = {styles.qnaContainer}>
                             <View style = {styles.userInfo}>
                                 <Image source = {require("../assets/sajan.png")} style ={styles.userImage}/>
                                     <View style = {{display: "flex", marginLeft: 5}}>
-                                        <Text style = {{fontWeight: "bold"}}> {item.author}</Text>
-                                        <Text style = {{color: colors.medium, fontSize: 12}}> {item.postDate}</Text>
+                                        <Text style = {{fontWeight: "bold"}}> {item.userInfo?.username}</Text>
+                                        {/* <Text style = {{color: colors.medium, fontSize: 12}}> {item.postTime}</Text> */}
                                     </View>
                             </View>
                             <View style = {styles.questionContainer}>
                                 <Text style = {{fontWeight: "bold"}}> {item.title}</Text>
-                                <Text> {item.question}</Text>
+                                <Text> {item.description}</Text>
                             </View>    
                             <TouchableOpacity onPress = {() => navigation.navigate("Answers", item)}>
                                 <Text style = {{color: colors.secondary, marginLeft: 5}}>View Answers</Text>
@@ -106,6 +97,5 @@ const styles = StyleSheet.create({
     },
     addQuestion: {
         marginTop: 10,
-       borderBottomWidth: 1
     },
 })

@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
                       uid: cred.user.uid
                     })
                     // cred.user.reauthenticateWithCredential(email)
-                    // {cred.user.emailVerified === true ? setIsEmailVerified(true) : setIsEmailVerified(false) }
+                    {cred.user.emailVerified === true ? setIsEmailVerified(true) : setIsEmailVerified(false) }
                   
                 })
             } catch (e) {
