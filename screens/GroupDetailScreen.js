@@ -238,7 +238,7 @@ const GroupDetailScreen = ({route, navigation}) => {
                         <>
                         {isAMember?
                         (<TouchableOpacity onPress = {() => {setModalOpen(true)}}>
-                            <SimpleLineIcons name = "options-vertical" size = {15}  style = {{alignSelf: "flex-end", margin: 10}}/>
+                            <SimpleLineIcons name = "options-vertical" size = {20}  style = {{alignSelf: "flex-end", margin: 10}}/>
                         </TouchableOpacity>)
                         : null }
                         <View style>
@@ -301,7 +301,7 @@ export default GroupDetailScreen
 
 const styles = StyleSheet.create({
     screen:{
-        marginTop:-50
+        marginTop:-60
     },
     groupKebabBack: {
         backgroundColor: 'rgba(0,0,0,0.55)',
