@@ -301,7 +301,7 @@ export default GroupDetailScreen
 
 const styles = StyleSheet.create({
     screen:{
-        marginTop:-50
+        marginTop:-60
     },
     groupKebabBack: {
         backgroundColor: 'rgba(0,0,0,0.55)',

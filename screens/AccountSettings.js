@@ -78,7 +78,7 @@ const AccountSettings = () => {
                     style = {styles.modalClose}
                     onPress = {() => setModalOpen(false)}
                 />
-                {actionTriggered == "PasswordModal" ? 
+                {/* {actionTriggered == "PasswordModal" ?  */}
                     <View>
                         <AppText style = {styles.header}> Set up new password.</AppText>
                         <TextInput 
@@ -110,7 +110,7 @@ const AccountSettings = () => {
                         </TouchableOpacity>
 
                     </View>
-                    :
+                    {/* :
                     <View>
                         <AppText style = {styles.header}> Set up new email.</AppText>
                         <TextInput 
@@ -133,15 +133,15 @@ const AccountSettings = () => {
                         </TouchableOpacity>
 
                 </View>
-}
+} */}
             </Modal>
           
-            <TextCard title ="Email Address:" subTitle = {firebase.auth().currentUser.email} onPress= {() => {
+            {/* <TextCard title ="Email Address:" subTitle = {firebase.auth().currentUser.email} onPress= {() => {
                 setModalOpen(true);
                 setActionTriggered("EmailModal")
              }
             } 
-            />
+            /> */}
          
 
             <TextCard title ="Change Password:" description = "Password must be atleast 6 characters long." onPress = {() => {
